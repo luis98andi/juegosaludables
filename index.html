@@ -71,10 +71,11 @@
     <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub513.app51248/game-tiles/om-nom-run.jpg" alt="Om Nom Run">
     <p>Om Nom Run</p>
   </div>
+  <!-- Emulador SNES -->
   <div class="card" onclick="abrirEmuladorSNES()">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Super_Nintendo_Entertainment_System_Logo.svg" alt="Emulador SNES">
-  <p>Emulador SNES</p>
-</div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Super_Nintendo_Entertainment_System_Logo.svg" alt="Emulador SNES">
+    <p>Emulador SNES</p>
+  </div>
 </div>
 
 <div id="player-container">
@@ -106,6 +107,22 @@
       iframe.allowFullscreen = true;
       target.appendChild(iframe);
     }
+
+    document.getElementById('player-container').style.display = 'block';
+    window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
+  }
+
+  function abrirEmuladorSNES() {
+    const target = document.getElementById('ruffle-target');
+    target.innerHTML = ''; // limpia el contenedor
+
+    const iframe = document.createElement('iframe');
+    iframe.src = "https://www.jsnes.org/";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.allowFullscreen = true;
+    target.appendChild(iframe);
 
     document.getElementById('player-container').style.display = 'block';
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
