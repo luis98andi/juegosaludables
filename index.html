@@ -71,10 +71,10 @@
     <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub513.app51248/game-tiles/om-nom-run.jpg" alt="Om Nom Run">
     <p>Om Nom Run</p>
   </div>
-  <!-- Emulador SNES -->
+  <!-- Emulador SNES con tu archivo kd.sfc -->
   <div class="card" onclick="abrirEmuladorSNES()">
     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Super_Nintendo_Entertainment_System_Logo.svg" alt="Emulador SNES">
-    <p>Emulador SNES</p>
+    <p>Kirby SNES</p>
   </div>
 </div>
 
@@ -89,7 +89,7 @@
 
   function abrirJuego(ruta, tipo) {
     const target = document.getElementById('ruffle-target');
-    target.innerHTML = ''; // limpia el contenido anterior
+    target.innerHTML = '';
 
     if (tipo === 'swf') {
       const ruffle = window.RufflePlayer.newest();
@@ -114,10 +114,11 @@
 
   function abrirEmuladorSNES() {
     const target = document.getElementById('ruffle-target');
-    target.innerHTML = ''; // limpia el contenedor
+    target.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    iframe.src = "https://www.jsnes.org/";
+    // Usamos emulatorjs configurado para cargar directamente tu archivo sfc desde GitHub
+    iframe.src = "https://emulatorjs.com/embed.html?core=snes&rom=https://luis98andi.github.io/juegossaludables/games/kd.sfc";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.border = "none";
