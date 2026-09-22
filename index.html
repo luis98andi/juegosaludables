@@ -53,15 +53,25 @@
 <h1>Mis Juegos</h1>
 
 <div class="grid">
-  <div class="card" onclick="abrirJuego('games/baby-hazel-ballon.swf')">
+  <div class="card" onclick="abrirJuego('games/baby-hazel-ballon.swf', 'swf')">
     <img src="portadas/baby1.PNG" alt="Baby Hazel Balloon">
     <p>Baby Hazel Balloon</p>
   </div>
-    <div class="card" onclick="abrirJuego('games/barbie-manicure-secrets.swf')">
+  <div class="card" onclick="abrirJuego('games/barbie-manicure-secrets.swf', 'swf')">
     <img src="portadas/manicure1.PNG" alt="Manicure barbie secret">
     <p>Manicure barbie secret</p>
   </div>
+  <!-- Nuevos Juegos HTML5 -->
+  <div class="card" onclick="abrirJuego('https://play.famobi.com/cut-the-rope', 'iframe')">
+    <img src="portadas/cut-the-rope.png" alt="Cut the Rope">
+    <p>Cut the Rope</p>
+  </div>
+  <div class="card" onclick="abrirJuego('https://play.famobi.com/om-nom-run', 'iframe')">
+    <img src="portadas/om-nom-run.png" alt="Om Nom Run">
+    <p>Om Nom Run</p>
+  </div>
 </div>
+
 <div id="player-container">
   <div id="ruffle-target"></div>
   <br>
@@ -71,16 +81,26 @@
 <script>
   let currentPlayer = null;
 
-  function abrirJuego(ruta) {
+  function abrirJuego(ruta, tipo) {
     const target = document.getElementById('ruffle-target');
-    target.innerHTML = ''; // limpia el juego anterior si había uno
+    target.innerHTML = ''; // limpia el contenido anterior
 
-    const ruffle = window.RufflePlayer.newest();
-    currentPlayer = ruffle.createPlayer();
-    currentPlayer.style.width = "100%";
-    currentPlayer.style.height = "100%";
-    target.appendChild(currentPlayer);
-    currentPlayer.load(ruta);
+    if (tipo === 'swf') {
+      const ruffle = window.RufflePlayer.newest();
+      currentPlayer = ruffle.createPlayer();
+      currentPlayer.style.width = "100%";
+      currentPlayer.style.height = "100%";
+      target.appendChild(currentPlayer);
+      currentPlayer.load(ruta);
+    } else if (tipo === 'iframe') {
+      const iframe = document.createElement('iframe');
+      iframe.src = ruta;
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
+      iframe.allowFullscreen = true;
+      target.appendChild(iframe);
+    }
 
     document.getElementById('player-container').style.display = 'block';
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
