@@ -18,10 +18,11 @@
     margin:20px auto;
     text-align:center;
   }
-  #player-container embed {
+  #ruffle-target {
     width:100%;
     max-width:800px;
     height:600px;
+    margin:0 auto;
     background:black;
   }
   #close-btn {
@@ -47,19 +48,31 @@
 </div>
 
 <div id="player-container">
-  <embed id="game-embed" src="" width="800" height="600">
+  <div id="ruffle-target"></div>
   <br>
   <button id="close-btn" onclick="cerrarJuego()">Cerrar juego</button>
 </div>
 
 <script>
+  let currentPlayer = null;
+
   function abrirJuego(ruta) {
-    document.getElementById('game-embed').src = ruta;
+    const target = document.getElementById('ruffle-target');
+    target.innerHTML = ''; // limpia el juego anterior si había uno
+
+    const ruffle = window.RufflePlayer.newest();
+    currentPlayer = ruffle.createPlayer();
+    currentPlayer.style.width = "100%";
+    currentPlayer.style.height = "100%";
+    target.appendChild(currentPlayer);
+    currentPlayer.load(ruta);
+
     document.getElementById('player-container').style.display = 'block';
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
   }
+
   function cerrarJuego() {
-    document.getElementById('game-embed').src = '';
+    document.getElementById('ruffle-target').innerHTML = '';
     document.getElementById('player-container').style.display = 'none';
   }
 </script>
