@@ -81,75 +81,11 @@
     <img src="https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg" alt="Bubble Shooter">
     <p>Bubble Shooter</p>
   </div>
-  <!-- Tunnel Runner -->
-  <div class="card" onclick="abrirJuego('https://www.crazygames.com/embed/tunnel-runner', 'iframe')">
+  <!-- Tunnel Runner (se abre en pestaña nueva, CrazyGames bloquea iframe) -->
+  <div class="card" onclick="abrirEnNuevaPestana('https://www.crazygames.com/game/tunnel-runner')">
     <img src="https://img.crazygames.com/tunnel-runner/20240409051515/tunnel-runner-cover?auto=format&fit=fill&q=45&w=630" alt="Tunnel Runner">
     <p>Tunnel Runner</p>
   </div>
-  <!-- Vortella's Dress Up -->
-  <div class="card" onclick="abrirJuego('https://poki.com/en/embed/vortellas-dress-up', 'iframe')">
-    <img src="https://a.poki-cdn.com/cdn-cgi/image/quality=78,v=1/https://img.poki.com/cdn-cgi/image/quality=78,v=1/a0209c73d9d3de444655f0b5d19ec586.png" alt="Vortella's Dress Up">
-    <p>Vortella's Dress Up</p>
-  </div>
-</div>
-
-<div id="player-container">
-  <div id="ruffle-target"></div>
-  <br>
-  <button id="close-btn" onclick="cerrarJuego()">Cerrar juego</button>
-</div>
-
-<script>
-  let currentPlayer = null;
-
-  function abrirJuego(ruta, tipo) {
-    const target = document.getElementById('ruffle-target');
-    target.innerHTML = '';
-
-    if (tipo === 'swf') {
-      const ruffle = window.RufflePlayer.newest();
-      currentPlayer = ruffle.createPlayer();
-      currentPlayer.style.width = "100%";
-      currentPlayer.style.height = "100%";
-      target.appendChild(currentPlayer);
-      currentPlayer.load(ruta);
-    } else if (tipo === 'iframe') {
-      const iframe = document.createElement('iframe');
-      iframe.src = ruta;
-      iframe.style.width = "100%";
-      iframe.style.height = "100%";
-      iframe.style.border = "none";
-      iframe.allowFullscreen = true;
-      iframe.allow = "autoplay; gamepad; fullscreen";
-      target.appendChild(iframe);
-    }
-
-    document.getElementById('player-container').style.display = 'block';
-    window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
-  }
-
-  function abrirEmuladorSNES() {
-    const target = document.getElementById('ruffle-target');
-    target.innerHTML = '';
-
-    const iframe = document.createElement('iframe');
-    iframe.src = "https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "none";
-    iframe.allowFullscreen = true;
-    iframe.allow = "autoplay; gamepad; fullscreen";
-    target.appendChild(iframe);
-
-    document.getElementById('player-container').style.display = 'block';
-    window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
-  }
-
-  function cerrarJuego() {
-    document.getElementById('ruffle-target').innerHTML = '';
-    document.getElementById('player-container').style.display = 'none';
-  }
-</script>
-
-</body>
-</html>
+  <!-- Vortella's Dress Up (se abre en pestaña nueva, Poki bloquea iframe) -->
+  <div class="card" onclick="abrirEnNuevaPestana('https://poki.com/en/g/vortellas-dress-up')">
+    <img src="https://a.poki-cdn.com/cdn-cgi/image/qu
