@@ -115,7 +115,7 @@
   <img src="https://cdn.icon-icons.com/icons2/1381/PNG/512/minecraft_94415.png" alt="Mineblock">
   <p>Mineblock (táctil)</p>
 </div>
- <!-- Mine – Online (Playgama) -->
+<!-- Mine – Online (Playgama) -->
 <div class="card" 
      onclick="abrirJuego('https://playgama.com/export/game/mine-online', 'iframe')">
   <img src="https://cdn.icon-icons.com/icons2/1381/PNG/512/minecraft_94415.png" alt="Mine Online">
@@ -149,7 +149,7 @@
   const wrapper = document.createElement('div');
   wrapper.style.position = "relative";
   wrapper.style.width = "100%";
-  wrapper.style.aspectRatio = "16/9";
+  wrapper.style.height = "100%";   // ocupa todo el alto disponible
   wrapper.style.background = "black";
 
   const iframe = document.createElement('iframe');
@@ -162,21 +162,17 @@
   iframe.style.border = "none";
   iframe.allowFullscreen = true;
   iframe.setAttribute('allowfullscreen', 'true');
-  iframe.setAttribute('webkitallowfullscreen', 'true');
-  iframe.setAttribute('mozallowfullscreen', 'true');
-  iframe.allow = "autoplay; gamepad; fullscreen; accelerometer; gyroscope";
+  iframe.allow = "fullscreen; autoplay; gamepad; pointer-lock";
 
   // Ajuste especial para Mineblock táctil
   if (ruta.includes("funhtml5games.com?embed=mineblock")) {
-    wrapper.style.aspectRatio = "auto";
-    wrapper.style.height = "100%";
-    iframe.style.objectFit = "contain";
+    iframe.style.objectFit = "contain";   // se adapta sin deformarse
     iframe.style.background = "black";
   }
 
   wrapper.appendChild(iframe);
   target.appendChild(wrapper);
-}     
+}   
     document.getElementById('player-container').style.display = 'block';
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
   }
