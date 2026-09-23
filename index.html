@@ -73,8 +73,23 @@
   </div>
   <!-- SNES Game -->
   <div class="card" onclick="abrirEmuladorSNES()">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Super_Nintendo_Entertainment_System_Logo.svg" alt="Kirby SNES">
+    <img src="https://www.nintendo.com/eu/media/images/10_share_images/games_15/virtual_console_wii_u_7/H2x1_WiiUVC_KirbysDreamLand3_image1600w.jpg" alt="Kirby SNES">
     <p>Kirby SNES</p>
+  </div>
+  <!-- Bubble Rush 2 -->
+  <div class="card" onclick="abrirJuego('https://html5.gamemonetize.co/yp7vtch9c6vott101pztfdfm0p19c5c5/', 'iframe')">
+    <img src="https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg" alt="Bubble Shooter">
+    <p>Bubble Shooter</p>
+  </div>
+  <!-- Tunnel Runner -->
+  <div class="card" onclick="abrirJuego('https://www.crazygames.com/embed/tunnel-runner', 'iframe')">
+    <img src="https://img.crazygames.com/tunnel-runner/20240409051515/tunnel-runner-cover?auto=format&fit=fill&q=45&w=630" alt="Tunnel Runner">
+    <p>Tunnel Runner</p>
+  </div>
+  <!-- Vortella's Dress Up -->
+  <div class="card" onclick="abrirJuego('https://poki.com/en/embed/vortellas-dress-up', 'iframe')">
+    <img src="https://a.poki-cdn.com/cdn-cgi/image/quality=78,v=1/https://img.poki.com/cdn-cgi/image/quality=78,v=1/a0209c73d9d3de444655f0b5d19ec586.png" alt="Vortella's Dress Up">
+    <p>Vortella's Dress Up</p>
   </div>
 </div>
 
@@ -105,6 +120,7 @@
       iframe.style.height = "100%";
       iframe.style.border = "none";
       iframe.allowFullscreen = true;
+      iframe.allow = "autoplay; gamepad; fullscreen";
       target.appendChild(iframe);
     }
 
@@ -117,8 +133,7 @@
     target.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    // Enlace directo corregido al embed de Kirby SNES limpio
-    iframe.src = "https://www.retrogames.cc/embed/39903-kirby-s-dream-land-3-usa.html";
+    iframe.src = "https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.border = "none";
