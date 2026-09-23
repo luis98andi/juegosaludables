@@ -19,6 +19,7 @@
     padding:20px;
   }
   h1 { text-align:center; }
+  .logo { max-width: 320px; width: 100%; height: auto; }
   .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:15px; max-width:900px; margin:20px auto; }
   .card { background:#2a2a3d; border-radius:10px; padding:10px; text-align:center; cursor:pointer; transition:0.2s; }
   .card:hover { background:#3a3a55; }
@@ -73,7 +74,7 @@
 </head>
 <body>
 
-<h1>Mis Juegos</h1>
+<h1><img src="portadas/logo.png" alt="FreshMind Games" class="logo"></h1>
 
 <div class="grid">
   <div class="card" onclick="abrirJuego('games/baby-hazel-ballon.swf', 'swf')">
