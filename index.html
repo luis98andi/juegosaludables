@@ -32,20 +32,37 @@
   }
   #ruffle-target {
     width:100%;
-    max-width:800px;
-    height:600px;
+    max-width:854px;
+    aspect-ratio: 854 / 480;
     margin:0 auto;
     background:black;
   }
-  #close-btn {
+  #ruffle-target:fullscreen,
+  #ruffle-target:-webkit-full-screen {
+    max-width:none;
+    aspect-ratio:auto;
+  }
+  #ruffle-target iframe,
+  #ruffle-target > * {
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .controls-bar {
     margin-top:10px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+  }
+  #close-btn, #fullscreen-btn {
     padding:8px 16px;
-    background:#e94560;
     border:none;
     color:white;
     border-radius:6px;
     cursor:pointer;
   }
+  #close-btn { background:#e94560; }
+  #fullscreen-btn { background:#3a7bd5; }
 </style>
 </head>
 <body>
@@ -100,8 +117,10 @@
 
 <div id="player-container">
   <div id="ruffle-target"></div>
-  <br>
-  <button id="close-btn" onclick="cerrarJuego()">Cerrar juego</button>
+  <div class="controls-bar">
+    <button id="fullscreen-btn" onclick="pantallaCompleta()">⛶ Pantalla completa</button>
+    <button id="close-btn" onclick="cerrarJuego()">Cerrar juego</button>
+  </div>
 </div>
 
 <script>
@@ -161,6 +180,17 @@
 
   function abrirEnNuevaPestana(url) {
     window.open(url, '_blank');
+  }
+
+  function pantallaCompleta() {
+    const target = document.getElementById('ruffle-target');
+    if (target.requestFullscreen) {
+      target.requestFullscreen();
+    } else if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen();
+    } else if (target.msRequestFullscreen) {
+      target.msRequestFullscreen();
+    }
   }
 
   function cerrarJuego() {
