@@ -114,7 +114,7 @@
     <img src="portadas/mine online.jpg" alt="Mine Online">
     <p>Mine – Online</p>
   </div>
-  <div class="card" onclick="abrirJuego('https://app-548551.games.s3.yandex.net/548551/cyjcbp7a5cqajglkxfjbahm080mq8yht_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fplayhop.com&app-id=548551&device-type=desktop', 'iframe')">
+  <div class="card" onclick="abrirJuego('https://app-548551.games.s3.yandex.net/548551/cyjcbp7a5cqajglkxfjbahm080mq8yht_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fplayhop.com&app-id=548551&device-type=mobile', 'iframe')">
   <img src="https://klev.club/uploads/posts/2023-10/thumbs/1697615931_klev-club-p-risunki-s-logotipom-mainkraft-28.jpg" alt="Mine Online">
   <p>Minecraft Survial And Creative</p>
 </div>
@@ -199,7 +199,7 @@ async function pantallaCompleta() {
   } catch (e) {
     console.log('Orientación no soportada o bloqueada:', e);
   }
-  
+   }
   function cerrarJuego() {
     document.getElementById('ruffle-target').innerHTML = '';
     document.getElementById('player-container').style.display = 'none';
