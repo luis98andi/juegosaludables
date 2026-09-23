@@ -11,13 +11,13 @@
 <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 <style>
   body {
-  font-family: Arial, sans-serif;
-  background: url('fondo.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color:white;
-  margin:0;
-  padding:20px;
-}
+    font-family: Arial, sans-serif;
+    background: url('fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color:white;
+    margin:0;
+    padding:20px;
+  }
   h1 { text-align:center; }
   .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:15px; max-width:900px; margin:20px auto; }
   .card { background:#2a2a3d; border-radius:10px; padding:10px; text-align:center; cursor:pointer; transition:0.2s; }
@@ -33,22 +33,26 @@
   #ruffle-target {
     width:100%;
     max-width:854px;
-    aspect-ratio: 854 / 480;
+    height: 70vh; /* Se adapta a la altura disponible en móviles */
+    max-height: 550px;
     margin:0 auto;
     background:black;
+    border-radius: 8px;
+    overflow: hidden;
   }
   #ruffle-target:fullscreen,
   #ruffle-target:-webkit-full-screen {
     max-width:none;
-    aspect-ratio:auto;
+    max-height:none;
     width:100vw;
     height:100vh;
   }
   #ruffle-target iframe,
   #ruffle-target > * {
-    width:100%;
-    height:100%;
+    width:100%!important;
+    height:100%!important;
     display:block;
+    border:none;
   }
   .controls-bar {
     margin-top:10px;
@@ -101,26 +105,25 @@
     <p>Bubble Shooter</p>
   </div>
   <!-- Vortella's Dress Up -->
- <div class="card" onclick="abrirEnNuevaPestana('https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html', 'iframe')">
+  <div class="card" onclick="abrirEnNuevaPestana('https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html')">
     <img src="https://gogamego.io/wp-content/uploads/thumbs/custom/V/Vortellas-Dress-Up.webp" alt="vortella dres up">
     <p>Vortella Dress Up</p>
   </div>
-   <!-- Minecraft Pc (funciona bien en iframe) -->
+   <!-- Minecraft Pc -->
   <div class="card" onclick="abrirJuego('https://nite.games/embed/minecraft', 'iframe')">
-  <img src="https://images.icon-icons.com/3053/PNG/512/minecraft_alt_macos_bigsur_icon_189942.png" alt="Minecraft Creative">
-  <p>Minecraft PC </p>
-</div>
-  <!-- Mineblock HTML5 (con controles táctiles para Android) -->
+    <img src="https://images.icon-icons.com/3053/PNG/512/minecraft_alt_macos_bigsur_icon_189942.png" alt="Minecraft Creative">
+    <p>Minecraft PC </p>
+  </div>
+  <!-- Mineblock HTML5 -->
   <div class="card" onclick="abrirJuego('//funhtml5games.com?embed=mineblock', 'iframe')">
-  <img src="https://cdn.icon-icons.com/icons2/1381/PNG/512/minecraft_94415.png" alt="Mineblock">
-  <p>Mineblock (táctil)</p>
-</div>
-<!-- Mine – Online (Playgama) -->
-<div class="card" 
-     onclick="abrirJuego('https://topgames.gg/mine-online', 'iframe')">
-  <img src="https://images.icon-icons.com/195/PNG/256/Minecraft_23386.png" alt="Mine Online">
-  <p>Mine – Online</p>
-</div>
+    <img src="https://cdn.icon-icons.com/icons2/1381/PNG/512/minecraft_94415.png" alt="Mineblock">
+    <p>Mineblock (táctil)</p>
+  </div>
+  <!-- Mine – Online -->
+  <div class="card" onclick="abrirJuego('https://topgames.gg/mine-online', 'iframe')">
+    <img src="https://images.icon-icons.com/195/PNG/256/Minecraft_23386.png" alt="Mine Online">
+    <p>Mine – Online</p>
+  </div>
 </div>
 
 <div id="player-container">
@@ -145,34 +148,18 @@
       currentPlayer.style.height = "100%";
       target.appendChild(currentPlayer);
       currentPlayer.load(ruta);
-} else if (tipo === 'iframe') {
-  const wrapper = document.createElement('div');
-  wrapper.style.position = "relative";
-  wrapper.style.width = "100%";
-  wrapper.style.height = "100%";   // ocupa todo el alto disponible
-  wrapper.style.background = "black";
+    } else if (tipo === 'iframe') {
+      const iframe = document.createElement('iframe');
+      iframe.src = ruta;
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
+      iframe.allowFullscreen = true;
+      iframe.setAttribute('allowfullscreen', 'true');
+      iframe.allow = "fullscreen; autoplay; gamepad; pointer-lock";
 
-  const iframe = document.createElement('iframe');
-  iframe.src = ruta;
-  iframe.style.position = "absolute";
-  iframe.style.top = "0";
-  iframe.style.left = "0";
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.style.border = "none";
-  iframe.allowFullscreen = true;
-  iframe.setAttribute('allowfullscreen', 'true');
-  iframe.allow = "fullscreen; autoplay; gamepad; pointer-lock";
-
-  // Ajuste especial para Mineblock táctil
-  if (ruta.includes("funhtml5games.com?embed=mineblock")) {
-    iframe.style.objectFit = "contain";   // se adapta sin deformarse
-    iframe.style.background = "black";
-  }
-
-  wrapper.appendChild(iframe);
-  target.appendChild(wrapper);
-}   
+      target.appendChild(iframe);
+    }   
     document.getElementById('player-container').style.display = 'block';
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
   }
