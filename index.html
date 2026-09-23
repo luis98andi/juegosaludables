@@ -71,11 +71,6 @@
     <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub513.app51248/game-tiles/om-nom-run.jpg" alt="Om Nom Run">
     <p>Om Nom Run</p>
   </div>
-  <!-- Bubble Shooter (Pestaña nueva limpia) -->
-  <div class="card" onclick="window.open('https://html5.gamedistribution.com/rvvASGlR/c901e12727824c9c8789d31f0c29f6b9/', '_blank')">
-    <img src="https://img.gamedistribution.com/c901e12727824c9c8789d31f0c29f6b9-512x512.jpeg" alt="Bubble Shooter">
-    <p>Bubble Shooter</p>
-  </div>
   <!-- SNES Game -->
   <div class="card" onclick="abrirEmuladorSNES()">
     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Super_Nintendo_Entertainment_System_Logo.svg" alt="Kirby SNES">
@@ -122,6 +117,7 @@
     target.innerHTML = '';
 
     const iframe = document.createElement('iframe');
+    // Enlace directo corregido al embed de Kirby SNES limpio
     iframe.src = "https://www.retrogames.cc/embed/39903-kirby-s-dream-land-3-usa.html";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
