@@ -181,18 +181,25 @@
   function abrirEnNuevaPestana(url) {
     window.open(url, '_blank');
   }
-
-  function pantallaCompleta() {
-    const target = document.getElementById('ruffle-target');
-    if (target.requestFullscreen) {
-      target.requestFullscreen();
-    } else if (target.webkitRequestFullscreen) {
-      target.webkitRequestFullscreen();
-    } else if (target.msRequestFullscreen) {
-      target.msRequestFullscreen();
-    }
+async function pantallaCompleta() {
+  const target = document.getElementById('ruffle-target');
+  
+  if (target.requestFullscreen) {
+    await target.requestFullscreen();
+  } else if (target.webkitRequestFullscreen) {
+    await target.webkitRequestFullscreen();
+  } else if (target.msRequestFullscreen) {
+    await target.msRequestFullscreen();
   }
 
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+    }
+  } catch (e) {
+    console.log('Orientación no soportada o bloqueada:', e);
+  }
+  
   function cerrarJuego() {
     document.getElementById('ruffle-target').innerHTML = '';
     document.getElementById('player-container').style.display = 'none';
