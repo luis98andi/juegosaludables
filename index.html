@@ -86,7 +86,7 @@
     <img src="https://img.crazygames.com/tunnel-runner/20240409051515/tunnel-runner-cover?auto=format&fit=fill&q=45&w=630" alt="Tunnel Runner">
     <p>Tunnel Runner</p>
   </div>
-  <!-- Vortella's Dress Up (pestaña nueva, con URL /embed/ para que no salgan otros juegos de Poki) -->
+  <!-- Vortella's Dress Up -->
  <div class="card" onclick="abrirJuego('https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html', 'iframe')">
     <img src="1" alt="vortella dres up">
     <p>Vortella Dress Up</p>
@@ -119,8 +119,14 @@
       iframe.style.width = "100%";
       iframe.style.height = "100%";
       iframe.style.border = "none";
+      
+      // Atributos actualizados para permitir pantalla completa sin restricciones
       iframe.allowFullscreen = true;
-      iframe.allow = "autoplay; gamepad; fullscreen";
+      iframe.setAttribute('allowfullscreen', 'true');
+      iframe.setAttribute('webkitallowfullscreen', 'true');
+      iframe.setAttribute('mozallowfullscreen', 'true');
+      iframe.allow = "autoplay; gamepad; fullscreen; accelerometer; gyroscope";
+      
       target.appendChild(iframe);
     }
 
@@ -138,7 +144,10 @@
     iframe.style.height = "100%";
     iframe.style.border = "none";
     iframe.allowFullscreen = true;
-    iframe.allow = "autoplay; gamepad; fullscreen";
+    iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('webkitallowfullscreen', 'true');
+    iframe.setAttribute('mozallowfullscreen', 'true');
+    iframe.allow = "autoplay; gamepad; fullscreen; accelerometer; gyroscope";
     target.appendChild(iframe);
 
     document.getElementById('player-container').style.display = 'block';
