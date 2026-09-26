@@ -100,7 +100,7 @@ h1 { margin: 10px 0; }
     <p>Om Nom Run</p>
   </div>
   <!-- SNES Game -->
-  <div class="card" onclick="abrirEmuladorSNES()">
+<div class="card" onclick="abrirEmuladorSNES('https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html', 'iframe')">
     <img src="https://www.nintendo.com/eu/media/images/10_share_images/games_15/virtual_console_wii_u_7/H2x1_WiiUVC_KirbysDreamLand3_image1600w.jpg" alt="Kirby SNES">
     <p>Kirby SNES</p>
   </div>
@@ -187,12 +187,12 @@ h1 { margin: 10px 0; }
     window.scrollTo({ top: document.getElementById('player-container').offsetTop, behavior: 'smooth' });
   }
 
-  function abrirEmuladorSNES() {
+function abrirEmuladorSNES(url) {
     const target = document.getElementById('ruffle-target');
     target.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    iframe.src = "https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html";
+    iframe.src = url; // <-- Usa la URL que le pases desde la tarjeta
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.border = "none";
