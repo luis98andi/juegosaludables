@@ -332,6 +332,17 @@
       "categoria": "Educativos",
       "youtubeStart": 0,
       "orden": 32
+    },
+    {
+      "id": "game-1790803921702",
+      "nombre": "En la tienda de Mono Japi",
+      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/juegos_de_abecedario/tienda_japi.jpg",
+      "url": "https://arbolabcgames.top/L1A/",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Educativos",
+      "youtubeStart": 0,
+      "orden": 33
     }
   ]
 }
