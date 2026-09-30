@@ -1,3 +1,4 @@
+te mando mira:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -204,12 +205,24 @@ h1{margin:10px 0}
 
 .youtube-bottom-shield{
   position:absolute;
-  right:55px;
+  left:0;
+  right:0;
   bottom:0;
-  width:75px;
-  height:42px;
-  z-index:5;
+  width:100%;
+  height:82px;
+  z-index:10;
   background:transparent;
+  pointer-events:auto;
+}
+
+/* Pantalla negra antes del final:
+   bloquea la pantalla de recomendaciones de YouTube. */
+.youtube-end-shield{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  background:#000;
+  display:none;
   pointer-events:auto;
 }
 
@@ -567,6 +580,8 @@ let youtubePlayer=null;
 let youtubeReady=false;
 let currentYoutubeStart=0;
 let categoriaActual="Todos";
+let youtubeEndTimer=null;
+let youtubeEndedByProtection=false;
 
 const PIN="1234";
 
@@ -670,7 +685,7 @@ function crearEmbedYouTube(url,start=0){
   let src=
     "https://www.youtube.com/embed/"+
     encodeURIComponent(id)+
-    "?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&controls=1";
+    "?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&controls=0&disablekb=1&iv_load_policy=3";
 
   if(start>0){
     src+="&start="+Math.floor(start);
@@ -1003,11 +1018,31 @@ function abrirYouTube(url,start=0){
   bottomShield.className=
     'youtube-bottom-shield';
 
+  /*
+    Capa negra que aparece durante los últimos 3 segundos.
+    Así nunca se muestra la pantalla final con
+    "Más videos" ni miniaturas recomendadas.
+  */
+  const endShield=
+    document.createElement('div');
+
+  endShield.className=
+    'youtube-end-shield';
+
+  endShield.id='youtube-end-shield';
+
   wrapper.appendChild(iframe);
   wrapper.appendChild(topShield);
   wrapper.appendChild(bottomShield);
+  wrapper.appendChild(endShield);
 
   target.appendChild(wrapper);
+
+  youtubeEndedByProtection=false;
+  if(youtubeEndTimer){
+    clearInterval(youtubeEndTimer);
+    youtubeEndTimer=null;
+  }
 
   document.getElementById('youtube-controls')
     .style.display='flex';
@@ -1060,6 +1095,12 @@ function crearYouTubePlayerAPI(id,start){
                   );
                 }
 
+                iniciarProteccionFinYouTube();
+
+              },
+
+              onStateChange:function(){
+                iniciarProteccionFinYouTube();
               }
             }
           }
@@ -1072,6 +1113,82 @@ function crearYouTubePlayerAPI(id,start){
   };
 
   intentar();
+}
+
+function iniciarProteccionFinYouTube(){
+
+  if(youtubeEndTimer){
+    clearInterval(youtubeEndTimer);
+  }
+
+  youtubeEndTimer=setInterval(
+    protegerFinalYouTube,
+    250
+  );
+
+}
+
+function protegerFinalYouTube(){
+
+  if(
+    !youtubePlayer ||
+    !youtubePlayer.getCurrentTime ||
+    !youtubePlayer.getDuration
+  ){
+    return;
+  }
+
+  const actual=youtubePlayer.getCurrentTime();
+  const duracion=youtubePlayer.getDuration();
+
+  if(!duracion || duracion<=0){
+    return;
+  }
+
+  const restantes=duracion-actual;
+
+  const shield=
+    document.getElementById('youtube-end-shield');
+
+  if(!shield){
+    return;
+  }
+
+  /*
+    Tres segundos antes del final:
+    pausamos el video y ponemos pantalla negra.
+    Esto impide que aparezca la pantalla final
+    con "Más videos", miniaturas o enlaces.
+  */
+  if(
+    restantes<=3 &&
+    restantes>=0 &&
+    !youtubeEndedByProtection
+  ){
+
+    youtubeEndedByProtection=true;
+
+    if(youtubePlayer.pauseVideo){
+      youtubePlayer.pauseVideo();
+    }
+
+    shield.style.display='block';
+
+    return;
+  }
+
+  /*
+    Si el usuario retrocede manualmente con nuestros
+    botones, quitamos la pantalla negra para permitir
+    continuar desde ese punto.
+  */
+  if(restantes>3 && youtubeEndedByProtection){
+
+    youtubeEndedByProtection=false;
+    shield.style.display='none';
+
+  }
+
 }
 
 function youtubePlay(){
@@ -1107,10 +1224,32 @@ function youtubeSeek(segundos){
     const actual=
       youtubePlayer.getCurrentTime();
 
+    const nuevoTiempo=
+      Math.max(0,actual+segundos);
+
     youtubePlayer.seekTo(
-      Math.max(0,actual+segundos),
+      nuevoTiempo,
       true
     );
+
+    if(youtubeEndedByProtection){
+      const duracion=youtubePlayer.getDuration();
+
+      if(
+        duracion &&
+        duracion-nuevoTiempo>3
+      ){
+        youtubeEndedByProtection=false;
+
+        const shield=
+          document.getElementById(
+            'youtube-end-shield'
+          );
+
+        if(shield)
+          shield.style.display='none';
+      }
+    }
 
   }
 
@@ -1270,6 +1409,13 @@ function cerrarJuego(){
   ).style.display='none';
 
   youtubePlayer=null;
+
+  if(youtubeEndTimer){
+    clearInterval(youtubeEndTimer);
+    youtubeEndTimer=null;
+  }
+
+  youtubeEndedByProtection=false;
 
 }
 
