@@ -213,6 +213,17 @@
       "orden": 21
     },
     {
+      "id": "game-1790796094022",
+      "nombre": "Chess Kid",
+      "imagen": "https://www.chesskid.com/js/client-prod/assets/banner-mobile-CvEem1Be.webp",
+      "url": "https://www.chesskid.com/es",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Educativos",
+      "youtubeStart": 0,
+      "orden": 22
+    },
+    {
       "id": "game-1790788957327",
       "nombre": "Just Dance Angry Birds",
       "imagen": "https://i.ytimg.com/vi/MUCy1gOwG0Y/hq720.jpg?sqp=-oaymwErCNAFEJQDSFryq4qpAx0IARUAAIhCGAHYAQHiAQoIGBACGAY4AUABuALzGA==&rs=AOn4CLCD3pbSUKUmiSNZ8xu_12DloVz-8Q",
@@ -220,7 +231,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 22,
+      "orden": 23,
       "youtubeStart": 0
     },
     {
@@ -231,7 +242,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 23,
+      "orden": 24,
       "youtubeStart": 0
     },
     {
@@ -242,7 +253,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Infantil",
-      "orden": 24,
+      "orden": 25,
       "youtubeStart": 0
     },
     {
@@ -254,7 +265,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 25
+      "orden": 26
     },
     {
       "id": "game-1790795762768",
@@ -265,7 +276,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 26
+      "orden": 27
     }
   ]
 }
