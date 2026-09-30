@@ -252,7 +252,7 @@
       "url": "https://www.youtube.com/watch?v=0vhhyUuDTl4&list=RD0vhhyUuDTl4&start_radio=1",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Infantil",
+      "categoria": "Videos",
       "orden": 25,
       "youtubeStart": 0
     },
