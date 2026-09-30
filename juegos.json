@@ -312,17 +312,6 @@
       "orden": 30
     },
     {
-      "id": "game-1790802885055",
-      "nombre": "Doramon tallarines",
-      "imagen": "https://i.ytimg.com/an_webp/um33fh5Vko8/mqdefault_6s.webp?du=3000&sqp=CMHA9dUG&rs=AOn4CLBBjE5ev-J3euMhI95wr0xu84yDRA",
-      "url": "https://www.youtube.com/watch?v=um33fh5Vko8",
-      "tipo": "youtube",
-      "accion": "abrirYouTube",
-      "categoria": "Infantil",
-      "youtubeStart": 0,
-      "orden": 31
-    },
-    {
       "id": "game-1790803508654",
       "nombre": "Silabas Magicas",
       "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/aprender_leer/thumbnails/silibas_encantadas.jpg",
@@ -331,7 +320,7 @@
       "accion": "abrirEnNuevaPestana",
       "categoria": "Educativos",
       "youtubeStart": 0,
-      "orden": 32
+      "orden": 31
     },
     {
       "id": "game-1790803921702",
@@ -342,7 +331,7 @@
       "accion": "abrirEnNuevaPestana",
       "categoria": "Educativos",
       "youtubeStart": 0,
-      "orden": 33
+      "orden": 32
     }
   ]
 }
