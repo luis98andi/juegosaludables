@@ -176,11 +176,12 @@
       "id": "game-018",
       "nombre": "Mario All Star",
       "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://itch.io/embed-upload/7740774?color=333333",
+      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 18
+      "categoria": "Infantil",
+      "orden": 18,
+      "youtubeStart": 0
     },
     {
       "id": "game-019",
