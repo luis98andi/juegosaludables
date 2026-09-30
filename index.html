@@ -93,12 +93,11 @@ let catalogo={version:1,categorias:[],juegos:[]};
 let currentPlayer=null;
 const PIN="1234";
 
-// Función auxiliar para transformar automáticamente enlaces de YouTube a formato embed
 function transformarUrlYoutube(url) {
   if (!url) return url;
   let match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
   if (match && match[1]) {
-    return `https://www.youtube.com/embed/${match[1]}`;
+    return 'https://www.youtube.com/embed/' + match[1];
   }
   return url;
 }
@@ -283,12 +282,10 @@ function editarJuego(id){
   const j=catalogo.juegos.find(x=>x.id===id); if(!j)return;
   const e=document.getElementById('editor');
   
-  // Detectar si el iframe actual es de youtube para seleccionarlo bien en el desplegable
   let tipoSelect = j.tipo||'iframe';
   let urlMostrar = j.url;
   if(tipoSelect === 'iframe' && j.url && j.url.includes('youtube.com/embed/')) {
     tipoSelect = 'youtube';
-    // Opcional: si quieres que al editar se vuelva a ver como enlace normal o se quede en embed, se puede manejar aquí. Lo dejamos tal cual o lo convertimos si prefieres.
   }
 
   e.innerHTML=`<div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px"><h3>✏️ Editar juego</h3><div class="form-grid">
