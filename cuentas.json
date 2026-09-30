@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cuentas": [
+    {
+      "id": "principal",
+      "nombre": "Principal",
+      "avatar": "🎮",
+      "archivo": "juegos.json",
+      "sal": "",
+      "claveEntrar": null,
+      "claveAdmin": null,
+      "adminLibre": false
+    },
+    {
+      "id": "luis",
+      "nombre": "luis",
+      "avatar": "🐱",
+      "archivo": "juegos-luis.json",
+      "sal": "3d79c6b951837aea",
+      "claveEntrar": "fef552ed9afc6d2ae5da23cf09680936efb1f990511f11e67dc9aa2808cb5ac4",
+      "claveAdmin": "c61544e341874fc3023847e2267c1fc6c78f1999c9ba8ce10e436fbd144a5177",
+      "adminLibre": false
+    }
+  ]
+}
