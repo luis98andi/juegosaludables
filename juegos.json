@@ -235,6 +235,17 @@
       "orden": 23
     },
     {
+      "id": "game-1790803508654",
+      "nombre": "Silabas Magicas",
+      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/aprender_leer/thumbnails/silibas_encantadas.jpg",
+      "url": "https://arbolabcgames.top/L34AB/",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Educativos",
+      "youtubeStart": 0,
+      "orden": 24
+    },
+    {
       "id": "game-1790803921702",
       "nombre": "En la tienda de Mono Japi",
       "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/juegos_de_abecedario/tienda_japi.jpg",
@@ -243,7 +254,7 @@
       "accion": "abrirEnNuevaPestana",
       "categoria": "Educativos",
       "youtubeStart": 0,
-      "orden": 24
+      "orden": 25
     },
     {
       "id": "game-1790788957327",
@@ -253,7 +264,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 25,
+      "orden": 26,
       "youtubeStart": 0
     },
     {
@@ -264,7 +275,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 26,
+      "orden": 27,
       "youtubeStart": 0
     },
     {
@@ -275,7 +286,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 27,
+      "orden": 28,
       "youtubeStart": 0
     },
     {
@@ -287,7 +298,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 28
+      "orden": 29
     },
     {
       "id": "game-1790795762768",
@@ -298,7 +309,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 29
+      "orden": 30
     },
     {
       "id": "game-1790797350023",
@@ -309,7 +320,7 @@
       "accion": "abrirJuego",
       "categoria": "Habilidad",
       "youtubeStart": 0,
-      "orden": 30
+      "orden": 31
     },
     {
       "id": "game-1790797876263",
@@ -319,17 +330,6 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Habilidad",
-      "youtubeStart": 0,
-      "orden": 31
-    },
-    {
-      "id": "game-1790803508654",
-      "nombre": "Silabas Magicas",
-      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/aprender_leer/thumbnails/silibas_encantadas.jpg",
-      "url": "https://arbolabcgames.top/L34AB/",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "Educativos",
       "youtubeStart": 0,
       "orden": 32
     }
