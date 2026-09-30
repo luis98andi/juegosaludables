@@ -277,6 +277,28 @@
       "categoria": "Videos",
       "youtubeStart": 0,
       "orden": 27
+    },
+    {
+      "id": "game-1790797350023",
+      "nombre": "Monopoly",
+      "imagen": "https://html5.gamemonetize.co/rb9b7ctnmy1rjphxzuwlmy8c4b7mw9po/monopoly-logo1.png",
+      "url": "https://www.minijuegos.com/embed/monopoly?utm_source=chatgpt.com",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Habilidad",
+      "youtubeStart": 0,
+      "orden": 28
+    },
+    {
+      "id": "game-1790797876263",
+      "nombre": "Monopoly online",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUE27SUnzFT3pi2v39cMroF9oex1vBriObqZJGL4e_mw&s=10",
+      "url": "https://www.cooljuegos.com/embed/monopoly-online/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Habilidad",
+      "youtubeStart": 0,
+      "orden": 29
     }
   ]
 }
