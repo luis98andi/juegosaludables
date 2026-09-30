@@ -224,6 +224,28 @@
       "orden": 22
     },
     {
+      "id": "game-1790801706934",
+      "nombre": "Ajedrez CoolJuegos",
+      "imagen": "https://data.gameflare.com/games/227/F0p4jgh97Sh9Ir-150-113.jpg",
+      "url": "https://www.cooljuegos.com/embed/flash-chess/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Habilidad",
+      "youtubeStart": 0,
+      "orden": 23
+    },
+    {
+      "id": "game-1790803921702",
+      "nombre": "En la tienda de Mono Japi",
+      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/juegos_de_abecedario/tienda_japi.jpg",
+      "url": "https://arbolabcgames.top/L1A/",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Educativos",
+      "youtubeStart": 0,
+      "orden": 24
+    },
+    {
       "id": "game-1790788957327",
       "nombre": "Just Dance Angry Birds",
       "imagen": "https://i.ytimg.com/vi/MUCy1gOwG0Y/hq720.jpg?sqp=-oaymwErCNAFEJQDSFryq4qpAx0IARUAAIhCGAHYAQHiAQoIGBACGAY4AUABuALzGA==&rs=AOn4CLCD3pbSUKUmiSNZ8xu_12DloVz-8Q",
@@ -231,7 +253,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 23,
+      "orden": 25,
       "youtubeStart": 0
     },
     {
@@ -242,7 +264,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 24,
+      "orden": 26,
       "youtubeStart": 0
     },
     {
@@ -253,7 +275,7 @@
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
-      "orden": 25,
+      "orden": 27,
       "youtubeStart": 0
     },
     {
@@ -265,7 +287,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 26
+      "orden": 28
     },
     {
       "id": "game-1790795762768",
@@ -276,7 +298,7 @@
       "accion": "abrirYouTube",
       "categoria": "Videos",
       "youtubeStart": 0,
-      "orden": 27
+      "orden": 29
     },
     {
       "id": "game-1790797350023",
@@ -287,7 +309,7 @@
       "accion": "abrirJuego",
       "categoria": "Habilidad",
       "youtubeStart": 0,
-      "orden": 28
+      "orden": 30
     },
     {
       "id": "game-1790797876263",
@@ -298,35 +320,13 @@
       "accion": "abrirJuego",
       "categoria": "Habilidad",
       "youtubeStart": 0,
-      "orden": 29
-    },
-    {
-      "id": "game-1790801706934",
-      "nombre": "Ajedrez CoolJuegos",
-      "imagen": "https://data.gameflare.com/games/227/F0p4jgh97Sh9Ir-150-113.jpg",
-      "url": "https://www.cooljuegos.com/embed/flash-chess/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "Habilidad",
-      "youtubeStart": 0,
-      "orden": 30
+      "orden": 31
     },
     {
       "id": "game-1790803508654",
       "nombre": "Silabas Magicas",
       "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/aprender_leer/thumbnails/silibas_encantadas.jpg",
       "url": "https://arbolabcgames.top/L34AB/",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "Educativos",
-      "youtubeStart": 0,
-      "orden": 31
-    },
-    {
-      "id": "game-1790803921702",
-      "nombre": "En la tienda de Mono Japi",
-      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/juegos_de_abecedario/tienda_japi.jpg",
-      "url": "https://arbolabcgames.top/L1A/",
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
       "categoria": "Educativos",
