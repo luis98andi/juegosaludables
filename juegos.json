@@ -241,6 +241,17 @@
       "accion": "abrirJuego",
       "categoria": "",
       "orden": 24
+    },
+    {
+      "id": "game-1790792403767",
+      "nombre": "Jus dance caracoles",
+      "imagen": "https://i.ytimg.com/an_webp/DsUPVERZFlI/mqdefault_6s.webp?du=3000&sqp=CLT69NUG&rs=AOn4CLCUOvmDuXfF7TXM7YEwFsCarlf_qw",
+      "url": "https://www.youtube.com/watch?v=DsUPVERZFlI&list=RDDsUPVERZFlI&start_radio=1",
+      "tipo": "youtube",
+      "accion": "abrirYouTube",
+      "categoria": "Videos",
+      "youtubeStart": 0,
+      "orden": 25
     }
   ]
 }
