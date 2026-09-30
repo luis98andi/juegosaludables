@@ -299,6 +299,17 @@
       "categoria": "Habilidad",
       "youtubeStart": 0,
       "orden": 29
+    },
+    {
+      "id": "game-1790801706934",
+      "nombre": "Ajedrez CoolJuegos",
+      "imagen": "https://data.gameflare.com/games/227/F0p4jgh97Sh9Ir-150-113.jpg",
+      "url": "https://www.cooljuegos.com/embed/flash-chess/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Habilidad",
+      "youtubeStart": 0,
+      "orden": 30
     }
   ]
 }
