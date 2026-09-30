@@ -321,6 +321,17 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 31
+    },
+    {
+      "id": "game-1790803508654",
+      "nombre": "Silabas Magicas",
+      "imagen": "https://arbolabc.nyc3.cdn.digitaloceanspaces.com/Lenguaje/aprender_leer/thumbnails/silibas_encantadas.jpg",
+      "url": "https://arbolabcgames.top/L34AB/",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Educativos",
+      "youtubeStart": 0,
+      "orden": 32
     }
   ]
 }
