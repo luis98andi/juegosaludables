@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "categorias": [],
+  "juegos": [
+    {
+      "id": "game-001",
+      "nombre": "Baby Hazel Balloon",
+      "imagen": "portadas/baby1.PNG",
+      "url": "games/baby-hazel-ballon.swf",
+      "tipo": "swf",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 1
+    },
+    {
+      "id": "game-002",
+      "nombre": "Manicure barbie secret",
+      "imagen": "portadas/manicure1.PNG",
+      "url": "games/barbie-manicure-secrets.swf",
+      "tipo": "swf",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 2
+    },
+    {
+      "id": "game-003",
+      "nombre": "Cut the Rope",
+      "imagen": "https://cdn.blipzi.com/cu/tt/cut-the-rope-d.jpg",
+      "url": "https://play.famobi.com/cut-the-rope",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 3
+    },
+    {
+      "id": "game-004",
+      "nombre": "Om Nom Run",
+      "imagen": "https://cdn.now.gg/apps-content/com.nowgg.h5.pub513.app51248/game-tiles/om-nom-run.jpg",
+      "url": "https://play.famobi.com/om-nom-run",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 4
+    },
+    {
+      "id": "game-005",
+      "nombre": "Kirby SNES",
+      "imagen": "https://www.nintendo.com/eu/media/images/10_share_images/games_15/virtual_console_wii_u_7/H2x1_WiiUVC_KirbysDreamLand3_image1600w.jpg",
+      "url": "https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 5
+    },
+    {
+      "id": "game-006",
+      "nombre": "Bubble Shooter",
+      "imagen": "https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg",
+      "url": "https://html5.gamemonetize.co/yp7vtch9c6vott101pztfdfm0p19c5c5/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 6
+    },
+    {
+      "id": "game-007",
+      "nombre": "Vortella Dress Up",
+      "imagen": "https://gogamego.io/wp-content/uploads/thumbs/custom/V/Vortellas-Dress-Up.webp",
+      "url": "https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "",
+      "orden": 7
+    },
+    {
+      "id": "game-008",
+      "nombre": "Mine – Online",
+      "imagen": "portadas/mine online.jpg",
+      "url": "https://playhop.com/dist-app/448223?header=no&skip-guard=1&utm_source=parent_window_api&utm_medium=playgama&clid=2951034&flags={%22adv_types_disabled%22:16}",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "",
+      "orden": 8
+    },
+    {
+      "id": "game-009",
+      "nombre": "Minecraft Survial And Creative",
+      "imagen": "https://klev.club/uploads/posts/2023-10/thumbs/1697615931_klev-club-p-risunki-s-logotipom-mainkraft-28.jpg",
+      "url": "https://app-548551.games.s3.yandex.net/548551/cyjcbp7a5cqajglkxfjbahm080mq8yht_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fplayhop.com&app-id=548551&device-type=mobile",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 9
+    },
+    {
+      "id": "game-010",
+      "nombre": "Frutas en Ingles",
+      "imagen": "https://juegosparaaprender.com/wp-content/uploads/2024/05/Thumbnail_juego_las_frutas_en_ingles.jpg",
+      "url": "https://juegosparaaprender.com/Juegos/ingles/FrutasIngles/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 10
+    },
+    {
+      "id": "game-011",
+      "nombre": "Juego identifica las sílabas",
+      "imagen": "https://screens.cdn.wordwall.net/200/ad367eab5921446c86d57ddf8f0d181b_1",
+      "url": "https://wordwall.net/es/embed/ad367eab5921446c86d57ddf8f0d181b?themeId=1&templateId=3&fontStackId=0",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 11
+    },
+    {
+      "id": "game-012",
+      "nombre": "Manicure Chicas",
+      "imagen": "https://img.gamemonetize.com/z273kh1b71egjvyvs7yebr93yd11ks2t/512x384.jpg",
+      "url": "https://html5.gamemonetize.co/z273kh1b71egjvyvs7yebr93yd11ks2t/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 12
+    },
+    {
+      "id": "game-013",
+      "nombre": "Cut The Rope Time Travel",
+      "imagen": "https://cdn2.steamgriddb.com/thumb/a9883e39f7bfe79cf767b82cdcf6d2fe.jpg",
+      "url": "https://app-503258.cdn.games.yandex.net/503258/axhm936tiaupib96erx54jzynva4x3kz_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fyandex.com&app-id=503258&",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "",
+      "orden": 13
+    },
+    {
+      "id": "game-014",
+      "nombre": "Juego de Sandia",
+      "imagen": "https://www.educaenvivo.com/wp-content/uploads/2024/02/El-juego-de-la-sandia-400x400.webp",
+      "url": "https://www.educaenvivo.com/juegos-educaenvivo/watermelon14/index.html",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "",
+      "orden": 14
+    },
+    {
+      "id": "game-015",
+      "nombre": "Donkey Country 2",
+      "imagen": "https://cdn.wikimg.net/en/strategywiki/images/0/0a/Donkey_Kong_Country_2_boxart.jpg",
+      "url": "https://www.retrogames.cc/embed/17336-donkey-kong-country-2-diddy-s-kong-quest-usa-en-fr-rev-a.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 15
+    },
+    {
+      "id": "game-016",
+      "nombre": "Bomberman 5 English",
+      "imagen": "https://assets-prd.ignimgs.com/2023/03/19/superbomberman5-1679262155524.jpg",
+      "url": "https://www.retrogames.cc/embed/43388-super-bomberman-5-english-translated.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 16
+    },
+    {
+      "id": "game-017",
+      "nombre": "Barbie Snes",
+      "imagen": "https://www.vgdb.com.br/gf/fotos/games/media_24307/barbie-super-model-24307.jpg",
+      "url": "https://www.retrogames.cc/embed/24258-barbie-super-model-usa.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 17
+    },
+    {
+      "id": "game-018",
+      "nombre": "Mario All Star",
+      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
+      "url": "https://itch.io/embed-upload/7740774?color=333333",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 18
+    },
+    {
+      "id": "game-019",
+      "nombre": "Aprende a Leer con Leo",
+      "imagen": "https://img.itch.zone/aW1nLzExNTYyODk0LnBuZw==/347x500/NmUP5%2B.png",
+      "url": "https://itch.io/embed-upload/7740774?color=333333",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 19
+    },
+    {
+      "id": "game-020",
+      "nombre": "Blocky Logica",
+      "imagen": "https://blockly.games/index/title.svg",
+      "url": "https://blockly.games/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 20
+    },
+    {
+      "id": "game-021",
+      "nombre": "Arthur Lectura",
+      "imagen": "https://i.pinimg.com/originals/7a/63/6f/7a636f896225699c8fbf6e7a8806291e.jpg",
+      "url": "https://archive.org/details/arthur-tt",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 21
+    }
+  ]
+}
