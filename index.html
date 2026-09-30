@@ -93,6 +93,16 @@ let catalogo={version:1,categorias:[],juegos:[]};
 let currentPlayer=null;
 const PIN="1234";
 
+// Función auxiliar para transformar automáticamente enlaces de YouTube a formato embed
+function transformarUrlYoutube(url) {
+  if (!url) return url;
+  let match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+  if (match && match[1]) {
+    return `https://www.youtube.com/embed/${match[1]}`;
+  }
+  return url;
+}
+
 async function cargarCatalogo(){
   try{
     const r=await fetch('juegos.json',{cache:'no-store'});
@@ -174,7 +184,7 @@ function renderAdmin(){
   const list=document.getElementById('admin-list'); list.innerHTML='';
   [...catalogo.juegos].sort((a,b)=>(a.orden||0)-(b.orden||0)).forEach((j,i)=>{
     const row=document.createElement('div'); row.className='admin-row';
-    row.innerHTML=`<img src="${escapeAttr(j.imagen)}" alt=""><div class="grow"><b>${escapeHtml(j.nombre)}</b><div class="admin-muted">${escapeHtml(j.tipo||'iframe')} ${j.categoria?'· '+escapeHtml(j.categoria):''}</div></div>
+    row.innerHTML=`<img src="${escapeAttr(j.imagen)}" alt=""><div class="grow"><b>${escapeHtml(j.nombre)}</b><div class="admin-muted">${escapeHtml(j.tipo\vert{}\vert{}'iframe')}${j.categoria?'· '+escapeHtml(j.categoria):''}</div></div>
     <button onclick="editarJuego('${j.id}')">✏️</button><button onclick="subirJuego('${j.id}')">⬆️</button><button onclick="bajarJuego('${j.id}')">⬇️</button><button onclick="eliminarJuego('${j.id}')">🗑️</button>`;
     list.appendChild(row);
   });
@@ -188,17 +198,38 @@ function mostrarAgregar(){
   <h3>➕ Nuevo juego</h3>
   <div class="form-grid">
   <label>Nombre<input id="fNombre" placeholder="Ej. Kirby Dream Land 3"></label>
-  <label>Tipo<select id="fTipo"><option value="iframe">Juego online / iframe</option><option value="swf">Flash SWF</option><option value="snes">SNES / emulador</option><option value="newtab">Abrir en otra pestaña</option></select></label>
+  <label>Tipo<select id="fTipo"><option value="iframe">Juego online / iframe</option><option value="youtube">Vídeo de YouTube</option><option value="swf">Flash SWF</option><option value="snes">SNES / emulador</option><option value="newtab">Abrir en otra pestaña</option></select></label>
   <label>URL del juego<input id="fUrl" placeholder="https://..."></label>
   <label>URL de imagen<input id="fImagen" placeholder="https://...jpg / png / webp"></label>
   </div><br>
   <button onclick="guardarNuevo()">💾 Añadir al catálogo</button> <button onclick="cancelarEditor()">Cancelar</button></div>`;
 }
 function cancelarEditor(){document.getElementById('editor').innerHTML='';}
+
 function guardarNuevo(){
-  const nombre=document.getElementById('fNombre').value.trim(),url=document.getElementById('fUrl').value.trim(),imagen=document.getElementById('fImagen').value.trim(),tipo=document.getElementById('fTipo').value;
+  const nombre=document.getElementById('fNombre').value.trim();
+  let url=document.getElementById('fUrl').value.trim();
+  const imagen=document.getElementById('fImagen').value.trim();
+  const tipoSeleccionado=document.getElementById('fTipo').value;
+
   if(!nombre||!url||!imagen){alert('Completa nombre, URL del juego e imagen.');return;}
-  catalogo.juegos.push({id:'game-'+Date.now(),nombre,imagen,url,tipo,accion:tipo==='snes'?'abrirEmuladorSNES':tipo==='newtab'?'abrirEnNuevaPestana':'abrirJuego',categoria:'',orden:catalogo.juegos.length+1});
+
+  let tipoFinal = tipoSeleccionado;
+  if(tipoSeleccionado === 'youtube'){
+    url = transformarUrlYoutube(url);
+    tipoFinal = 'iframe';
+  }
+
+  catalogo.juegos.push({
+    id:'game-'+Date.now(),
+    nombre,
+    imagen,
+    url,
+    tipo:tipoFinal,
+    accion:tipoFinal==='snes'?'abrirEmuladorSNES':tipoFinal==='newtab'?'abrirEnNuevaPestana':'abrirJuego',
+    categoria:'',
+    orden:catalogo.juegos.length+1
+  });
   renderJuegos();renderAdmin();cancelarEditor();
 }
 
@@ -207,20 +238,42 @@ function mostrarMultiples(){
   let rows='';
   for(let i=1;i<=20;i++) rows+=`<div style="background:#292929;padding:10px;border-radius:8px;margin:7px 0"><b>${i}</b><div class="form-grid">
   <label>Nombre<input data-multi="nombre" data-i="${i}" placeholder="Opcional"></label>
-  <label>Tipo<select data-multi="tipo" data-i="${i}"><option value="iframe">iframe</option><option value="swf">SWF</option><option value="snes">SNES</option><option value="newtab">Nueva pestaña</option></select></label>
+  <label>Tipo<select data-multi="tipo" data-i="${i}"><option value="iframe">iframe</option><option value="youtube">YouTube</option><option value="swf">SWF</option><option value="snes">SNES</option><option value="newtab">Nueva pestaña</option></select></label>
   <label>URL del juego<input data-multi="url" data-i="${i}" placeholder="https://..."></label>
   <label>Imagen<input data-multi="imagen" data-i="${i}" placeholder="URL de portada"></label>
   </div></div>`;
   e.innerHTML=`<div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px"><h3>⚙️ Agregar hasta 20 juegos</h3><p class="admin-muted">Solo se añadirán las filas que tengan al menos nombre y URL.</p>${rows}<button onclick="guardarMultiples()">💾 Añadir los juegos completados</button> <button onclick="cancelarEditor()">Cancelar</button></div>`;
 }
 function valMulti(kind,i){return document.querySelector(`[data-multi="${kind}"][data-i="${i}"]`)?.value.trim()||'';}
+
 function guardarMultiples(){
   let added=0;
   for(let i=1;i<=20;i++){
-    const nombre=valMulti('nombre',i),url=valMulti('url',i),imagen=valMulti('imagen',i),tipo=valMulti('tipo',i);
+    const nombre=valMulti('nombre',i);
+    let url=valMulti('url',i);
+    const imagen=valMulti('imagen',i);
+    const tipoSeleccionado=valMulti('tipo',i);
+
     if(!nombre&&!url&&!imagen) continue;
     if(!nombre||!url||!imagen) continue;
-    catalogo.juegos.push({id:'game-'+Date.now()+'-'+i,nombre,imagen,url,tipo,accion:tipo==='snes'?'abrirEmuladorSNES':tipo==='newtab'?'abrirEnNuevaPestana':'abrirJuego',categoria:'',orden:catalogo.juegos.length+1}); added++;
+
+    let tipoFinal = tipoSeleccionado;
+    if(tipoSeleccionado === 'youtube'){
+      url = transformarUrlYoutube(url);
+      tipoFinal = 'iframe';
+    }
+
+    catalogo.juegos.push({
+      id:'game-'+Date.now()+'-'+i,
+      nombre,
+      imagen,
+      url,
+      tipo:tipoFinal,
+      accion:tipoFinal==='snes'?'abrirEmuladorSNES':tipoFinal==='newtab'?'abrirEnNuevaPestana':'abrirJuego',
+      categoria:'',
+      orden:catalogo.juegos.length+1
+    }); 
+    added++;
   }
   renderJuegos();renderAdmin();cancelarEditor();
   alert(added+' juego(s) añadidos. Exporta el catálogo para guardar el archivo JSON.');
@@ -229,21 +282,46 @@ function guardarMultiples(){
 function editarJuego(id){
   const j=catalogo.juegos.find(x=>x.id===id); if(!j)return;
   const e=document.getElementById('editor');
+  
+  // Detectar si el iframe actual es de youtube para seleccionarlo bien en el desplegable
+  let tipoSelect = j.tipo||'iframe';
+  let urlMostrar = j.url;
+  if(tipoSelect === 'iframe' && j.url && j.url.includes('youtube.com/embed/')) {
+    tipoSelect = 'youtube';
+    // Opcional: si quieres que al editar se vuelva a ver como enlace normal o se quede en embed, se puede manejar aquí. Lo dejamos tal cual o lo convertimos si prefieres.
+  }
+
   e.innerHTML=`<div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px"><h3>✏️ Editar juego</h3><div class="form-grid">
   <label>Nombre<input id="eNombre" value="${escapeAttr(j.nombre)}"></label>
-  <label>Tipo<select id="eTipo"><option value="iframe">iframe</option><option value="swf">SWF</option><option value="snes">SNES</option><option value="newtab">Nueva pestaña</option></select></label>
-  <label>URL<input id="eUrl" value="${escapeAttr(j.url)}"></label>
+  <label>Tipo<select id="eTipo"><option value="iframe">iframe</option><option value="youtube">Vídeo de YouTube</option><option value="swf">SWF</option><option value="snes">SNES</option><option value="newtab">Nueva pestaña</option></select></label>
+  <label>URL<input id="eUrl" value="${escapeAttr(urlMostrar)}"></label>
   <label>Imagen<input id="eImagen" value="${escapeAttr(j.imagen)}"></label>
   <label>Categoría<input id="eCat" value="${escapeAttr(j.categoria||'')}" placeholder="Opcional"></label>
   </div><br><button onclick="guardarEdicion('${id}')">💾 Guardar</button> <button onclick="cancelarEditor()">Cancelar</button></div>`;
-  document.getElementById('eTipo').value=j.tipo||'iframe';
+  document.getElementById('eTipo').value=tipoSelect;
 }
+
 function guardarEdicion(id){
   const j=catalogo.juegos.find(x=>x.id===id); if(!j)return;
-  j.nombre=document.getElementById('eNombre').value.trim();j.tipo=document.getElementById('eTipo').value;j.url=document.getElementById('eUrl').value.trim();j.imagen=document.getElementById('eImagen').value.trim();j.categoria=document.getElementById('eCat').value.trim();
+  j.nombre=document.getElementById('eNombre').value.trim();
+  let tipoSeleccionado=document.getElementById('eTipo').value;
+  let url=document.getElementById('eUrl').value.trim();
+  
+  if(tipoSeleccionado==='youtube'){
+    url=transformarUrlYoutube(url);
+    j.tipo='iframe';
+  } else {
+    j.tipo=tipoSeleccionado;
+  }
+
+  j.url=url;
+  j.imagen=document.getElementById('eImagen').value.trim();
+  j.categoria=document.getElementById('eCat').value.trim();
   j.accion=j.tipo==='snes'?'abrirEmuladorSNES':j.tipo==='newtab'?'abrirEnNuevaPestana':'abrirJuego';
+  
   renderJuegos();renderAdmin();cancelarEditor();
 }
+
 function eliminarJuego(id){if(!confirm('¿Eliminar este juego del catálogo actual?'))return;catalogo.juegos=catalogo.juegos.filter(x=>x.id!==id);reordenar();renderJuegos();renderAdmin();}
 function reordenar(){catalogo.juegos.forEach((j,i)=>j.orden=i+1);}
 function subirJuego(id){const a=catalogo.juegos.sort((x,y)=>(x.orden||0)-(y.orden||0)),i=a.findIndex(x=>x.id===id);if(i>0){[a[i-1],a[i]]=[a[i],a[i-1]];reordenar();renderJuegos();renderAdmin();}}
