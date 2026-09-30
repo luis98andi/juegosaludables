@@ -2383,6 +2383,5 @@ function leerJSON(ev){
 cargarCatalogo();
 
 </script>
-
 </body>
 </html>
