@@ -436,6 +436,28 @@ h1{margin:10px 0}
   margin-bottom:8px;
 }
 
+/* MODO ORDENAR / EDITAR EN LA PÁGINA PRINCIPAL */
+.handle,.card-tools{display:none}
+.modo-orden .card{cursor:default;user-select:none;-webkit-user-select:none}
+.modo-orden .card:hover{transform:none}
+.modo-orden .card p{opacity:1}
+.modo-orden .card img{outline:2px dashed rgba(255,255,255,.55);outline-offset:-2px}
+.modo-orden .handle{
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:14px;left:14px;width:40px;height:40px;
+  border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:22px;
+  cursor:grab;touch-action:none;z-index:3
+}
+.modo-orden .card-tools{display:flex;gap:6px;position:absolute;top:14px;right:14px;z-index:3}
+.card-tools button{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);cursor:pointer}
+.card.arrastrando{transition:none!important;z-index:60;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.6);border-radius:16px}
+#orden-bar{
+  display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:70px;z-index:998;
+  gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:94vw;
+  background:rgba(0,0,0,.88);padding:10px 14px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:14px
+}
+#orden-bar button{padding:8px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
+
 @media(max-width:600px){
   .form-grid{grid-template-columns:1fr}
 
@@ -525,6 +547,12 @@ h1{margin:10px 0}
 >⚙️</button>
 
 <!-- ADMIN -->
+<div id="orden-bar">
+  <span id="orden-msg"></span>
+  <button onclick="ordenSubirGitHub()">☁️ Guardar en GitHub</button>
+  <button onclick="salirModoOrden()">✅ Listo</button>
+</div>
+
 <div id="admin-panel">
 
   <div class="admin-box">
@@ -566,6 +594,10 @@ h1{margin:10px 0}
 
         <button onclick="mostrarMultiples()">
           ⚙️ Agregar hasta 20
+        </button>
+
+        <button onclick="entrarModoOrden()">
+          ✋ Ordenar / editar en la página
         </button>
 
         <button onclick="exportarJSON()">
@@ -899,23 +931,48 @@ function renderJuegos(lista=null){
 
     card.className='card';
 
-    card.onclick=()=>abrirJuego(
-      j.url,
-      j.tipo,
-      j.accion,
-      j
-    );
+    card.dataset.id=j.id;
+
+    card.onclick=()=>{
+      if(modoOrden)return;
+      abrirJuego(
+        j.url,
+        j.tipo,
+        j.accion,
+        j
+      );
+    };
 
     const img=document.createElement('img');
 
     img.src=j.imagen;
     img.alt=j.nombre;
+    img.loading='lazy';
 
     const p=document.createElement('p');
 
     p.textContent=j.nombre;
 
     card.append(img,p);
+
+    if(modoOrden){
+
+      const h=document.createElement('div');
+      h.className='handle';
+      h.textContent='⠿';
+      h.title='Arrastra para mover';
+
+      const tools=document.createElement('div');
+      tools.className='card-tools';
+      tools.innerHTML=
+        '<button title="Editar">✏️</button>'+
+        '<button title="Eliminar">🗑️</button>';
+      tools.children[0].onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
+      tools.children[1].onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
+
+      card.append(h,tools);
+
+    }
 
     grid.appendChild(card);
 
@@ -2839,6 +2896,220 @@ function leerJSON(ev){
 /* =========================
    INICIO
 ========================= */
+
+/* =========================
+   ORDENAR / EDITAR DESDE LA PÁGINA PRINCIPAL
+========================= */
+
+let modoOrden=false;
+
+function entrarModoOrden(){
+
+  categoriaActual="Todos";
+  document.getElementById('searchInput').value='';
+
+  cerrarAdmin();
+
+  modoOrden=true;
+  document.body.classList.add('modo-orden');
+  document.getElementById('orden-bar').style.display='flex';
+  document.getElementById('orden-msg').textContent=
+    'Arrastra ⠿ para mover · ✏️ editar · 🗑️ eliminar';
+
+  renderCategorias();
+  renderJuegos();
+
+  window.scrollTo({
+    top:document.getElementById('grid').offsetTop-20,
+    behavior:'smooth'
+  });
+
+}
+
+function salirModoOrden(){
+
+  modoOrden=false;
+  document.body.classList.remove('modo-orden');
+  document.getElementById('orden-bar').style.display='none';
+  renderJuegos();
+
+}
+
+function editarDesdeTarjeta(id){
+
+  document.getElementById('admin-panel').style.display='block';
+  document.getElementById('pin-screen').style.display='none';
+  document.getElementById('admin-content').style.display='block';
+
+  renderAdmin();
+  editarJuego(id);
+
+  document.getElementById('admin-panel').scrollTop=0;
+
+}
+
+async function ordenSubirGitHub(){
+
+  const msg=document.getElementById('orden-msg');
+
+  if(!obtenerConfigGitHub().token){
+    msg.textContent='Primero guarda tu token en ⚙️ → Actualizar GitHub.';
+    return;
+  }
+
+  mostrarGitHub();
+  msg.textContent='⏳ Subiendo a GitHub...';
+
+  await actualizarGitHub();
+
+  msg.textContent=
+    document.getElementById('github-status').textContent;
+
+  ocultarGitHub();
+
+}
+
+(function(){
+
+  const grid=document.getElementById('grid');
+  let drag=null,timer=null;
+
+  function posicionar(){
+
+    const c=drag.card;
+
+    c.style.transform='none';
+
+    const r=c.getBoundingClientRect();
+
+    c.style.transform=
+      'translate('+
+      (drag.x-drag.gx-r.left)+'px,'+
+      (drag.y-drag.gy-r.top)+'px)';
+
+  }
+
+  function mover(){
+
+    const c=drag.card;
+
+    posicionar();
+
+    c.style.pointerEvents='none';
+    const el=document.elementFromPoint(drag.x,drag.y);
+    c.style.pointerEvents='';
+
+    const t=el&&el.closest?el.closest('.card'):null;
+
+    if(t&&t!==c&&t.parentNode===grid){
+
+      const tr=t.getBoundingClientRect();
+
+      const despues=
+        (c.compareDocumentPosition(t)&
+         Node.DOCUMENT_POSITION_FOLLOWING)!==0;
+
+      /* si el objetivo está adelante, la tarjeta se coloca después; si está atrás, antes */
+      if(despues)
+        grid.insertBefore(c,t.nextSibling);
+      else
+        grid.insertBefore(c,t);
+
+      try{drag.h.setPointerCapture(drag.id);}catch(e){}
+
+      posicionar();
+
+    }
+
+  }
+
+  grid.addEventListener('pointerdown',e=>{
+
+    if(!modoOrden)return;
+
+    const h=e.target.closest('.handle');
+
+    if(!h)return;
+
+    const card=h.closest('.card');
+    const r=card.getBoundingClientRect();
+
+    drag={
+      card,h,
+      id:e.pointerId,
+      gx:e.clientX-r.left,
+      gy:e.clientY-r.top,
+      x:e.clientX,
+      y:e.clientY
+    };
+
+    card.classList.add('arrastrando');
+
+    try{h.setPointerCapture(e.pointerId);}catch(err){}
+
+    e.preventDefault();
+
+    /* desplazamiento automático al acercarse a los bordes */
+    timer=setInterval(()=>{
+
+      if(!drag)return;
+
+      if(drag.y<90)
+        window.scrollBy(0,-14);
+      else if(drag.y>window.innerHeight-90)
+        window.scrollBy(0,14);
+      else
+        return;
+
+      mover();
+
+    },16);
+
+  });
+
+  document.addEventListener('pointermove',e=>{
+
+    if(!drag||e.pointerId!==drag.id)return;
+
+    drag.x=e.clientX;
+    drag.y=e.clientY;
+
+    mover();
+
+  });
+
+  function soltar(e){
+
+    if(!drag||e.pointerId!==drag.id)return;
+
+    clearInterval(timer);
+
+    drag.card.classList.remove('arrastrando');
+    drag.card.style.transform='';
+
+    drag=null;
+
+    [...grid.querySelectorAll('.card')].forEach((c,i)=>{
+
+      const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
+
+      if(j)j.orden=i+1;
+
+    });
+
+    catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
+
+    document.getElementById('orden-msg').textContent=
+      '✔ Orden cambiado. Pulsa ☁️ Guardar para verlo en todos tus dispositivos.';
+
+    renderJuegos();
+
+  }
+
+  document.addEventListener('pointerup',soltar);
+  document.addEventListener('pointercancel',soltar);
+
+})();
 
 cargarCatalogo();
 
