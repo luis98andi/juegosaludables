@@ -145,12 +145,13 @@
     {
       "id": "game-015",
       "nombre": "Donkey Country 2",
-      "imagen": "https://cdn.wikimg.net/en/strategywiki/images/0/0a/Donkey_Kong_Country_2_boxart.jpg",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuOdn0_yA-ig64EiTAXioVs0rG3pj26_Zc9FTyf4wzdg&s=10",
       "url": "https://www.retrogames.cc/embed/17336-donkey-kong-country-2-diddy-s-kong-quest-usa-en-fr-rev-a.html",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 15
+      "categoria": "Infantil",
+      "orden": 15,
+      "youtubeStart": 0
     },
     {
       "id": "game-016",
