@@ -1,246 +1,2388 @@
-{
-  "version": 1,
-  "categorias": [],
-  "juegos": [
-    {
-      "id": "game-001",
-      "nombre": "Baby Hazel Balloon",
-      "imagen": "portadas/baby1.PNG",
-      "url": "games/baby-hazel-ballon.swf",
-      "tipo": "swf",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 1
-    },
-    {
-      "id": "game-002",
-      "nombre": "Manicure barbie secret",
-      "imagen": "portadas/manicure1.PNG",
-      "url": "games/barbie-manicure-secrets.swf",
-      "tipo": "swf",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 2
-    },
-    {
-      "id": "game-003",
-      "nombre": "Cut the Rope",
-      "imagen": "https://cdn.blipzi.com/cu/tt/cut-the-rope-d.jpg",
-      "url": "https://play.famobi.com/cut-the-rope",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 3
-    },
-    {
-      "id": "game-004",
-      "nombre": "Om Nom Run",
-      "imagen": "https://cdn.now.gg/apps-content/com.nowgg.h5.pub513.app51248/game-tiles/om-nom-run.jpg",
-      "url": "https://play.famobi.com/om-nom-run",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 4
-    },
-    {
-      "id": "game-005",
-      "nombre": "Kirby SNES",
-      "imagen": "https://www.nintendo.com/eu/media/images/10_share_images/games_15/virtual_console_wii_u_7/H2x1_WiiUVC_KirbysDreamLand3_image1600w.jpg",
-      "url": "https://www.retrogames.cc/embed/23267-kirby-s-dream-land-3-usa.html",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 5
-    },
-    {
-      "id": "game-006",
-      "nombre": "Bubble Shooter",
-      "imagen": "https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg",
-      "url": "https://html5.gamemonetize.co/yp7vtch9c6vott101pztfdfm0p19c5c5/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 6
-    },
-    {
-      "id": "game-007",
-      "nombre": "Vortella Dress Up",
-      "imagen": "https://gogamego.io/wp-content/uploads/thumbs/custom/V/Vortellas-Dress-Up.webp",
-      "url": "https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "",
-      "orden": 7
-    },
-    {
-      "id": "game-008",
-      "nombre": "Mine – Online",
-      "imagen": "portadas/mine online.jpg",
-      "url": "https://playhop.com/dist-app/448223?header=no&skip-guard=1&utm_source=parent_window_api&utm_medium=playgama&clid=2951034&flags={%22adv_types_disabled%22:16}",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "",
-      "orden": 8
-    },
-    {
-      "id": "game-009",
-      "nombre": "Minecraft Survial And Creative",
-      "imagen": "https://klev.club/uploads/posts/2023-10/thumbs/1697615931_klev-club-p-risunki-s-logotipom-mainkraft-28.jpg",
-      "url": "https://app-548551.games.s3.yandex.net/548551/cyjcbp7a5cqajglkxfjbahm080mq8yht_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fplayhop.com&app-id=548551&device-type=mobile",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 9
-    },
-    {
-      "id": "game-010",
-      "nombre": "Frutas en Ingles",
-      "imagen": "https://juegosparaaprender.com/wp-content/uploads/2024/05/Thumbnail_juego_las_frutas_en_ingles.jpg",
-      "url": "https://juegosparaaprender.com/Juegos/ingles/FrutasIngles/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 10
-    },
-    {
-      "id": "game-011",
-      "nombre": "Juego identifica las sílabas",
-      "imagen": "https://screens.cdn.wordwall.net/200/ad367eab5921446c86d57ddf8f0d181b_1",
-      "url": "https://wordwall.net/es/embed/ad367eab5921446c86d57ddf8f0d181b?themeId=1&templateId=3&fontStackId=0",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 11
-    },
-    {
-      "id": "game-012",
-      "nombre": "Manicure Chicas",
-      "imagen": "https://img.gamemonetize.com/z273kh1b71egjvyvs7yebr93yd11ks2t/512x384.jpg",
-      "url": "https://html5.gamemonetize.co/z273kh1b71egjvyvs7yebr93yd11ks2t/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 12
-    },
-    {
-      "id": "game-013",
-      "nombre": "Cut The Rope Time Travel",
-      "imagen": "https://cdn2.steamgriddb.com/thumb/a9883e39f7bfe79cf767b82cdcf6d2fe.jpg",
-      "url": "https://app-503258.cdn.games.yandex.net/503258/axhm936tiaupib96erx54jzynva4x3kz_brotli/index.html?sdk=%2Fsdk%2F_%2Fv2.5871b227ff69bc337568.js#origin=https%3A%2F%2Fyandex.com&app-id=503258&",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "",
-      "orden": 13
-    },
-    {
-      "id": "game-014",
-      "nombre": "Juego de Sandia",
-      "imagen": "https://www.educaenvivo.com/wp-content/uploads/2024/02/El-juego-de-la-sandia-400x400.webp",
-      "url": "https://www.educaenvivo.com/juegos-educaenvivo/watermelon14/index.html",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "",
-      "orden": 14
-    },
-    {
-      "id": "game-015",
-      "nombre": "Donkey Country 2",
-      "imagen": "https://cdn.wikimg.net/en/strategywiki/images/0/0a/Donkey_Kong_Country_2_boxart.jpg",
-      "url": "https://www.retrogames.cc/embed/17336-donkey-kong-country-2-diddy-s-kong-quest-usa-en-fr-rev-a.html",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 15
-    },
-    {
-      "id": "game-016",
-      "nombre": "Bomberman 5 English",
-      "imagen": "https://assets-prd.ignimgs.com/2023/03/19/superbomberman5-1679262155524.jpg",
-      "url": "https://www.retrogames.cc/embed/43388-super-bomberman-5-english-translated.html",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 16
-    },
-    {
-      "id": "game-017",
-      "nombre": "Barbie Snes",
-      "imagen": "https://www.vgdb.com.br/gf/fotos/games/media_24307/barbie-super-model-24307.jpg",
-      "url": "https://www.retrogames.cc/embed/24258-barbie-super-model-usa.html",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 17
-    },
-    {
-      "id": "game-018",
-      "nombre": "Mario All Star",
-      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://itch.io/embed-upload/7740774?color=333333",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 18
-    },
-    {
-      "id": "game-019",
-      "nombre": "Aprende a Leer con Leo",
-      "imagen": "https://img.itch.zone/aW1nLzExNTYyODk0LnBuZw==/347x500/NmUP5%2B.png",
-      "url": "https://itch.io/embed-upload/7740774?color=333333",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 19
-    },
-    {
-      "id": "game-020",
-      "nombre": "Blocky Logica",
-      "imagen": "https://blockly.games/index/title.svg",
-      "url": "https://blockly.games/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 20
-    },
-    {
-      "id": "game-021",
-      "nombre": "Arthur Lectura",
-      "imagen": "https://i.pinimg.com/originals/7a/63/6f/7a636f896225699c8fbf6e7a8806291e.jpg",
-      "url": "https://archive.org/details/arthur-tt",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 21
-    },
-    {
-      "id": "game-1790788957327",
-      "nombre": "Just Dance Angry Birds",
-      "imagen": "https://i.ytimg.com/vi/MUCy1gOwG0Y/hq720.jpg?sqp=-oaymwErCNAFEJQDSFryq4qpAx0IARUAAIhCGAHYAQHiAQoIGBACGAY4AUABuALzGA==&rs=AOn4CLCD3pbSUKUmiSNZ8xu_12DloVz-8Q",
-      "url": "https://www.youtube.com/embed/watch?v=MUCy1gOwG0Y",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 22
-    },
-    {
-      "id": "game-1790789104182",
-      "nombre": "Just Dance Mario",
-      "imagen": "https://i.ytimg.com/vi/2Zdqm65FZ7g/hq720.jpg?sqp=-oaymwFFCNAFEJQDSFryq4qpAzcIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGCsgXihlMA-4AvMY&rs=AOn4CLA8CvJ13idx6x1zHzb9rRgFeJHI8Q",
-      "url": "https://www.youtube.com/embed/watch?v=2Zdqm65FZ7g&t=157s",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 23
-    },
-    {
-      "id": "game-1790789316806",
-      "nombre": "Daniel Go El piso es lava",
-      "imagen": "https://i.ytimg.com/an_webp/0vhhyUuDTl4/mqdefault_6s.webp?du=3000&sqp=CPaD9dUG&rs=AOn4CLDwR-wHoBHZWaLO1Os7rG-9jR3IwA",
-      "url": "https://www.youtube.com/embed/watch?v=0vhhyUuDTl4&list=RD0vhhyUuDTl4&start_radio=1",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 24
-    }
-  ]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreshMind Games</title>
+
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="manifest" href="site.webmanifest">
+
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  font-family:Arial,sans-serif;
+  background:url('fondo.jpg') no-repeat center center fixed;
+  background-size:cover;
+  color:white;
+  margin:0;
+  padding:20px
 }
+
+h1{text-align:center}
+
+.logo{
+  width:100%;
+  max-width:260px;
+  height:110px;
+  object-fit:cover;
+  clip-path:inset(0 3px 0 0)
+}
+
+h1{margin:10px 0}
+
+/* BUSCADOR */
+.top-tools{
+  max-width:900px;
+  margin:0 auto 10px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.search-box{
+  width:250px;
+  padding:9px 12px;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;
+  background:rgba(0,0,0,.55);
+  color:white;
+  outline:none;
+}
+
+.search-box::placeholder{
+  color:#ddd;
+}
+
+/* CATEGORÍAS */
+.categories{
+  max-width:900px;
+  margin:10px auto 18px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:5px 2px 9px;
+  scrollbar-width:thin;
+}
+
+.category-btn{
+  flex:0 0 auto;
+  border:0;
+  border-radius:20px;
+  padding:8px 15px;
+  background:rgba(0,0,0,.60);
+  color:white;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.2s;
+}
+
+.category-btn:hover{
+  background:rgba(58,123,213,.8);
+  transform:scale(1.03);
+}
+
+.category-btn.active{
+  background:#3a7bd5;
+}
+
+/* JUEGOS */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:15px;
+  max-width:900px;
+  margin:20px auto
+}
+
+.card{
+  background:none;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+  position:relative
+}
+
+.card:hover{transform:scale(1.05)}
+
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:16px
+}
+
+.card p{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:10px;
+  margin:0;
+  padding:26px 8px 8px;
+  box-sizing:border-box;
+  border-radius:0 0 16px 16px;
+  background:linear-gradient(transparent,rgba(0,0,0,.75));
+  color:white;
+  font-size:14px;
+  font-weight:bold;
+  opacity:0;
+  transition:.2s
+}
+
+.card:hover p{opacity:1}
+
+/* REPRODUCTOR */
+#player-container{
+  display:none;
+  max-width:900px;
+  margin:20px auto;
+  text-align:center
+}
+
+#ruffle-target{
+  width:100%;
+  max-width:854px;
+  height:70vh;
+  max-height:550px;
+  margin:0 auto;
+  background:black;
+  border-radius:8px;
+  overflow:hidden;
+  position:relative
+}
+
+#ruffle-target:fullscreen,
+#ruffle-target:-webkit-full-screen{
+  max-width:none;
+  max-height:none;
+  width:100vw;
+  height:100vh
+}
+
+#ruffle-target iframe,
+#ruffle-target>*{
+  width:100%!important;
+  height:100%!important;
+  display:block;
+  border:none
+}
+
+/* CAPA PROTECTORA YOUTUBE */
+.youtube-player{
+  width:100%;
+  height:100%;
+  position:relative;
+  background:#000;
+}
+
+.youtube-frame{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+
+.youtube-top-shield{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:58px;
+  z-index:5;
+  background:transparent;
+  pointer-events:auto;
+}
+
+.youtube-bottom-shield{
+  position:absolute;
+  right:55px;
+  bottom:0;
+  width:75px;
+  height:42px;
+  z-index:5;
+  background:transparent;
+  pointer-events:auto;
+}
+
+/* CONTROLES PROPIOS YOUTUBE */
+.youtube-controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.youtube-controls button{
+  padding:7px 10px;
+  border:0;
+  border-radius:6px;
+  background:#333;
+  color:#fff;
+  cursor:pointer;
+}
+
+.youtube-controls button:hover{
+  background:#555;
+}
+
+.controls-bar{
+  margin-top:10px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+#close-btn,#fullscreen-btn{
+  padding:8px 16px;
+  border:none;
+  color:white;
+  border-radius:6px;
+  cursor:pointer
+}
+
+#close-btn{background:#e94560}
+#fullscreen-btn{background:#3a7bd5}
+
+/* ADMIN */
+#admin-launcher{
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  font-size:22px;
+  cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.35);
+  z-index:1000
+}
+
+#admin-panel{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  z-index:999;
+  padding:18px;
+  overflow:auto
+}
+
+.admin-box{
+  max-width:900px;
+  margin:20px auto;
+  background:#171717;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.5)
+}
+
+.admin-box h2{margin-top:0}
+
+.admin-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:16px
+}
+
+.admin-actions button,
+.admin-box button{
+  padding:9px 12px;
+  border:0;
+  border-radius:7px;
+  cursor:pointer
+}
+
+.admin-list{
+  display:grid;
+  gap:8px
+}
+
+.admin-row{
+  background:#242424;
+  padding:10px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.admin-row img{
+  width:50px;
+  height:50px;
+  object-fit:cover;
+  border-radius:7px
+}
+
+.admin-row .grow{flex:1}
+
+.admin-muted{
+  opacity:.75;
+  font-size:13px
+}
+
+#pin-screen{text-align:center}
+
+.pin-input{
+  font-size:22px;
+  text-align:center;
+  letter-spacing:6px;
+  padding:10px;
+  width:130px
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px
+}
+
+.form-grid label{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:13px
+}
+
+.form-grid input,
+.form-grid select{
+  padding:9px;
+  border-radius:6px;
+  border:1px solid #555;
+  background:#292929;
+  color:#fff
+}
+
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;
+  margin-top:12px
+}
+
+.preview{
+  background:#252525;
+  padding:8px;
+  border-radius:8px
+}
+
+.preview img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  border-radius:6px
+}
+
+.image-search-button{
+  margin-top:5px;
+  background:#555;
+  color:#fff;
+}
+
+.youtube-extra{
+  grid-column:1/-1;
+  background:#292929;
+  padding:10px;
+  border-radius:8px;
+}
+
+.youtube-extra label{
+  margin-bottom:8px;
+}
+
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+
+  .admin-row{
+    align-items:flex-start
+  }
+
+  .admin-row img{
+    width:42px;
+    height:42px
+  }
+
+  .search-box{
+    width:210px
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>
+  <img src="portadas/logo.png" alt="FreshMind Games" class="logo">
+</h1>
+
+<!-- BUSCADOR ARRIBA A LA DERECHA -->
+<div class="top-tools">
+  <input
+    id="searchInput"
+    class="search-box"
+    type="search"
+    placeholder="🔎 Buscar juego..."
+    oninput="aplicarFiltros()"
+  >
+</div>
+
+<!-- CATEGORÍAS -->
+<div id="categories" class="categories"></div>
+
+<div id="grid" class="grid"></div>
+
+<!-- REPRODUCTOR -->
+<div id="player-container">
+
+  <div id="ruffle-target"></div>
+
+  <div id="youtube-controls" class="youtube-controls" style="display:none">
+    <button onclick="youtubePlay()">▶️</button>
+    <button onclick="youtubePause()">⏸️</button>
+    <button onclick="youtubeSeek(-10)">⏪ 10s</button>
+    <button onclick="youtubeSeek(10)">⏩ 10s</button>
+  </div>
+
+  <div class="controls-bar">
+    <button id="fullscreen-btn" onclick="pantallaCompleta()">
+      ⛶ Pantalla completa
+    </button>
+
+    <button id="close-btn" onclick="cerrarJuego()">
+      Cerrar juego
+    </button>
+  </div>
+
+</div>
+
+<button
+  id="admin-launcher"
+  title="Administrar FreshMind Games"
+  onclick="abrirAdmin()"
+>⚙️</button>
+
+<!-- ADMIN -->
+<div id="admin-panel">
+
+  <div class="admin-box">
+
+    <div id="pin-screen">
+      <h2>🔐 Administración</h2>
+      <p>Introduce el PIN para entrar.</p>
+
+      <input
+        id="pin"
+        class="pin-input"
+        type="password"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="••••"
+      >
+
+      <br><br>
+
+      <button onclick="validarPin()">Entrar</button>
+      <button onclick="cerrarAdmin()">Cerrar</button>
+
+      <p id="pin-error" style="color:#ff8b8b"></p>
+    </div>
+
+    <div id="admin-content" style="display:none">
+
+      <h2>⚙️ Administrar FreshMind Games</h2>
+
+      <p class="admin-muted">
+        Catálogo cargado desde <b>juegos.json</b>.
+      </p>
+
+      <div class="admin-actions">
+
+        <button onclick="mostrarAgregar()">
+          ➕ Agregar juego
+        </button>
+
+        <button onclick="mostrarMultiples()">
+          ⚙️ Agregar hasta 20
+        </button>
+
+        <button onclick="exportarJSON()">
+          💾 Exportar catálogo
+        </button>
+
+        <button onclick="importarJSON()">
+          📥 Importar catálogo
+        </button>
+
+        <button onclick="document.getElementById('jsonFile').click()">
+          📂 Abrir JSON
+        </button>
+
+        <button onclick="cerrarAdmin()">
+          Cerrar
+        </button>
+
+        <input
+          id="jsonFile"
+          type="file"
+          accept=".json,application/json"
+          style="display:none"
+          onchange="leerJSON(event)"
+        >
+
+      </div>
+
+      <div id="editor"></div>
+      <div id="admin-list" class="admin-list"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let catalogo={
+  version:1,
+  categorias:[],
+  juegos:[]
+};
+
+let currentPlayer=null;
+let youtubePlayer=null;
+let youtubeReady=false;
+let currentYoutubeStart=0;
+let categoriaActual="Todos";
+
+const PIN="1234";
+
+/* =========================
+   YOUTUBE API
+========================= */
+
+function onYouTubeIframeAPIReady(){
+  youtubeReady=true;
+}
+
+function extraerYouTubeId(url){
+
+  try{
+
+    const u=new URL(url);
+
+    if(u.hostname.includes("youtu.be")){
+      return u.pathname.replace("/","").split("/")[0];
+    }
+
+    if(u.hostname.includes("youtube.com")){
+
+      if(u.pathname==="/watch"){
+        return u.searchParams.get("v");
+      }
+
+      if(u.pathname.startsWith("/shorts/")){
+        return u.pathname.split("/")[2];
+      }
+
+      if(u.pathname.startsWith("/embed/")){
+        return u.pathname.split("/")[2];
+      }
+
+    }
+
+  }catch(e){}
+
+  return null;
+}
+
+function convertirTiempoASegundos(valor){
+
+  if(!valor)return 0;
+
+  valor=String(valor).trim();
+
+  if(/^\d+$/.test(valor)){
+    return parseInt(valor);
+  }
+
+  const partes=valor.split(":").map(Number);
+
+  if(partes.some(isNaN))return 0;
+
+  if(partes.length===2){
+    return partes[0]*60+partes[1];
+  }
+
+  if(partes.length===3){
+    return partes[0]*3600+partes[1]*60+partes[2];
+  }
+
+  return 0;
+}
+
+function obtenerStartDesdeUrl(url){
+
+  try{
+
+    const u=new URL(url);
+
+    let t=u.searchParams.get("t") || u.searchParams.get("start");
+
+    if(!t)return 0;
+
+    if(/^\d+$/.test(t)){
+      return parseInt(t);
+    }
+
+    const m=t.match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/);
+
+    if(m){
+      return (parseInt(m[1]||0)*3600)+
+             (parseInt(m[2]||0)*60)+
+             parseInt(m[3]||0);
+    }
+
+  }catch(e){}
+
+  return 0;
+}
+
+function crearEmbedYouTube(url,start=0){
+
+  const id=extraerYouTubeId(url);
+
+  if(!id)return null;
+
+  let src=
+    "https://www.youtube.com/embed/"+
+    encodeURIComponent(id)+
+    "?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&controls=1";
+
+  if(start>0){
+    src+="&start="+Math.floor(start);
+  }
+
+  return src;
+}
+
+/* =========================
+   CARGAR CATALOGO
+========================= */
+
+async function cargarCatalogo(){
+
+  try{
+
+    const r=await fetch(
+      'juegos.json',
+      {cache:'no-store'}
+    );
+
+    if(!r.ok)
+      throw new Error('No se pudo cargar juegos.json');
+
+    catalogo=await r.json();
+
+    if(!Array.isArray(catalogo.juegos))
+      catalogo.juegos=[];
+
+    if(!Array.isArray(catalogo.categorias))
+      catalogo.categorias=[];
+
+    renderCategorias();
+    renderJuegos();
+
+  }catch(e){
+
+    console.error(e);
+
+    document.getElementById('grid').innerHTML=
+      '<p style="text-align:center">'+
+      'No se pudo cargar el catálogo de juegos.'+
+      '</p>';
+  }
+}
+
+/* =========================
+   CATEGORIAS
+========================= */
+
+function renderCategorias(){
+
+  const cont=document.getElementById('categories');
+
+  const categorias=new Set();
+
+  catalogo.juegos.forEach(j=>{
+
+    if(j.categoria){
+      categorias.add(j.categoria);
+    }
+
+  });
+
+  cont.innerHTML='';
+
+  const todas=["Todos",...Array.from(categorias)];
+
+  todas.forEach(cat=>{
+
+    const btn=document.createElement('button');
+
+    btn.className=
+      'category-btn '+
+      (categoriaActual===cat?'active':'');
+
+    btn.textContent=cat;
+
+    btn.onclick=()=>{
+
+      categoriaActual=cat;
+
+      renderCategorias();
+      aplicarFiltros();
+
+    };
+
+    cont.appendChild(btn);
+
+  });
+
+}
+
+/* =========================
+   JUEGOS
+========================= */
+
+function aplicarFiltros(){
+
+  const texto=
+    document.getElementById('searchInput')
+      .value
+      .trim()
+      .toLowerCase();
+
+  const filtrados=catalogo.juegos.filter(j=>{
+
+    const coincideCategoria=
+      categoriaActual==="Todos" ||
+      j.categoria===categoriaActual;
+
+    const coincideTexto=
+      !texto ||
+      String(j.nombre||'')
+        .toLowerCase()
+        .includes(texto);
+
+    return coincideCategoria && coincideTexto;
+
+  });
+
+  renderJuegos(filtrados);
+}
+
+function renderJuegos(lista=null){
+
+  const grid=document.getElementById('grid');
+
+  grid.innerHTML='';
+
+  const juegos=
+    lista ||
+    [...catalogo.juegos]
+      .sort((a,b)=>
+        (a.orden||0)-(b.orden||0)
+      );
+
+  if(!juegos.length){
+
+    grid.innerHTML=
+      '<p style="text-align:center;grid-column:1/-1">'+
+      'No se encontraron juegos.'+
+      '</p>';
+
+    return;
+  }
+
+  juegos.forEach(j=>{
+
+    const card=document.createElement('div');
+
+    card.className='card';
+
+    card.onclick=()=>abrirJuego(
+      j.url,
+      j.tipo,
+      j.accion,
+      j
+    );
+
+    const img=document.createElement('img');
+
+    img.src=j.imagen;
+    img.alt=j.nombre;
+
+    const p=document.createElement('p');
+
+    p.textContent=j.nombre;
+
+    card.append(img,p);
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+/* =========================
+   ABRIR JUEGOS
+========================= */
+
+function abrirJuego(ruta,tipo,accion,juego=null){
+
+  if(
+    accion==='abrirEmuladorSNES' ||
+    tipo==='snes'
+  ){
+    return abrirEmuladorSNES(ruta);
+  }
+
+  if(
+    accion==='abrirEnNuevaPestana' ||
+    tipo==='newtab'
+  ){
+    window.open(ruta,'_blank');
+    return;
+  }
+
+  if(tipo==='youtube'){
+
+    return abrirYouTube(
+      ruta,
+      juego?.youtubeStart || obtenerStartDesdeUrl(ruta)
+    );
+
+  }
+
+  const target=
+    document.getElementById('ruffle-target');
+
+  target.innerHTML='';
+
+  document.getElementById('youtube-controls')
+    .style.display='none';
+
+  if(tipo==='swf'){
+
+    const ruffle=
+      window.RufflePlayer.newest();
+
+    currentPlayer=
+      ruffle.createPlayer();
+
+    currentPlayer.style.width='100%';
+    currentPlayer.style.height='100%';
+
+    target.appendChild(currentPlayer);
+
+    currentPlayer.load(ruta);
+
+  }else{
+
+    const iframe=
+      document.createElement('iframe');
+
+    iframe.src=ruta;
+
+    iframe.style.width='100%';
+    iframe.style.height='100%';
+    iframe.style.border='none';
+
+    iframe.allowFullscreen=true;
+
+    iframe.setAttribute(
+      'allowfullscreen',
+      'true'
+    );
+
+    iframe.allow=
+      'fullscreen; autoplay; gamepad; pointer-lock';
+
+    target.appendChild(iframe);
+
+  }
+
+  mostrarPlayer();
+
+}
+
+/* =========================
+   YOUTUBE
+========================= */
+
+function abrirYouTube(url,start=0){
+
+  const id=extraerYouTubeId(url);
+
+  if(!id){
+
+    alert(
+      'No pude reconocer este enlace de YouTube.'
+    );
+
+    return;
+  }
+
+  currentYoutubeStart=start;
+
+  const target=
+    document.getElementById('ruffle-target');
+
+  target.innerHTML='';
+
+  const wrapper=
+    document.createElement('div');
+
+  wrapper.className='youtube-player';
+
+  const iframe=
+    document.createElement('iframe');
+
+  iframe.className='youtube-frame';
+
+  iframe.id='youtube-frame';
+
+  iframe.src=
+    crearEmbedYouTube(url,start);
+
+  iframe.allow=
+    'accelerometer; autoplay; clipboard-write; '+
+    'encrypted-media; gyroscope; picture-in-picture; web-share';
+
+  iframe.allowFullscreen=true;
+
+  iframe.setAttribute(
+    'allowfullscreen',
+    'true'
+  );
+
+  /*
+    Capa transparente superior:
+    evita tocar accidentalmente
+    título/enlace de YouTube.
+  */
+
+  const topShield=
+    document.createElement('div');
+
+  topShield.className='youtube-top-shield';
+
+  /*
+    Capa inferior pequeña:
+    evita tocar el área del logo/enlace
+    sin bloquear el botón de pantalla completa.
+  */
+
+  const bottomShield=
+    document.createElement('div');
+
+  bottomShield.className=
+    'youtube-bottom-shield';
+
+  wrapper.appendChild(iframe);
+  wrapper.appendChild(topShield);
+  wrapper.appendChild(bottomShield);
+
+  target.appendChild(wrapper);
+
+  document.getElementById('youtube-controls')
+    .style.display='flex';
+
+  mostrarPlayer();
+
+  /*
+    Creamos también la conexión API
+    para nuestros botones propios.
+  */
+
+  crearYouTubePlayerAPI(id,start);
+
+}
+
+function crearYouTubePlayerAPI(id,start){
+
+  let intentos=0;
+
+  const intentar=()=>{
+
+    intentos++;
+
+    if(
+      typeof YT==='undefined' ||
+      !YT.Player
+    ){
+
+      if(intentos<30)
+        setTimeout(intentar,300);
+
+      return;
+    }
+
+    try{
+
+      youtubePlayer=
+        new YT.Player(
+          'youtube-frame',
+          {
+            events:{
+              onReady:function(event){
+
+                youtubePlayer=event.target;
+
+                if(start>0){
+                  youtubePlayer.seekTo(
+                    start,
+                    true
+                  );
+                }
+
+              }
+            }
+          }
+        );
+
+    }catch(e){
+      console.log(e);
+    }
+
+  };
+
+  intentar();
+}
+
+function youtubePlay(){
+
+  if(youtubePlayer &&
+     youtubePlayer.playVideo){
+
+    youtubePlayer.playVideo();
+
+  }
+
+}
+
+function youtubePause(){
+
+  if(youtubePlayer &&
+     youtubePlayer.pauseVideo){
+
+    youtubePlayer.pauseVideo();
+
+  }
+
+}
+
+function youtubeSeek(segundos){
+
+  if(
+    youtubePlayer &&
+    youtubePlayer.getCurrentTime &&
+    youtubePlayer.seekTo
+  ){
+
+    const actual=
+      youtubePlayer.getCurrentTime();
+
+    youtubePlayer.seekTo(
+      Math.max(0,actual+segundos),
+      true
+    );
+
+  }
+
+}
+
+/* =========================
+   SNES
+========================= */
+
+function abrirEmuladorSNES(url){
+
+  const target=
+    document.getElementById('ruffle-target');
+
+  target.innerHTML='';
+
+  const iframe=
+    document.createElement('iframe');
+
+  iframe.src=url;
+
+  iframe.style.width='100%';
+  iframe.style.height='100%';
+  iframe.style.border='none';
+
+  iframe.allowFullscreen=true;
+
+  iframe.setAttribute(
+    'allowfullscreen',
+    'true'
+  );
+
+  iframe.setAttribute(
+    'webkitallowfullscreen',
+    'true'
+  );
+
+  iframe.setAttribute(
+    'mozallowfullscreen',
+    'true'
+  );
+
+  iframe.allow=
+    'autoplay; gamepad; fullscreen; '+
+    'accelerometer; gyroscope';
+
+  target.appendChild(iframe);
+
+  document.getElementById('youtube-controls')
+    .style.display='none';
+
+  mostrarPlayer();
+
+}
+
+/* =========================
+   PLAYER
+========================= */
+
+function mostrarPlayer(){
+
+  document.getElementById(
+    'player-container'
+  ).style.display='block';
+
+  window.scrollTo({
+    top:
+      document.getElementById(
+        'player-container'
+      ).offsetTop,
+    behavior:'smooth'
+  });
+
+}
+
+async function pantallaCompleta(){
+
+  const target=
+    document.getElementById('ruffle-target');
+
+  if(!document.fullscreenElement){
+
+    if(target.requestFullscreen)
+      await target.requestFullscreen();
+
+    else if(target.webkitRequestFullscreen)
+      await target.webkitRequestFullscreen();
+
+    else if(target.msRequestFullscreen)
+      await target.msRequestFullscreen();
+
+    try{
+
+      if(
+        screen.orientation &&
+        screen.orientation.lock
+      ){
+
+        await screen.orientation.lock(
+          'landscape'
+        );
+
+      }
+
+    }catch(e){}
+
+  }else{
+
+    if(document.exitFullscreen)
+      await document.exitFullscreen();
+
+    else if(document.webkitExitFullscreen)
+      await document.webkitExitFullscreen();
+
+  }
+
+}
+
+function actualizarBotonFullscreen(){
+
+  const btn=
+    document.getElementById(
+      'fullscreen-btn'
+    );
+
+  btn.textContent=
+    document.fullscreenElement
+      ? '⛶ Salir de pantalla completa'
+      : '⛶ Pantalla completa';
+
+}
+
+document.addEventListener(
+  'fullscreenchange',
+  actualizarBotonFullscreen
+);
+
+function cerrarJuego(){
+
+  if(document.fullscreenElement){
+
+    if(document.exitFullscreen)
+      document.exitFullscreen();
+
+  }
+
+  document.getElementById(
+    'ruffle-target'
+  ).innerHTML='';
+
+  document.getElementById(
+    'player-container'
+  ).style.display='none';
+
+  document.getElementById(
+    'youtube-controls'
+  ).style.display='none';
+
+  youtubePlayer=null;
+
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+function abrirAdmin(){
+
+  document.getElementById(
+    'admin-panel'
+  ).style.display='block';
+
+  document.getElementById(
+    'pin'
+  ).focus();
+
+}
+
+function cerrarAdmin(){
+
+  document.getElementById(
+    'admin-panel'
+  ).style.display='none';
+
+  document.getElementById(
+    'pin-screen'
+  ).style.display='block';
+
+  document.getElementById(
+    'admin-content'
+  ).style.display='none';
+
+  document.getElementById(
+    'pin'
+  ).value='';
+
+}
+
+function validarPin(){
+
+  if(
+    document.getElementById('pin').value===
+    PIN
+  ){
+
+    document.getElementById(
+      'pin-screen'
+    ).style.display='none';
+
+    document.getElementById(
+      'admin-content'
+    ).style.display='block';
+
+    renderAdmin();
+
+  }else{
+
+    document.getElementById(
+      'pin-error'
+    ).textContent='PIN incorrecto.';
+
+  }
+
+}
+
+function renderAdmin(){
+
+  const list=
+    document.getElementById(
+      'admin-list'
+    );
+
+  list.innerHTML='';
+
+  [...catalogo.juegos]
+    .sort((a,b)=>
+      (a.orden||0)-(b.orden||0)
+    )
+    .forEach(j=>{
+
+      const row=
+        document.createElement('div');
+
+      row.className='admin-row';
+
+      row.innerHTML=`
+        <img
+          src="${escapeAttr(j.imagen)}"
+          alt=""
+        >
+
+        <div class="grow">
+          <b>${escapeHtml(j.nombre)}</b>
+
+          <div class="admin-muted">
+            ${escapeHtml(j.tipo||'iframe')}
+            ${j.categoria?
+              ' · '+escapeHtml(j.categoria):''}
+          </div>
+        </div>
+
+        <button onclick="editarJuego('${j.id}')">
+          ✏️
+        </button>
+
+        <button onclick="subirJuego('${j.id}')">
+          ⬆️
+        </button>
+
+        <button onclick="bajarJuego('${j.id}')">
+          ⬇️
+        </button>
+
+        <button onclick="eliminarJuego('${j.id}')">
+          🗑️
+        </button>
+      `;
+
+      list.appendChild(row);
+
+    });
+
+}
+
+function escapeHtml(s){
+
+  return String(s??'').replace(
+    /[&<>"']/g,
+    m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m])
+  );
+
+}
+
+function escapeAttr(s){
+
+  return escapeHtml(s)
+    .replace(/`/g,'&#96;');
+
+}
+
+/* =========================
+   BUSCADOR DE IMAGENES
+========================= */
+
+function buscarImagen(inputId,nombreId){
+
+  const nombre=
+    document.getElementById(
+      nombreId
+    ).value.trim();
+
+  if(!nombre){
+
+    alert(
+      'Primero escribe el nombre del juego.'
+    );
+
+    return;
+  }
+
+  const url=
+    'https://www.google.com/search?tbm=isch&q='+
+    encodeURIComponent(nombre);
+
+  window.open(url,'_blank');
+
+}
+
+/* =========================
+   FORMULARIO AGREGAR
+========================= */
+
+function mostrarAgregar(){
+
+  const e=
+    document.getElementById('editor');
+
+  e.innerHTML=`
+
+    <div style="
+      background:#222;
+      padding:14px;
+      border-radius:10px;
+      margin-bottom:15px
+    ">
+
+      <h3>➕ Nuevo juego</h3>
+
+      <div class="form-grid">
+
+        <label>
+          Nombre
+          <input
+            id="fNombre"
+            placeholder="Ej. Kirby Dream Land 3"
+          >
+        </label>
+
+        <label>
+          Tipo
+
+          <select
+            id="fTipo"
+            onchange="actualizarCamposYouTube('fTipo','fYoutubeExtra')"
+          >
+
+            <option value="iframe">
+              Juego online / iframe
+            </option>
+
+            <option value="swf">
+              Flash SWF
+            </option>
+
+            <option value="snes">
+              SNES / emulador
+            </option>
+
+            <option value="youtube">
+              🎬 Videos de YouTube
+            </option>
+
+            <option value="newtab">
+              Abrir en otra pestaña
+            </option>
+
+          </select>
+        </label>
+
+        <label>
+          URL del juego / video
+          <input
+            id="fUrl"
+            placeholder="https://..."
+          >
+        </label>
+
+        <label>
+          URL de imagen
+          <input
+            id="fImagen"
+            placeholder="https://...jpg / png / webp"
+          >
+
+          <button
+            type="button"
+            class="image-search-button"
+            onclick="buscarImagen('fImagen','fNombre')"
+          >
+            🔎 Buscar imagen
+          </button>
+
+        </label>
+
+        <label>
+          Categoría
+
+          <select id="fCat">
+            ${opcionesCategorias()}
+          </select>
+
+        </label>
+
+        <div
+          id="fYoutubeExtra"
+          class="youtube-extra"
+          style="display:none"
+        >
+
+          <label>
+            ⏱️ Iniciar video desde
+            <input
+              id="fYoutubeStart"
+              placeholder="Ej. 1:35"
+            >
+          </label>
+
+          <div class="admin-muted">
+            Puedes usar segundos (95),
+            minutos:segundos (1:35)
+            o horas:minutos:segundos.
+          </div>
+
+        </div>
+
+      </div>
+
+      <br>
+
+      <button onclick="guardarNuevo()">
+        💾 Añadir al catálogo
+      </button>
+
+      <button onclick="cancelarEditor()">
+        Cancelar
+      </button>
+
+    </div>
+  `;
+
+}
+
+function opcionesCategorias(){
+
+  const categorias=[
+    "Infantil",
+    "Educativos",
+    "Habilidad",
+    "Arcade",
+    "Aventura",
+    "SNES",
+    "Flash",
+    "Música",
+    "Videos"
+  ];
+
+  return categorias.map(c=>
+    `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`
+  ).join('');
+
+}
+
+function actualizarCamposYouTube(selectId,extraId){
+
+  const tipo=
+    document.getElementById(selectId).value;
+
+  document.getElementById(extraId)
+    .style.display=
+      tipo==='youtube'
+        ? 'block'
+        : 'none';
+
+}
+
+function cancelarEditor(){
+
+  document.getElementById(
+    'editor'
+  ).innerHTML='';
+
+}
+
+function guardarNuevo(){
+
+  const nombre=
+    document.getElementById('fNombre')
+      .value.trim();
+
+  const url=
+    document.getElementById('fUrl')
+      .value.trim();
+
+  const imagen=
+    document.getElementById('fImagen')
+      .value.trim();
+
+  const tipo=
+    document.getElementById('fTipo')
+      .value;
+
+  const categoria=
+    document.getElementById('fCat')
+      .value;
+
+  let youtubeStart=0;
+
+  if(tipo==='youtube'){
+
+    if(!extraerYouTubeId(url)){
+
+      alert(
+        'El enlace de YouTube no parece válido.'
+      );
+
+      return;
+    }
+
+    youtubeStart=
+      convertirTiempoASegundos(
+        document.getElementById(
+          'fYoutubeStart'
+        ).value
+      );
+
+  }
+
+  if(!nombre||!url||!imagen){
+
+    alert(
+      'Completa nombre, URL del juego e imagen.'
+    );
+
+    return;
+  }
+
+  catalogo.juegos.push({
+
+    id:'game-'+Date.now(),
+
+    nombre,
+
+    imagen,
+
+    url,
+
+    tipo,
+
+    accion:
+      tipo==='snes'
+        ? 'abrirEmuladorSNES'
+        : tipo==='newtab'
+          ? 'abrirEnNuevaPestana'
+          : tipo==='youtube'
+            ? 'abrirYouTube'
+            : 'abrirJuego',
+
+    categoria,
+
+    youtubeStart,
+
+    orden:
+      catalogo.juegos.length+1
+
+  });
+
+  renderCategorias();
+  renderJuegos();
+  renderAdmin();
+  cancelarEditor();
+
+}
+
+/* =========================
+   MULTIPLES
+========================= */
+
+function mostrarMultiples(){
+
+  const e=
+    document.getElementById('editor');
+
+  let rows='';
+
+  for(let i=1;i<=20;i++){
+
+    rows+=`
+
+      <div style="
+        background:#292929;
+        padding:10px;
+        border-radius:8px;
+        margin:7px 0
+      ">
+
+        <b>${i}</b>
+
+        <div class="form-grid">
+
+          <label>
+            Nombre
+            <input
+              data-multi="nombre"
+              data-i="${i}"
+              placeholder="Opcional"
+            >
+          </label>
+
+          <label>
+            Tipo
+
+            <select
+              data-multi="tipo"
+              data-i="${i}"
+            >
+
+              <option value="iframe">
+                iframe
+              </option>
+
+              <option value="swf">
+                SWF
+              </option>
+
+              <option value="snes">
+                SNES
+              </option>
+
+              <option value="youtube">
+                🎬 YouTube
+              </option>
+
+              <option value="newtab">
+                Nueva pestaña
+              </option>
+
+            </select>
+
+          </label>
+
+          <label>
+            URL
+            <input
+              data-multi="url"
+              data-i="${i}"
+              placeholder="https://..."
+            >
+          </label>
+
+          <label>
+            Imagen
+            <input
+              data-multi="imagen"
+              data-i="${i}"
+              placeholder="URL de portada"
+            >
+          </label>
+
+          <label>
+            Categoría
+
+            <select
+              data-multi="categoria"
+              data-i="${i}"
+            >
+              ${opcionesCategorias()}
+            </select>
+
+          </label>
+
+          <label>
+            ⏱️ Inicio YouTube
+            <input
+              data-multi="start"
+              data-i="${i}"
+              placeholder="1:35"
+            >
+          </label>
+
+        </div>
+
+      </div>
+    `;
+
+  }
+
+  e.innerHTML=`
+
+    <div style="
+      background:#222;
+      padding:14px;
+      border-radius:10px;
+      margin-bottom:15px
+    ">
+
+      <h3>
+        ⚙️ Agregar hasta 20 juegos
+      </h3>
+
+      <p class="admin-muted">
+        Solo se añadirán las filas completas.
+      </p>
+
+      ${rows}
+
+      <button onclick="guardarMultiples()">
+        💾 Añadir los juegos completados
+      </button>
+
+      <button onclick="cancelarEditor()">
+        Cancelar
+      </button>
+
+    </div>
+  `;
+
+}
+
+function valMulti(kind,i){
+
+  return document.querySelector(
+    `[data-multi="${kind}"][data-i="${i}"]`
+  )?.value.trim()||'';
+
+}
+
+function guardarMultiples(){
+
+  let added=0;
+
+  for(let i=1;i<=20;i++){
+
+    const nombre=
+      valMulti('nombre',i);
+
+    const url=
+      valMulti('url',i);
+
+    const imagen=
+      valMulti('imagen',i);
+
+    const tipo=
+      valMulti('tipo',i);
+
+    const categoria=
+      valMulti('categoria',i);
+
+    const start=
+      valMulti('start',i);
+
+    if(!nombre&&!url&&!imagen)
+      continue;
+
+    if(!nombre||!url||!imagen)
+      continue;
+
+    if(
+      tipo==='youtube' &&
+      !extraerYouTubeId(url)
+    )
+      continue;
+
+    catalogo.juegos.push({
+
+      id:
+        'game-'+
+        Date.now()+
+        '-'+i,
+
+      nombre,
+
+      imagen,
+
+      url,
+
+      tipo,
+
+      accion:
+        tipo==='snes'
+          ? 'abrirEmuladorSNES'
+          : tipo==='newtab'
+            ? 'abrirEnNuevaPestana'
+            : tipo==='youtube'
+              ? 'abrirYouTube'
+              : 'abrirJuego',
+
+      categoria,
+
+      youtubeStart:
+        tipo==='youtube'
+          ? convertirTiempoASegundos(start)
+          : 0,
+
+      orden:
+        catalogo.juegos.length+1
+
+    });
+
+    added++;
+
+  }
+
+  renderCategorias();
+  renderJuegos();
+  renderAdmin();
+  cancelarEditor();
+
+  alert(
+    added+
+    ' juego(s) añadidos. Exporta el catálogo para guardar el archivo JSON.'
+  );
+
+}
+
+/* =========================
+   EDITAR
+========================= */
+
+function editarJuego(id){
+
+  const j=
+    catalogo.juegos.find(
+      x=>x.id===id
+    );
+
+  if(!j)return;
+
+  const e=
+    document.getElementById('editor');
+
+  e.innerHTML=`
+
+    <div style="
+      background:#222;
+      padding:14px;
+      border-radius:10px;
+      margin-bottom:15px
+    ">
+
+      <h3>✏️ Editar juego</h3>
+
+      <div class="form-grid">
+
+        <label>
+          Nombre
+
+          <input
+            id="eNombre"
+            value="${escapeAttr(j.nombre)}"
+          >
+        </label>
+
+        <label>
+          Tipo
+
+          <select
+            id="eTipo"
+            onchange="actualizarCamposYouTube('eTipo','eYoutubeExtra')"
+          >
+
+            <option value="iframe">
+              iframe
+            </option>
+
+            <option value="swf">
+              SWF
+            </option>
+
+            <option value="snes">
+              SNES
+            </option>
+
+            <option value="youtube">
+              🎬 YouTube
+            </option>
+
+            <option value="newtab">
+              Nueva pestaña
+            </option>
+
+          </select>
+
+        </label>
+
+        <label>
+          URL
+
+          <input
+            id="eUrl"
+            value="${escapeAttr(j.url)}"
+          >
+        </label>
+
+        <label>
+          Imagen
+
+          <input
+            id="eImagen"
+            value="${escapeAttr(j.imagen)}"
+          >
+
+          <button
+            type="button"
+            class="image-search-button"
+            onclick="buscarImagen('eImagen','eNombre')"
+          >
+            🔎 Buscar imagen
+          </button>
+
+        </label>
+
+        <label>
+          Categoría
+
+          <select id="eCat">
+            ${opcionesCategorias()}
+          </select>
+
+        </label>
+
+        <div
+          id="eYoutubeExtra"
+          class="youtube-extra"
+          style="display:none"
+        >
+
+          <label>
+            ⏱️ Iniciar video desde
+
+            <input
+              id="eYoutubeStart"
+              value="${escapeAttr(
+                j.youtubeStart
+                  ? segundosATiempo(j.youtubeStart)
+                  : ''
+              )}"
+              placeholder="1:35"
+            >
+
+          </label>
+
+        </div>
+
+      </div>
+
+      <br>
+
+      <button onclick="guardarEdicion('${id}')">
+        💾 Guardar
+      </button>
+
+      <button onclick="cancelarEditor()">
+        Cancelar
+      </button>
+
+    </div>
+  `;
+
+  document.getElementById('eTipo').value=
+    j.tipo||'iframe';
+
+  document.getElementById('eCat').value=
+    j.categoria||'Infantil';
+
+  actualizarCamposYouTube(
+    'eTipo',
+    'eYoutubeExtra'
+  );
+
+}
+
+function segundosATiempo(segundos){
+
+  segundos=parseInt(segundos)||0;
+
+  const h=Math.floor(segundos/3600);
+
+  const m=Math.floor(
+    (segundos%3600)/60
+  );
+
+  const s=segundos%60;
+
+  if(h)
+    return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  return `${m}:${String(s).padStart(2,'0')}`;
+
+}
+
+function guardarEdicion(id){
+
+  const j=
+    catalogo.juegos.find(
+      x=>x.id===id
+    );
+
+  if(!j)return;
+
+  j.nombre=
+    document.getElementById(
+      'eNombre'
+    ).value.trim();
+
+  j.tipo=
+    document.getElementById(
+      'eTipo'
+    ).value;
+
+  j.url=
+    document.getElementById(
+      'eUrl'
+    ).value.trim();
+
+  j.imagen=
+    document.getElementById(
+      'eImagen'
+    ).value.trim();
+
+  j.categoria=
+    document.getElementById(
+      'eCat'
+    ).value.trim();
+
+  if(j.tipo==='youtube'){
+
+    if(!extraerYouTubeId(j.url)){
+
+      alert(
+        'El enlace de YouTube no parece válido.'
+      );
+
+      return;
+    }
+
+    j.youtubeStart=
+      convertirTiempoASegundos(
+        document.getElementById(
+          'eYoutubeStart'
+        ).value
+      );
+
+  }else{
+
+    j.youtubeStart=0;
+
+  }
+
+  j.accion=
+    j.tipo==='snes'
+      ? 'abrirEmuladorSNES'
+      : j.tipo==='newtab'
+        ? 'abrirEnNuevaPestana'
+        : j.tipo==='youtube'
+          ? 'abrirYouTube'
+          : 'abrirJuego';
+
+  renderCategorias();
+  renderJuegos();
+  renderAdmin();
+  cancelarEditor();
+
+}
+
+/* =========================
+   ORDEN / ELIMINAR
+========================= */
+
+function eliminarJuego(id){
+
+  if(!confirm(
+    '¿Eliminar este juego del catálogo actual?'
+  ))return;
+
+  catalogo.juegos=
+    catalogo.juegos.filter(
+      x=>x.id!==id
+    );
+
+  reordenar();
+
+  renderCategorias();
+  renderJuegos();
+  renderAdmin();
+
+}
+
+function reordenar(){
+
+  catalogo.juegos.forEach(
+    (j,i)=>j.orden=i+1
+  );
+
+}
+
+function subirJuego(id){
+
+  const a=
+    catalogo.juegos.sort(
+      (x,y)=>
+        (x.orden||0)-(y.orden||0)
+    );
+
+  const i=
+    a.findIndex(x=>x.id===id);
+
+  if(i>0){
+
+    [a[i-1],a[i]]=
+      [a[i],a[i-1]];
+
+    reordenar();
+
+    renderJuegos();
+    renderAdmin();
+
+  }
+
+}
+
+function bajarJuego(id){
+
+  const a=
+    catalogo.juegos.sort(
+      (x,y)=>
+        (x.orden||0)-(y.orden||0)
+    );
+
+  const i=
+    a.findIndex(x=>x.id===id);
+
+  if(
+    i>=0 &&
+    i<a.length-1
+  ){
+
+    [a[i],a[i+1]]=
+      [a[i+1],a[i]];
+
+    reordenar();
+
+    renderJuegos();
+    renderAdmin();
+
+  }
+
+}
+
+/* =========================
+   IMPORTAR / EXPORTAR
+========================= */
+
+function exportarJSON(){
+
+  reordenar();
+
+  const blob=
+    new Blob(
+      [
+        JSON.stringify(
+          catalogo,
+          null,
+          2
+        )
+      ],
+      {
+        type:'application/json'
+      }
+    );
+
+  const a=
+    document.createElement('a');
+
+  a.href=
+    URL.createObjectURL(blob);
+
+  a.download='juegos.json';
+
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+
+}
+
+function importarJSON(){
+
+  document.getElementById(
+    'jsonFile'
+  ).click();
+
+}
+
+function leerJSON(ev){
+
+  const f=
+    ev.target.files[0];
+
+  if(!f)return;
+
+  const r=
+    new FileReader();
+
+  r.onload=()=>{
+
+    try{
+
+      const data=
+        JSON.parse(r.result);
+
+      if(!Array.isArray(data.juegos))
+        throw new Error();
+
+      catalogo=data;
+
+      if(!Array.isArray(catalogo.categorias))
+        catalogo.categorias=[];
+
+      renderCategorias();
+      renderJuegos();
+      renderAdmin();
+
+      alert(
+        'Catálogo cargado correctamente.'
+      );
+
+    }catch(e){
+
+      alert(
+        'JSON no válido.'
+      );
+
+    }
+
+  };
+
+  r.readAsText(f);
+
+  ev.target.value='';
+
+}
+
+/* =========================
+   INICIO
+========================= */
+
+cargarCatalogo();
+
+</script>
+
+</body>
+</html>
