@@ -552,9 +552,21 @@ h1{margin:10px 0}
 
 /* MODO ORDENAR / EDITAR EN LA PÁGINA PRINCIPAL */
 .handle,.card-tools,.card-cat-wrap{display:none}
-.modo-orden .card{cursor:default;user-select:none;-webkit-user-select:none;padding-bottom:8px}
+.modo-orden .card{cursor:default;user-select:none;-webkit-user-select:none;padding-bottom:8px;display:flex;flex-direction:column}
 .modo-orden .card:hover{transform:none}
-.modo-orden .card p{opacity:1}
+.modo-orden .card p{
+  position:static;
+  opacity:1;
+  margin:6px 0 4px;
+  padding:5px 8px;
+  border-radius:8px;
+  background:rgba(0,0,0,.78);
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  pointer-events:none;
+}
 .modo-orden .card img{outline:2px dashed rgba(255,255,255,.55);outline-offset:-2px}
 .modo-orden .handle{
   display:flex;align-items:center;justify-content:center;
@@ -566,15 +578,17 @@ h1{margin:10px 0}
 .card-tools button{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);cursor:pointer}
 .modo-orden .card-cat-wrap{
   display:block;
-  margin-top:5px;
-  padding:0 4px;
+  margin-top:2px;
+  padding:0;
+  position:relative;
+  z-index:4;
 }
 .card-cat-select{
   width:100%;
   padding:5px 8px;
   border-radius:8px;
   border:1px solid rgba(255,255,255,.28);
-  background:rgba(15,23,42,.88);
+  background:rgba(15,23,42,.92);
   color:#fff;
   font-size:12px;
   font-weight:bold;
@@ -585,6 +599,29 @@ h1{margin:10px 0}
   border-color:#3a7bd5;
   background:#1e293b;
   outline:none;
+}
+.bm-links-box{
+  margin-top:8px;
+  max-height:240px;
+  overflow-y:auto;
+  background:#141821;
+  border:1px solid #334155;
+  border-radius:8px;
+  padding:8px;
+}
+.bm-link-row{
+  background:#1e2433;
+  border-radius:6px;
+  padding:6px 8px;
+  margin:5px 0;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.bm-link-url{
+  font:11px monospace;
+  color:#e2e8f0;
+  word-break:break-all;
 }
 .card.arrastrando{transition:none!important;z-index:60;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.6);border-radius:16px}
 #orden-bar{
@@ -904,6 +941,7 @@ h1{margin:10px 0}
 <div id="orden-bar">
   <span id="orden-msg">Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
   <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
+  <button onclick="abrirHerramientaAdmin('categorias')" style="background:#333;color:#fff" title="Crear o gestionar categorías con el teclado">🏷️ Categorías</button>
   <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
   <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
   <button id="btn-orden-ocultos" onclick="toggleFiltroOcultosAdmin()" style="background:#333;color:#fff" title="Ver todos o filtrar solo los juegos ocultos">🙈 Ocultos</button>
@@ -963,6 +1001,10 @@ h1{margin:10px 0}
 
         <button onclick="mostrarAgregar()">
           ➕ Agregar juego
+        </button>
+
+        <button onclick="mostrarCategoriasAdmin()">
+          🏷️ Categorías
         </button>
 
         <button onclick="mostrarMultiples()">
@@ -1313,18 +1355,58 @@ async function cambiarCategoriaRapida(id,nuevaCat,ev){
   if(!j)return;
 
   if(nuevaCat==='__nueva__'){
-    const personalizada=prompt('Escribe el nombre de la nueva categoría:', j.categoria||'');
-    if(personalizada===null){
-      aplicarFiltros();
-      return;
+    /* Mostrar campito de teclado directamente en la tarjeta (sin usar window.prompt que se bloquea) */
+    const cardEl=document.querySelector(`.card[data-id="${id}"]`);
+    const wrap=cardEl ? cardEl.querySelector('.card-cat-wrap') : null;
+    if(wrap){
+      wrap.innerHTML=`
+        <div style="display:flex;gap:4px;align-items:center" onclick="event.stopPropagation()">
+          <input type="text" placeholder="Nueva categoría..." style="flex:1;min-width:0;padding:4px 6px;border-radius:6px;border:1px solid #3a7bd5;background:#0f172a;color:#fff;font-size:12px">
+          <button type="button" style="padding:4px 7px;border:0;border-radius:6px;background:#2b6cb0;color:#fff;font-weight:bold;cursor:pointer">✔</button>
+          <button type="button" style="padding:4px 6px;border:0;border-radius:6px;background:#444;color:#fff;cursor:pointer">✕</button>
+        </div>
+      `;
+      const inp=wrap.querySelector('input');
+      const btnOk=wrap.querySelectorAll('button')[0];
+      const btnCancel=wrap.querySelectorAll('button')[1];
+      const guardarInline=()=>{
+        const val=(inp.value||'').trim();
+        if(val){
+          registrarCategoriaEnCatalogo(val);
+          j.categoria=val;
+          renderCategorias();
+          aplicarFiltros();
+          programarAutoSyncGitHub(`🏷️ "${j.nombre}" → ${val}`, 2400);
+        }else{
+          aplicarFiltros();
+        }
+      };
+      btnOk.onclick=e=>{e.stopPropagation();guardarInline();};
+      btnCancel.onclick=e=>{e.stopPropagation();aplicarFiltros();};
+      inp.onkeydown=e=>{
+        e.stopPropagation();
+        if(e.key==='Enter')guardarInline();
+        else if(e.key==='Escape')aplicarFiltros();
+      };
+      setTimeout(()=>inp.focus(),30);
     }
-    nuevaCat=personalizada.trim();
+    return;
   }
 
+  if(nuevaCat)registrarCategoriaEnCatalogo(nuevaCat);
   j.categoria=nuevaCat;
   renderCategorias();
   aplicarFiltros();
-  programarAutoSyncGitHub(`🏷️ "${j.nombre}" → ${nuevaCat||'Todos'}`, 900);
+  programarAutoSyncGitHub(`🏷️ "${j.nombre}" → ${nuevaCat||'Todos'}`, 2400);
+}
+
+function registrarCategoriaEnCatalogo(nombreCat){
+  const limpia=String(nombreCat||'').trim();
+  if(!limpia || limpia==='Todos')return '';
+  if(!Array.isArray(catalogo.categorias))catalogo.categorias=[];
+  const existe=catalogo.categorias.some(c=>String(c).toLowerCase()===limpia.toLowerCase());
+  if(!existe)catalogo.categorias.push(limpia);
+  return limpia;
 }
 
 function listaCategoriasDisponibles(){
@@ -1340,10 +1422,126 @@ function listaCategoriasDisponibles(){
     "Videos"
   ];
   const set=new Set(base);
+  if(Array.isArray(catalogo.categorias)){
+    catalogo.categorias.forEach(c=>{
+      if(c && String(c).trim())set.add(String(c).trim());
+    });
+  }
   (catalogo.juegos||[]).forEach(j=>{
     if(j.categoria && j.categoria.trim())set.add(j.categoria.trim());
   });
   return Array.from(set);
+}
+
+function mostrarCategoriasAdmin(){
+  const e=document.getElementById('editor');
+  const todas=listaCategoriasDisponibles();
+  const chips=todas.map(c=>{
+    const cant=(catalogo.juegos||[]).filter(j=>(j.categoria||'')===c).length;
+    return `
+      <div style="display:inline-flex;align-items:center;gap:6px;background:#2d3748;padding:6px 12px;border-radius:18px;font-size:13px">
+        <span>🏷️ <b>${escapeHtml(c)}</b> <span class="admin-muted">(${cant})</span></span>
+        <button type="button" onclick="eliminarCategoriaAdmin('${escapeAttr(c)}')" title="Quitar categoría" style="padding:2px 6px;border:0;border-radius:10px;background:#e94560;color:#fff;font-size:11px;cursor:pointer">✕</button>
+      </div>
+    `;
+  }).join('');
+
+  e.innerHTML=`
+    <div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px;border:1px solid #3a7bd5">
+      <h3 style="margin-top:0">🏷️ Gestionar y agregar categorías</h3>
+      <p class="admin-muted" style="margin-top:-4px">
+        Escribe con el teclado el nombre de la categoría que quieras crear para que aparezca en los selectores y en la barra superior:
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <input
+          id="inputNuevaCatTeclado"
+          placeholder="Ej. Deportes, Estrategia, Favoritos, Colorear..."
+          style="flex:1;min-width:220px;padding:9px 12px;border-radius:8px;border:1px solid #555;background:#292929;color:#fff;font-size:14px"
+          onkeydown="if(event.key==='Enter')crearCategoriaDesdeAdmin()"
+        >
+        <button type="button" onclick="crearCategoriaDesdeAdmin()" style="background:#2b6cb0;color:#fff;font-weight:bold">
+          ➕ Agregar categoría
+        </button>
+        <button type="button" onclick="cancelarEditor()">
+          Cerrar
+        </button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${chips}
+      </div>
+    </div>
+  `;
+  setTimeout(()=>document.getElementById('inputNuevaCatTeclado')?.focus(),60);
+}
+
+function crearCategoriaDesdeAdmin(){
+  const inp=document.getElementById('inputNuevaCatTeclado');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val){
+    mostrarToastSync('⚠️ Escribe primero el nombre de la categoría.');
+    inp.focus();
+    return;
+  }
+  registrarCategoriaEnCatalogo(val);
+  inp.value='';
+  renderCategorias();
+  aplicarFiltros();
+  mostrarCategoriasAdmin();
+  programarAutoSyncGitHub(`🏷️ Categoría "${val}" creada`, 2200);
+}
+
+async function eliminarCategoriaAdmin(cat){
+  const cant=(catalogo.juegos||[]).filter(j=>(j.categoria||'')===cat).length;
+  const ok=await pedirConfirmacion(
+    '🏷️ Quitar categoría',
+    cant
+      ? `¿Quitar la categoría "${cat}"? Los ${cant} juego(s) que la tienen pasarán a "Todos (General)".`
+      : `¿Quitar la categoría "${cat}" de la lista?`,
+    'Sí, quitar'
+  );
+  if(!ok)return;
+  if(Array.isArray(catalogo.categorias)){
+    catalogo.categorias=catalogo.categorias.filter(c=>c!==cat);
+  }
+  (catalogo.juegos||[]).forEach(j=>{
+    if(j.categoria===cat)j.categoria='';
+  });
+  if(categoriaActual===cat)categoriaActual='Todos';
+  renderCategorias();
+  aplicarFiltros();
+  mostrarCategoriasAdmin();
+  programarAutoSyncGitHub(`🏷️ Categoría "${cat}" eliminada`, 2200);
+}
+
+function agregarNuevaCategoriaEnFormulario(selectId,boxId){
+  const box=document.getElementById(boxId);
+  if(!box)return;
+  if(box.style.display==='flex'){
+    box.style.display='none';
+    return;
+  }
+  box.style.display='flex';
+  const inp=box.querySelector('input');
+  if(inp){
+    inp.value='';
+    inp.focus();
+  }
+}
+
+function confirmarNuevaCategoriaEnFormulario(selectId,boxId){
+  const box=document.getElementById(boxId);
+  const sel=document.getElementById(selectId);
+  if(!box||!sel)return;
+  const inp=box.querySelector('input');
+  const val=(inp?.value||'').trim();
+  if(!val)return;
+  registrarCategoriaEnCatalogo(val);
+  sel.innerHTML=opcionesCategorias();
+  sel.value=val;
+  box.style.display='none';
+  renderCategorias();
+  mostrarToastSync(`🏷️ Categoría "${val}" agregada y seleccionada.`);
 }
 
 let autoSyncTimer=null;
@@ -1351,8 +1549,9 @@ let syncEnCurso=false;
 let syncPendienteMsg=null;
 let huboCambiosSesionOrden=false;
 let cambiosPendientesSync=false;
+const ultimosShaGitHub={};
 
-function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=1200){
+function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=2600){
   huboCambiosSesionOrden=true;
   cambiosPendientesSync=true;
   const cfg=obtenerConfigGitHub();
@@ -1360,12 +1559,13 @@ function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=1200){
     mostrarToastSync(`✅ ${prefijoMsg} (guarda tu token en 🔑 para auto-sincronizar con GitHub).`);
     return;
   }
-  mostrarToastSync(`⏳ Actualizando GitHub... (${prefijoMsg})`);
+  mostrarToastSync(`⏳ Sincronizando en GitHub... (${prefijoMsg})`);
   if(autoSyncTimer)clearTimeout(autoSyncTimer);
+  /* Espera 2.6s para agrupar varios cambios rápidos seguidos en una sola subida sin errores */
   autoSyncTimer=setTimeout(()=>{
     autoSyncTimer=null;
     sincronizarGitHubSilencioso(prefijoMsg);
-  },demoraMs);
+  },Math.max(2200,demoraMs));
 }
 
 async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
@@ -1430,6 +1630,12 @@ function renderCategorias(){
   const cont=document.getElementById('categories');
 
   const categorias=new Set();
+
+  if(Array.isArray(catalogo.categorias)){
+    catalogo.categorias.forEach(c=>{
+      if(c && String(c).trim())categorias.add(String(c).trim());
+    });
+  }
 
   catalogo.juegos.forEach(j=>{
     if(j.oculto && !modoOrden)return;
@@ -1630,8 +1836,55 @@ function renderJuegos(lista=null){
 let ventanaJuegoActual=null;
 let ultimoJuegoAbierto=null;
 
+function normalizarUrlParaPestanaNormal(url){
+  if(!url)return '';
+  let limpia=url.trim();
+  try{
+    const u=new URL(limpia,location.href);
+    const host=u.hostname.toLowerCase();
+
+    /* 1. GameDistribution: si falta gd_sdk_referrer_url, muestra "IS NOT AVAILABLE HERE". Lo agregamos automáticamente */
+    if(host.includes('gamedistribution.com')){
+      if(!u.searchParams.has('gd_sdk_referrer_url')){
+        u.searchParams.set('gd_sdk_referrer_url','https://gamedistribution.com/games/');
+      }
+      return u.href;
+    }
+
+    /* 2. CrazyGames: convertir /game/slug a /embed/slug */
+    if(host.includes('crazygames.com') && /\/(?:[a-z]{2}\/)?game\//i.test(u.pathname)){
+      const slug=u.pathname.split('/game/')[1]?.replace(/\/+$/,'');
+      if(slug)return `https://www.crazygames.com/embed/${slug}`;
+    }
+
+    /* 3. Playhop: agregar skip-guard=1 para que no detecte iframe externo */
+    if(host.includes('playhop.com')){
+      if(!u.searchParams.has('skip-guard'))u.searchParams.set('skip-guard','1');
+      if(!u.searchParams.has('header'))u.searchParams.set('header','no');
+      return u.href;
+    }
+
+    /* 4. Minigamesville gamelib: asegurar direct=true&universal=true */
+    if(host.includes('minigamesville.com') && u.pathname.includes('/gamelib/')){
+      if(!u.searchParams.has('direct'))u.searchParams.set('direct','true');
+      if(!u.searchParams.has('universal'))u.searchParams.set('universal','true');
+      return u.href;
+    }
+
+    /* 5. Archive.org y Wordwall */
+    if(host.includes('archive.org') && u.pathname.startsWith('/details/')){
+      return limpia.replace('/details/','/embed/');
+    }
+    if(host.includes('wordwall.net') && u.pathname.includes('/resource/') && !u.pathname.includes('/embed/')){
+      return limpia.replace('/resource/','/embed/resource/');
+    }
+  }catch(e){}
+  return limpia;
+}
+
 function abrirJuego(ruta,tipo,accion,juego=null){
 
+  ruta=normalizarUrlParaPestanaNormal(ruta);
   ultimoJuegoAbierto={ruta,tipo,accion,juego};
 
   if(
@@ -1646,6 +1899,13 @@ function abrirJuego(ruta,tipo,accion,juego=null){
     tipo==='ventana'
   ){
     return abrirEnVentanita(ruta,juego);
+  }
+
+  if(
+    accion==='abrirEnVentana2' ||
+    tipo==='ventana2'
+  ){
+    return abrirEnVentana2(ruta,juego);
   }
 
   if(
@@ -1665,7 +1925,6 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
   }
 
-  /* Si el usuario dejó tipo="iframe" pero la URL es de un sitio que bloquea iframe normal (como poki.com), usamos automáticamente el visor interno dentro del recuadro */
   if(sitioBloqueaIframeDirecto(ruta)){
     return abrirEnVentanita(ruta,juego);
   }
@@ -1695,26 +1954,7 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
   }else{
 
-    const iframe=
-      document.createElement('iframe');
-
-    iframe.src=ruta;
-
-    iframe.style.width='100%';
-    iframe.style.height='100%';
-    iframe.style.border='none';
-
-    iframe.allowFullscreen=true;
-
-    iframe.setAttribute(
-      'allowfullscreen',
-      'true'
-    );
-
-    iframe.allow=
-      'fullscreen; autoplay; gamepad; pointer-lock';
-
-    target.appendChild(iframe);
+    cargarIframeDirectoEnTarget(ruta);
 
   }
 
@@ -1722,117 +1962,150 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
 }
 
-async function buscarEmbedAlternativoPorNombre(nombreJuego,urlOriginal=''){
-  /* Busca automáticamente el motor HTML5 embebible (GameMonetize / GameDistribution / CrazyGames) para juegos de Poki/Minijuegos */
-  const slugBase= extraerslugJuego(nombreJuego,urlOriginal);
-  if(!slugBase)return '';
-
-  /* 1. Buscar en el buscador público de GameMonetize a través del proxy */
-  try{
-    const q=encodeURIComponent(slugBase.replace(/-/g,' '));
-    const htmlGM=await leerHtmlRemoto(`https://gamemonetize.com/search?q=${q}`);
-    if(htmlGM){
-      const mId=htmlGM.match(/https?:\/\/img\.gamemonetize\.com\/([a-z0-9]{20,40})\//i);
-      if(mId && mId[1]){
-        return `https://html5.gamemonetize.co/${mId[1]}/`;
-      }
-    }
-  }catch(e){}
-
-  /* 2. Buscar en KBHGames o JuegosArea que alojan iframes directos de juegos de Poki */
-  try{
-    const q=encodeURIComponent(slugBase.replace(/-/g,' '));
-    const htmlKbh=await leerHtmlRemoto(`https://kbhgames.com/?s=${q}`);
-    if(htmlKbh){
-      const mPage=htmlKbh.match(/https?:\/\/kbhgames\.com\/game\/[a-z0-9\-_]+/i);
-      if(mPage && mPage[0]){
-        const gameHtml=await leerHtmlRemoto(mPage[0]);
-        const ex=extraerJuegoDesdeHtml(gameHtml,mPage[0]);
-        if(ex.embedUrl && !sitioBloqueaIframeDirecto(ex.embedUrl)){
-          return ex.embedUrl;
-        }
-      }
-    }
-  }catch(e){}
-
-  return '';
-}
-
-function extraerslugJuego(nombre,url){
-  if(nombre){
-    const s=nombre.toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-      .replace(/[^a-z0-9]+/g,'-')
-      .replace(/^-|-$/g,'');
-    if(s)return s;
-  }
+function extraerSlugPokiCliente(url){
   try{
     const u=new URL(url,location.href);
-    const segs=u.pathname.split('/').filter(Boolean);
-    return segs[segs.length-1]||'';
+    if(!u.hostname.toLowerCase().includes('poki.'))return '';
+    const m=u.pathname.match(/\/g\/([a-z0-9\-_]+)/i);
+    return m?.[1]||'';
   }catch(e){
     return '';
   }
 }
 
+async function desenvuelverIframesProfundo(urlInicial){
+  let actual=normalizarUrlParaPestanaNormal(urlInicial);
+  let titulo='';
+  let imagen='';
+  let ultimoHtml='';
+  let enlacesDetectados=[];
+
+  /* 1. Intentar primero con el extractor rápido del servidor (envía cabeceras de pestaña normal, escanea con la lógica del bookmarklet y resuelve Poki) */
+  if(!location.hostname.includes('github.io')){
+    try{
+      const r=await fetch(`/api/extract-embed?url=${encodeURIComponent(actual)}`);
+      if(r.ok){
+        const d=await r.json();
+        if(d && d.finalUrl){
+          return {
+            embedUrl:normalizarUrlParaPestanaNormal(d.finalUrl),
+            tipoSugerido:d.tipoSugerido||'',
+            titulo:d.titulo||'',
+            imagen:d.imagen||'',
+            enlaces:Array.isArray(d.enlaces)?d.enlaces:[],
+            html:''
+          };
+        }
+      }
+    }catch(e){}
+  }
+
+  /* 2. Si es un enlace de poki.com/es/g/<slug>, resolver su motor HTML5 directo desbloqueado */
+  const pokiSlug=extraerSlugPokiCliente(actual);
+  if(pokiSlug){
+    const htmlPoki=await leerHtmlRemoto(actual);
+    if(htmlPoki){
+      const exP=extraerJuegoDesdeHtml(htmlPoki,actual);
+      if(exP.titulo)titulo=exP.titulo;
+      if(exP.imagen)imagen=exP.imagen;
+    }
+    actual=`https://minigamesville.com/play/${encodeURIComponent(pokiSlug)}/`;
+  }
+
+  /* 3. Escaneo profundo cliente con la misma lógica del bookmarklet __fmBuscadorEnlaces (hasta 5 niveles de iframes internos) */
+  const mapaEnlaces=new Map();
+  const visitados=new Set();
+
+  for(let nivel=0;nivel<5;nivel++){
+    actual=normalizarUrlParaPestanaNormal(actual);
+    if(visitados.has(actual))break;
+    visitados.add(actual);
+
+    const html=await leerHtmlRemoto(actual);
+    if(!html)break;
+    ultimoHtml=html;
+
+    const ex=extraerJuegoDesdeHtml(html,actual,nivel,mapaEnlaces);
+    if(nivel===0 && !titulo){
+      titulo=ex.titulo||'';
+      imagen=ex.imagen||'';
+    }
+    const siguiente=ex.iframesInternos.find(u=>!visitados.has(u)) || ex.embedUrl;
+    if(siguiente && siguiente!==actual && !visitados.has(siguiente)){
+      actual=normalizarUrlParaPestanaNormal(siguiente);
+    }else{
+      break;
+    }
+  }
+
+  enlacesDetectados=Array.from(mapaEnlaces.values()).sort((a,b)=>b.score-a.score);
+  const mejor=enlacesDetectados[0];
+
+  return {
+    embedUrl:mejor ? normalizarUrlParaPestanaNormal(mejor.url) : actual,
+    tipoSugerido:mejor?.tipo || '',
+    titulo,
+    imagen,
+    enlaces:enlacesDetectados.slice(0,25),
+    html:ultimoHtml
+  };
+}
+
 async function abrirEnVentanita(ruta,juego=null){
-  /* Abre el juego 100% DENTRO del recuadro #ruffle-target de tu página (sin ventanas emergentes de Edge afuera) */
-  const target=document.getElementById('ruffle-target');
+  /* Abre el enlace INMEDIATAMENTE dentro del recuadro #ruffle-target sin ninguna pantalla de espera,
+     extrayendo el motor limpio y haciendo creer a la página que está en una pestaña normal */
   document.getElementById('youtube-controls').style.display='none';
+
+  const urlLimpia=normalizarUrlParaPestanaNormal(ruta);
 
   mostrarPlayer();
 
-  const nombre=juego?.nombre || extraerTituloDesdeUrl(ruta) || 'Juego';
-
-  target.innerHTML=`
-    <div id="visor-interno-loading" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0f17;color:#fff;gap:12px;padding:20px;text-align:center">
-      <div style="font-size:38px">🪄</div>
-      <h3 style="margin:0">${escapeHtml(nombre)}</h3>
-      <p style="margin:0;color:#a0aec0;font-size:14px">Cargando juego dentro de tu recuadro (saltando bloqueo de iframe)...</p>
-    </div>
-  `;
-
-  /* 1. Si ya es un enlace embebible directo que no bloquea iframe, cargarlo directo */
-  if(!sitioBloqueaIframeDirecto(ruta)){
-    cargarIframeDirectoEnTarget(ruta);
+  if(!location.hostname.includes('github.io') && (sitioBloqueaIframeDirecto(urlLimpia) || urlLimpia.includes('minigamesville.com'))){
+    cargarIframeDirectoEnTarget(`/api/proxy-tab?url=${encodeURIComponent(urlLimpia)}`,false);
     return;
   }
 
-  /* 2. Intentar extraer el motor embebible del HTML de la página o buscar su motor HTML5 equivalente */
-  const html=await leerHtmlRemoto(ruta);
-  if(html){
-    const ex=extraerJuegoDesdeHtml(html,ruta);
-    if(ex.embedUrl && !sitioBloqueaIframeDirecto(ex.embedUrl)){
-      if(juego)juego.url=ex.embedUrl;
-      cargarIframeDirectoEnTarget(ex.embedUrl);
+  cargarIframeDirectoEnTarget(urlLimpia,true);
+
+  if(sitioBloqueaIframeDirecto(urlLimpia) || urlLimpia.includes('minigamesville.com')){
+    const info=await desenvuelverIframesProfundo(urlLimpia);
+    if(info.embedUrl && info.embedUrl!==urlLimpia && !sitioBloqueaIframeDirecto(info.embedUrl) && !info.embedUrl.includes('minigamesville.com')){
+      if(juego)juego.url=info.embedUrl;
+      cargarIframeDirectoEnTarget(info.embedUrl,true);
       return;
     }
-  }
-
-  /* 3. Buscar motor HTML5 embebible directo por el nombre del juego (ej. Dual Cat Max) */
-  const motorDirecto=await buscarEmbedAlternativoPorNombre(nombre,ruta);
-  if(motorDirecto){
-    if(juego){
-      juego.url=motorDirecto;
-      juego.tipo='iframe';
-      juego.accion='abrirJuego';
-      programarAutoSyncGitHub(`🪄 Motor directo guardado para "${nombre}"`,1200);
+    const htmlFinal=info.html || (await leerHtmlRemoto(info.embedUrl||urlLimpia));
+    if(htmlFinal){
+      cargarHtmlEnVisorSrcdoc(htmlFinal,info.embedUrl||urlLimpia);
     }
-    cargarIframeDirectoEnTarget(motorDirecto);
-    return;
   }
-
-  /* 4. Si la página no tiene mirror externo, renderizar el HTML dentro del propio recuadro usando Visor Interno srcdoc */
-  if(html){
-    cargarHtmlEnVisorSrcdoc(html,ruta);
-    return;
-  }
-
-  /* 5. Último respaldo dentro del recuadro */
-  cargarIframeDirectoEnTarget(ruta);
 }
 
-function cargarIframeDirectoEnTarget(url){
+async function abrirEnVentana2(ruta,juego=null){
+  /* NUEVA VENTANA 2: Abre cualquier sitio o juego como una Pestaña Virtual Completa DENTRO del cuadrado #ruffle-target.
+     Cualquier popup o enlace interno se abre ahí mismo dentro del cuadrado sin salir de tu página y creyendo que es una pestaña nueva normal. */
+  document.getElementById('youtube-controls').style.display='none';
+
+  const urlLimpia=normalizarUrlParaPestanaNormal(ruta);
+
+  mostrarPlayer();
+
+  if(!location.hostname.includes('github.io')){
+    cargarIframeDirectoEnTarget(`/api/proxy-tab?url=${encodeURIComponent(urlLimpia)}`,false);
+    return;
+  }
+
+  /* En GitHub Pages: iniciar al instante y montar contenedor de pestaña virtual srcdoc con interceptor de links/popups */
+  cargarIframeDirectoEnTarget(urlLimpia,true);
+  const info=await desenvuelverIframesProfundo(urlLimpia);
+  const urlObjetivo=info.embedUrl || urlLimpia;
+  const htmlFinal=info.html || (await leerHtmlRemoto(urlObjetivo));
+  if(htmlFinal){
+    cargarHtmlEnVisorSrcdoc(htmlFinal,urlObjetivo);
+  }
+}
+
+function cargarIframeDirectoEnTarget(url,sinReferer=false){
   const target=document.getElementById('ruffle-target');
   target.innerHTML='';
   const iframe=document.createElement('iframe');
@@ -1840,6 +2113,10 @@ function cargarIframeDirectoEnTarget(url){
   iframe.style.width='100%';
   iframe.style.height='100%';
   iframe.style.border='none';
+  if(sinReferer){
+    /* No enviar Referer externo para que el servidor del juego crea que se abrió directo en una pestaña */
+    iframe.referrerPolicy='no-referrer';
+  }
   iframe.allowFullscreen=true;
   iframe.setAttribute('allowfullscreen','true');
   iframe.allow='fullscreen; autoplay; gamepad; pointer-lock';
@@ -1851,20 +2128,106 @@ function cargarHtmlEnVisorSrcdoc(htmlOriginal,urlBase){
   target.innerHTML='';
 
   let origen='';
+  let originRoot='';
   try{
     const u=new URL(urlBase,location.href);
+    originRoot=u.origin;
     origen=u.origin + u.pathname.replace(/[^/]*$/,'');
   }catch(e){
     origen=urlBase;
+    originRoot=urlBase;
   }
 
-  /* Neutralizar bloqueos anti-iframe dentro del HTML descargado e inyectar <base> para que cargue dentro de #ruffle-target */
-  const baseTag=`<base href="${escapeAttr(origen)}"><style>html,body{margin:0;padding:0;overflow:auto;height:100%}</style>`;
+  /* Script inyectado al inicio de <head> que engaña a la página haciéndole creer que está en una pestaña normal,
+     parchea sitelocks WASM de Poki y atrapa cualquier popup/enlace para que abra dentro de este mismo recuadro */
+  let fakePath='/';
+  try{
+    const u=new URL(urlBase,location.href);
+    fakePath=u.pathname+u.search+u.hash;
+  }catch(e){}
+
+  const spoofScript=`<script>
+(function(){
+  try{if(location.protocol!=='about:'&&location.protocol!=='blob:')history.replaceState(null,'',${JSON.stringify(fakePath)});}catch(e){}
+  try{Object.defineProperty(window,'frameElement',{get:function(){return null;},configurable:true});}catch(e){}
+  try{Object.defineProperty(document,'referrer',{get:function(){return ${JSON.stringify(originRoot+'/')};},configurable:true});}catch(e){}
+  try{
+    if(window.location && 'ancestorOrigins' in window.location){
+      Object.defineProperty(window.location,'ancestorOrigins',{
+        get:function(){return {length:0,item:function(){return null;},contains:function(){return false;}};},
+        configurable:true
+      });
+    }
+  }catch(e){}
+  try{
+    window._JS_SystemInfo_GetDocumentURL=function(b,s){
+      var u="https://poki.com/";
+      if(typeof stringToUTF8==='function'&&b)stringToUTF8(u,b,s);
+      if(typeof lengthBytesUTF8==='function')return lengthBytesUTF8(u);
+      return u.length;
+    };
+    if(typeof WebAssembly!=='undefined'&&!window.__wasmSitelockPatched){
+      window.__wasmSitelockPatched=true;
+      var W=null,SIG=[0x02,0x40,0x20,0x01,0x04,0x40,0x20,0x01,0x28,0x02,0x0c,0x04,0x40,0x20,0x00,0x20,0x01,0x41,0x00,0x10,W,W,W,0x45,0x04,0x40,0x20,0x00,0x41,0x00,0x10,W,W,W,0x0c,0x03,0x0b,0x41,0x00,0x10,W,W,W,0x41,0x00,0x10,W,W,W,0x0b,0x0b,0x0b,0x20,0x00,0x41,0x00,0x41,W,W,W,W,0x28,0x02,0x00,0x10,W,W,W,0x41,0x00,0x10,W,W,W,0x0b];
+      function patchSource(src){
+        try{
+          var u8=src instanceof ArrayBuffer?new Uint8Array(src):(ArrayBuffer.isView(src)?new Uint8Array(src.buffer,src.byteOffset,src.byteLength):null);
+          if(!u8)return src;
+          for(var o=0;o<=u8.length-SIG.length;o++){
+            var ok=true;for(var i=0;i<SIG.length;i++){if(SIG[i]!==null&&u8[o+i]!==SIG[i]){ok=false;break;}}
+            if(!ok||u8[o+74]!==0x0b)continue;
+            var seq=u8.slice(o+37,o+49);
+            for(var j=0;j<12;j++)u8[o+j]=seq[j];
+            for(var k=12;k<74;k++)u8[o+k]=0x01;
+            o+=74;
+          }
+        }catch(e){}
+        return src;
+      }
+      var _inst=WebAssembly.instantiate;
+      if(_inst)WebAssembly.instantiate=function(s,imp){if(!(s instanceof WebAssembly.Module))patchSource(s);return _inst.apply(this,arguments);};
+      var _comp=WebAssembly.compile;
+      if(_comp)WebAssembly.compile=function(s){patchSource(s);return _comp.apply(this,arguments);};
+    }
+  }catch(e){}
+  try{
+    window.open=function(u){
+      if(u&&typeof u==='string'&&!u.startsWith('javascript:')){
+        try{
+          var abs=new URL(u,${JSON.stringify(urlBase)}).href;
+          if(window.parent&&window.parent.abrirEnVentana2){window.parent.abrirEnVentana2(abs);return window;}
+        }catch(e){}
+      }
+      return window;
+    };
+  }catch(e){}
+  document.addEventListener('click',function(ev){
+    var a=ev.target&&ev.target.closest?ev.target.closest('a[href]'):null;
+    if(!a)return;
+    var h=a.getAttribute('href')||'';
+    if(!h||h.startsWith('#')||h.startsWith('javascript:'))return;
+    ev.preventDefault();ev.stopPropagation();
+    try{
+      var abs=new URL(h,${JSON.stringify(urlBase)}).href;
+      if(window.parent&&window.parent.abrirEnVentana2)window.parent.abrirEnVentana2(abs);
+    }catch(e){}
+  },true);
+})();
+<\/script>`;
+
+  const baseTag=`<base href="${escapeAttr(origen)}">${spoofScript}<style>html,body{margin:0;padding:0;overflow:auto;height:100%}</style>`;
   let htmlLimpio=htmlOriginal
-    .replace(/top\s*!==?\s*self/g,'false')
-    .replace(/self\s*!==?\s*top/g,'false')
     .replace(/window\.top\s*!==?\s*window\.self/g,'false')
-    .replace(/parent\s*!==?\s*window/g,'false');
+    .replace(/window\.self\s*!==?\s*window\.top/g,'false')
+    .replace(/window\.top\s*===\s*window\.self/g,'true')
+    .replace(/window\.self\s*===\s*window\.top/g,'true')
+    .replace(/\btop\s*!==?\s*self\b/g,'false')
+    .replace(/\bself\s*!==?\s*top\b/g,'false')
+    .replace(/\btop\s*===\s*self\b/g,'true')
+    .replace(/\bself\s*===\s*top\b/g,'true')
+    .replace(/window\.parent\s*!==?\s*window\.self/g,'false')
+    .replace(/window\.parent\s*!==?\s*window\b/g,'false')
+    .replace(/\bparent\s*!==?\s*window\b/g,'false');
 
   if(/<head[^>]*>/i.test(htmlLimpio)){
     htmlLimpio=htmlLimpio.replace(/<head[^>]*>/i, m=>m+baseTag);
@@ -1876,7 +2239,8 @@ function cargarHtmlEnVisorSrcdoc(htmlOriginal,urlBase){
   iframe.style.width='100%';
   iframe.style.height='100%';
   iframe.style.border='none';
-  iframe.style.background='#fff';
+  iframe.style.background='#000';
+  iframe.referrerPolicy='no-referrer';
   iframe.allowFullscreen=true;
   iframe.setAttribute('allowfullscreen','true');
   iframe.allow='fullscreen; autoplay; gamepad; pointer-lock';
@@ -2505,6 +2869,8 @@ function abrirHerramientaAdmin(herramienta){
 
   if(herramienta==='agregar'){
     mostrarAgregar();
+  }else if(herramienta==='categorias'){
+    mostrarCategoriasAdmin();
   }else if(herramienta==='multiples'){
     mostrarMultiples();
   }else if(herramienta==='traer'){
@@ -2678,11 +3044,24 @@ function mostrarAgregar(){
 
         <label>
           Categoría (por defecto: Todos)
-
-          <select id="fCat">
-            ${opcionesCategorias()}
-          </select>
-
+          <div style="display:flex;gap:6px">
+            <select id="fCat" style="flex:1">
+              ${opcionesCategorias()}
+            </select>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="agregarNuevaCategoriaEnFormulario('fCat','fNuevaCatBox')"
+              title="Escribir nueva categoría con el teclado"
+            >
+              ➕ Nueva
+            </button>
+          </div>
+          <div id="fNuevaCatBox" style="display:none;gap:6px;margin-top:6px">
+            <input placeholder="Escribe la nueva categoría..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmarNuevaCategoriaEnFormulario('fCat','fNuevaCatBox');}">
+            <button type="button" onclick="confirmarNuevaCategoriaEnFormulario('fCat','fNuevaCatBox')" style="background:#2b6cb0;color:#fff;font-weight:bold">✔ Crear</button>
+          </div>
         </label>
 
         <label>
@@ -2699,6 +3078,10 @@ function mostrarAgregar(){
 
             <option value="ventana">
               🪟 Nueva ventanita (en el recuadro, salta bloqueos)
+            </option>
+
+            <option value="ventana2">
+              🪟 Nueva ventana 2 (pestaña virtual dentro del cuadrado)
             </option>
 
             <option value="snes">
@@ -2805,17 +3188,7 @@ function mostrarAgregar(){
 
 function opcionesCategorias(){
 
-  const categorias=[
-    "Infantil",
-    "Educativos",
-    "Habilidad",
-    "Arcade",
-    "Aventura",
-    "SNES",
-    "Flash",
-    "Música",
-    "Videos"
-  ];
+  const categorias=listaCategoriasDisponibles();
 
   return `<option value="">Todos (General)</option>` + categorias.map(c=>
     `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`
@@ -2922,12 +3295,66 @@ function resolverUrlRelativa(candidata,baseUrl){
   }
 }
 
-function extraerJuegoDesdeHtml(html,baseUrl){
+/* =========================
+   BUSCADOR PROFUNDO DE ENLACES (MISMA LÓGICA DEL BOOKMARKLET __fmBuscadorEnlaces)
+========================= */
+
+const BM_ORDER=['swf','emu','html5','iframe','youtube','video','otros'];
+const BM_NAMES={
+  swf:'🎮 Flash (SWF)',
+  emu:'🕹️ Emuladores / retro',
+  html5:'🧩 Juegos HTML5',
+  iframe:'🖼️ Otros iframes / embed',
+  youtube:'🎬 YouTube',
+  video:'📼 Video directo',
+  otros:'🔗 Otros enlaces'
+};
+const BM_TIPO={
+  swf:'swf',
+  emu:'snes',
+  html5:'iframe',
+  iframe:'iframe',
+  youtube:'youtube',
+  video:'newtab',
+  otros:'newtab'
+};
+const BM_BAD=/doubleclick|googlesyndication|google-analytics|googletagmanager|googleadservices|adservice|adsystem|adnxs|taboola|outbrain|scorecardresearch|hotjar|clarity\.ms|amazon-adsystem|pubmatic|criteo|connect\.facebook\.net|cloudflare|sentry\.io|newrelic|gstatic\.com|googleapis\.com|facebook\.com|twitter\.com|instagram\.com|tiktok\.com|discord\.(?:gg|com)/i;
+const BM_ASSET_EXT=/\.(?:js|mjs|css|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot|otf|mp3|wav|ogg|json|xml|txt|pdf|zip|rar)(?:[?#]|$)/i;
+const BM_AD_PATH=/\/ads\/|\/ad\/|adsense|adserver|prebid|ima3\.js|gpt\.js|pagead|banner|popunder|analytics|pixel|tracker/i;
+const BM_RX_SWF=/\.swf(?:[?#]|$)/i;
+const BM_RX_YT=/(?:youtube(?:-nocookie)?\.com\/(?:embed|watch|shorts)|youtu\.be\/)/i;
+const BM_RX_EMU=/retrogames\.cc|retrogamesnexus\.com|archive\.org\/embed|emulatorjs|\bejs[_-]|snes9x|embed-upload|webretro|nostalgist|jsnes|\/emulator|emulador|super-?nintendo|\bsnes\b|\bsfc\b/i;
+const BM_RX_H5=/gamemonetize|gamedistribution|famobi|games\.s3\.yandex|cdn\.games\.yandex|playhop|playgama|wordwall\.net\/(?:\w+\/)?embed|minijuegos\.com\/embed|minijuegosgratis\.com|cooljuegos\.com\/embed|crazygames|y8\.com|poki\.com|poki-gdn\.com|itch\.io\/embed|itch\.zone|html5games|igroutka|shoalmedia\.com|minigamesville\.com\/gamelib|gameboss\.com\/games|madkidgames\.com\/full|silvergames\.com\/[^"']+\/iframe/i;
+const BM_RX_HTML=/\.html?(?:[?#]|$)/i;
+const BM_RX_EMBED=/\/embed\/|\/iframe\/|\/gamelib\/|\/play\//i;
+const BM_DATA_ATTRS=['data-src','data-iframe-src','data-url','data-href','data-game','data-swf','data-embed','data-iframe','data-lazy-src','data-lazy','data-original','data-file','data-movie','data-link'];
+
+function bmClassify(u){
+  if(BM_RX_SWF.test(u))return 'swf';
+  if(BM_RX_YT.test(u))return 'youtube';
+  if(BM_ASSET_EXT.test(u) || BM_AD_PATH.test(u))return null;
+  if(BM_RX_EMU.test(u))return 'emu';
+  if(BM_RX_H5.test(u))return 'html5';
+  return null;
+}
+
+function bmRelevante(v){
+  return !!(bmClassify(v) || BM_RX_HTML.test(v) || BM_RX_EMBED.test(v));
+}
+
+function bmRank(c){
+  const i=BM_ORDER.indexOf(c);
+  return i<0 ? 99 : i;
+}
+
+function extraerJuegoDesdeHtml(html,baseUrl,depth=0,externalMap=null){
   const res={
     embedUrl:'',
     tipoSugerido:'',
     titulo:'',
-    imagen:''
+    imagen:'',
+    iframesInternos:[],
+    enlaces:[]
   };
 
   if(!html)return res;
@@ -2955,69 +3382,183 @@ function extraerJuegoDesdeHtml(html,baseUrl){
     res.imagen=resolverUrlRelativa(ogImg[1],baseUrl);
   }
 
-  /* 3. Caso especial: RetroGames.cc (saca el enlace /embed/XXXXX-nombre.html) */
-  const retroMatch=html.match(/https?:\/\/(?:www\.)?retrogames\.cc\/embed\/\d+-[a-z0-9\-_.]+\.html/i)
-                || html.match(/\/embed\/\d+-[a-z0-9\-_.]+\.html/i);
-  if(retroMatch){
-    res.embedUrl=resolverUrlRelativa(retroMatch[0],baseUrl);
-    res.tipoSugerido='snes';
-    return res;
-  }
+  const found=externalMap || new Map();
+  const tagPrefix=depth>0 ? `iframe interno (${depth}) · ` : '';
 
-  /* 4. Buscar archivo Flash .swf directo en la página */
-  const swfMatch=html.match(/["'](https?:\/\/[^"'<>\\\s]+\.swf(?:\?[^"'<>\\\s]*)?)["']/i)
-              || html.match(/["'](\/[^"'<>\\\s]+\.swf(?:\?[^"'<>\\\s]*)?)["']/i);
-  if(swfMatch && swfMatch[1]){
-    res.embedUrl=resolverUrlRelativa(swfMatch[1],baseUrl);
-    res.tipoSugerido='swf';
-    return res;
-  }
+  function add(raw,src,hint,isDomEmbed=false){
+    if(!raw || typeof raw!=='string')return;
+    raw=raw.replace(/&amp;/g,'&').replace(/\\\//g,'/').replace(/\\u002f/gi,'/').trim();
+    if(!raw || /^(?:data|blob|javascript|about|mailto|tel|#):/i.test(raw))return;
+    let u='';
+    try{
+      const parsed=new URL(raw,baseUrl||location.href);
+      if(parsed.protocol!=='http:' && parsed.protocol!=='https:')return;
+      u=normalizarUrlParaPestanaNormal(parsed.href);
+    }catch(e){
+      return;
+    }
+    if(BM_BAD.test(u))return;
+    if(!BM_RX_SWF.test(u) && (BM_ASSET_EXT.test(u) || BM_AD_PATH.test(u)))return;
 
-  /* 5. Buscar iframes de proveedores conocidos de juegos HTML5 / Emuladores */
-  const patronesEmbed=[
-    /https?:\/\/html5\.gamedistribution\.com\/[a-z0-9\-_/]+/i,
-    /https?:\/\/html5\.gamemonetize\.(?:co|com)\/[a-z0-9\-_/]+/i,
-    /https?:\/\/(?:www\.)?retrogamesnexus\.com\/embed\/[^\s"'<>\\]+/i,
-    /https?:\/\/(?:www\.)?archive\.org\/embed\/[^\s"'<>\\]+/i,
-    /https?:\/\/[a-z0-9.-]*itch\.zone\/html\/[^\s"'<>\\]+/i,
-    /https?:\/\/(?:www\.)?itch\.io\/embed-upload\/[^\s"'<>\\]+/i,
-    /https?:\/\/play\.wgplayground\.com\/[^\s"'<>\\]+/i,
-    /https?:\/\/games\.crazygames\.com\/[^\s"'<>\\]+/i,
-    /https?:\/\/[a-z0-9.-]*minijuegosgratis\.com\/[^\s"'<>\\]+/i,
-    /https?:\/\/[a-z0-9.-]*silvergames\.com\/[a-z]{2}\/[^"'<>\\\s]+\/iframe/i
-  ];
+    const cat=bmClassify(u) || hint;
+    if(!cat)return;
 
-  for(const pat of patronesEmbed){
-    const m=html.match(pat);
-    if(m && m[0]){
-      res.embedUrl=resolverUrlRelativa(m[0],baseUrl);
-      res.tipoSugerido=res.embedUrl.includes('retrogames') || res.embedUrl.includes('archive.org') ? 'snes' : 'iframe';
-      return res;
+    let score=depth*25;
+    if(cat==='swf')score+=100;
+    else if(cat==='emu')score+=95;
+    else if(cat==='html5')score+=90;
+    else if(cat==='iframe')score+=60;
+    else if(cat==='youtube')score+=50;
+    else score+=20;
+    if(isDomEmbed)score+=20;
+    if(/cdn\.|shoalmedia|gamelib|gamemonetize|gamedistribution|itch\.zone|retrogames\.cc\/embed/i.test(u))score+=35;
+    if(/\/iframe\/\d+\.html/i.test(u))score-=10;
+
+    let it=found.get(u);
+    if(!it){
+      it={url:u,cat,tipo:BM_TIPO[cat]||'iframe',srcs:[src],depth,score};
+      found.set(u,it);
+    }else{
+      if(bmRank(cat)<bmRank(it.cat)){
+        it.cat=cat;
+        it.tipo=BM_TIPO[cat]||'iframe';
+      }
+      if(score>it.score)it.score=score;
+      if(it.srcs.indexOf(src)<0)it.srcs.push(src);
+    }
+
+    if(isDomEmbed && !BM_RX_SWF.test(u) && !BM_RX_YT.test(u) && !res.iframesInternos.includes(u)){
+      res.iframesInternos.push(u);
     }
   }
 
-  /* 6. Buscar cualquier <iframe id="game..." src="..." o data-src="..."> en la página */
-  const iframeRegex=/<iframe[^>]+(?:data-src|data-iframe-src|src)=["']([^"']+)["'][^>]*>/gi;
+  /* 3. Escaneo DOM de iframe, frame, embed, object */
+  const domEmbedRx=/<(iframe|frame|embed|object)\b([^>]*)>/gi;
   let m;
-  while((m=iframeRegex.exec(html))!==null){
-    const tag=m[0].toLowerCase();
-    const src=m[1];
-    if(!src || src.startsWith('javascript:') || src.includes('google') || src.includes('facebook') || src.includes('doubleclick') || src.includes('ads') || src.includes(' Disqus'))continue;
-    if(
-      tag.includes('game') ||
-      tag.includes('player') ||
-      tag.includes('emulator') ||
-      src.includes('embed') ||
-      src.includes('html5') ||
-      src.includes('game')
-    ){
-      res.embedUrl=resolverUrlRelativa(src,baseUrl);
-      res.tipoSugerido=detectarTipoUrl(res.embedUrl) || 'iframe';
-      return res;
+  while((m=domEmbedRx.exec(html))!==null){
+    const tagName=m[1].toLowerCase();
+    const attrs=m[2]||'';
+    for(const aName of ['src','data',...BM_DATA_ATTRS]){
+      const am=attrs.match(new RegExp(`\\b${aName}\\s*=\\s*["']([^"']+)["']`,'i'));
+      if(am && am[1]){
+        add(am[1],`${tagPrefix}DOM (${tagName})`,'iframe',true);
+      }
     }
+  }
+
+  /* 4. Escaneo de <param name="movie|src|data|url" value="..."> */
+  const paramRx=/<param\b([^>]*)>/gi;
+  while((m=paramRx.exec(html))!==null){
+    const attrs=m[1]||'';
+    const nm=attrs.match(/\bname\s*=\s*["'](movie|src|data|url)["']/i);
+    const vm=attrs.match(/\bvalue\s*=\s*["']([^"']+)["']/i);
+    if(nm && vm && vm[1]){
+      add(vm[1],`${tagPrefix}param`,'iframe',true);
+    }
+  }
+
+  /* 5. Escaneo de video[src], source[src] */
+  const videoRx=/<(?:video|source)\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi;
+  while((m=videoRx.exec(html))!==null){
+    add(m[1],`${tagPrefix}media`,'video',false);
+  }
+
+  /* 6. Escaneo de DATA_ATTRS en cualquier elemento */
+  for(const aName of BM_DATA_ATTRS){
+    const rx=new RegExp(`\\b${aName}\\s*=\\s*["']([^"']+)["']`,'gi');
+    while((m=rx.exec(html))!==null){
+      const v=m[1];
+      if(v && bmRelevante(v)){
+        add(v,`${tagPrefix}${aName}`,bmClassify(v)||'iframe',true);
+      }
+    }
+  }
+
+  /* 7. Escaneo de textScan en scripts/HTML (igual que el bookmarklet) */
+  const text=String(html).slice(0,1500000).replace(/\\\//g,'/').replace(/\\u002f/gi,'/').replace(/&amp;/g,'&');
+  const reUrl=/(?:https?:)?\/\/[^\s"'`<>\\)\]}]+/gi;
+  while((m=reUrl.exec(text))!==null){
+    const rawU=m[0].startsWith('//') ? 'https:'+m[0] : m[0];
+    const c=bmClassify(rawU);
+    if(c){
+      add(rawU,`${tagPrefix}script`,c,false);
+    }else if((BM_RX_HTML.test(rawU) || BM_RX_EMBED.test(rawU)) && /iframe|embed|gamelib|kidoz|shoalmedia|html5|games\//i.test(rawU)){
+      add(rawU,`${tagPrefix}script/iframe`,'iframe',true);
+    }
+  }
+  const reSwf=/["'`]([^"'`\s<>]{2,300}\.swf[^"'`\s<>]{0,100})["'`]/gi;
+  while((m=reSwf.exec(text))!==null){
+    add(m[1],`${tagPrefix}script (.swf)`,'swf',false);
+  }
+
+  const ordenados=Array.from(found.values()).sort((a,b)=>b.score-a.score || bmRank(a.cat)-bmRank(b.cat));
+  res.enlaces=ordenados;
+  if(ordenados[0]){
+    res.embedUrl=ordenados[0].url;
+    res.tipoSugerido=ordenados[0].tipo || detectarTipoUrl(ordenados[0].url) || 'iframe';
   }
 
   return res;
+}
+
+function seleccionarEnlaceDelBuscador(prefijo,url,tipo){
+  const urlEl=document.getElementById(prefijo+'Url');
+  const tipoEl=document.getElementById(prefijo+'Tipo');
+  if(urlEl)urlEl.value=url;
+  if(tipoEl && tipo){
+    tipoEl.value=tipo;
+    const extraId=prefijo==='f'?'fYoutubeExtra':'eYoutubeExtra';
+    actualizarCamposYouTube(tipoEl.id,extraId);
+  }
+  actualizarVistaPrevia(prefijo);
+  mostrarToastSync('✅ Enlace seleccionado y aplicado al formulario.');
+}
+
+function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada){
+  if(!Array.isArray(enlaces) || enlaces.length<=1)return '';
+  let bloquesHtml='';
+  BM_ORDER.forEach(cat=>{
+    const grupo=enlaces.filter(x=>x.cat===cat);
+    if(!grupo.length)return;
+    const filas=grupo.map(x=>{
+      const esActual=x.url===urlSeleccionada;
+      const tipo=x.tipo || BM_TIPO[x.cat] || 'iframe';
+      return `
+        <div class="bm-link-row" style="${esActual?'border:1px solid #38a169':''}">
+          <div class="bm-link-url">${escapeHtml(x.url)}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;color:#94a3b8">${escapeHtml((x.srcs||[]).join(' · '))}</span>
+            <div style="display:flex;gap:4px">
+              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:3px 8px;border:0;border-radius:5px;background:#2b6cb0;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                ${esActual?'✓ En uso':'✅ Usar este'}
+              </button>
+              <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(x.url)}');mostrarToastSync('📋 Enlace copiado')" style="padding:3px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
+                📋 Copiar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    bloquesHtml+=`
+      <div style="margin-top:6px">
+        <div style="font-weight:bold;font-size:12px;color:#fff;margin-bottom:3px">${escapeHtml(BM_NAMES[cat]||cat)} (${grupo.length})</div>
+        ${filas}
+      </div>
+    `;
+  });
+
+  if(!bloquesHtml)return '';
+  return `
+    <details style="margin-top:6px">
+      <summary style="cursor:pointer;font-size:12px;color:#90cdf4;font-weight:bold">
+        🔎 Buscador de enlaces integrado (${enlaces.length} encontrados en la página · clic para ver todos)
+      </summary>
+      <div class="bm-links-box">
+        ${bloquesHtml}
+      </div>
+    </details>
+  `;
 }
 
 async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
@@ -3045,109 +3586,78 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
     return;
   }
 
-  /* Conversión instantánea de enlaces conocidos (Archive.org / Wordwall) */
-  try{
-    const u=new URL(url,location.href);
-    if(u.hostname.includes('archive.org') && u.pathname.startsWith('/details/')){
-      const nuevo=url.replace('/details/','/embed/');
-      urlEl.value=nuevo;
-      url=nuevo;
-      tipoEl.value='snes';
-      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Enlace de Archive.org convertido automáticamente a <b>/embed/</b> listo para jugar.');
-    }else if(u.hostname.includes('wordwall.net') && u.pathname.includes('/resource/') && !u.pathname.includes('/embed/')){
-      const nuevo=url.replace('/resource/','/embed/resource/');
-      urlEl.value=nuevo;
-      url=nuevo;
-      tipoEl.value='iframe';
-      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Enlace de Wordwall convertido automáticamente a su versión embebida.');
-    }
-  }catch(e){}
+  /* Normalización instantánea (GameDistribution gd_sdk_referrer_url, CrazyGames /embed/, Playhop skip-guard, Archive, Wordwall) */
+  const normalizada=normalizarUrlParaPestanaNormal(url);
+  if(normalizada!==url){
+    url=normalizada;
+    urlEl.value=url;
+    tipoEl.value=detectarTipoUrl(url) || 'iframe';
+  }
 
-  /* Si es una página web normal (ej. retrogames.cc sin /embed/, minijuegos, etc.), analizamos su HTML */
+  /* Si es una página web normal (ej. retrogames.cc sin /embed/, minigamesville, play-games, poki, etc.), escaneamos con la lógica del bookmarklet */
   let esEmbedDirecto=false;
   try{
     const u=new URL(url,location.href);
     const p=u.pathname.toLowerCase();
-    esEmbedDirecto=p.includes('/embed') || p.endsWith('.swf') || u.hostname.includes('gamedistribution.com') || u.hostname.includes('gamemonetize.');
+    esEmbedDirecto=p.endsWith('.swf') || u.hostname.includes('gamedistribution.com') || u.hostname.includes('gamemonetize.') || p.includes('/gamelib/');
   }catch(e){}
 
-  if(!esEmbedDirecto && /^https?:\/\//i.test(url)){
-    mostrarDiagnosticoWeb(prefijo,'info','🪄 Analizando página web para extraer el juego embebido / SWF y verificar bloqueos...');
-    const html=await leerHtmlRemoto(url);
-    if(html){
-      const extraido=extraerJuegoDesdeHtml(html,url);
-
-      if(extraido.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
-        nomEl.value=extraido.titulo;
-        nomEl.dataset.auto='1';
-      }
-      if(extraido.imagen && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
-        imgEl.value=extraido.imagen;
-        imgEl.dataset.auto='1';
-      }
-
-      if(extraido.embedUrl && extraido.embedUrl!==url){
-        urlEl.value=extraido.embedUrl;
-        url=extraido.embedUrl;
-        if(extraido.tipoSugerido){
-          tipoEl.value=extraido.tipoSugerido;
-        }
-        actualizarVistaPrevia(prefijo);
-        buscarPortadasAutomaticas(prefijo,false);
-
-        if(sitioBloqueaIframeDirecto(url)){
-          tipoEl.value='ventana';
-          mostrarDiagnosticoWeb(
-            prefijo,
-            'warn',
-            `⚠️ Se encontró el juego, pero el servidor (<b>${escapeHtml(new URL(url).hostname)}</b>) bloquea iframes externos. Se seleccionó <b>"🪟 Nueva ventanita"</b> automáticamente para que abra en el recuadro sin bloqueo.`
-          );
-        }else{
-          mostrarDiagnosticoWeb(
-            prefijo,
-            'ok',
-            `🪄 <b>¡Juego extraído con éxito!</b> Se obtuvo el enlace embebido directo (<code>${escapeHtml(url.slice(0,68))}${url.length>68?'...':''}</code>) y se configuró como <b>${escapeHtml(tipoEl.options[tipoEl.selectedIndex]?.text||tipoEl.value)}</b>.`
-          );
-        }
-        return;
-      }
+  if((!esEmbedDirecto || forzarMensaje) && /^https?:\/\//i.test(url)){
+    if(forzarMensaje){
+      mostrarDiagnosticoWeb(prefijo,'ok','🔍 Escaneando página e iframes internos con el buscador de enlaces...');
     }
-  }
+    const info=await desenvuelverIframesProfundo(url);
 
-  /* Verificar si la URL actual tiene bloqueo de iframe conocido */
-  if(sitioBloqueaIframeDirecto(url)){
-    const nombreJuego=(nomEl?.value||'').trim() || extraerTituloDesdeUrl(url);
-    mostrarDiagnosticoWeb(
-      prefijo,
-      'info',
-      `🔎 <b>${escapeHtml(new URL(url).hostname)}</b> bloquea iframes directos. Buscando automáticamente el motor HTML5 limpio de <b>"${escapeHtml(nombreJuego)}"</b> para incrustarlo dentro de tu página...`
-    );
-    const motorAlternativo=await buscarEmbedAlternativoPorNombre(nombreJuego,url);
-    if(motorAlternativo){
-      urlEl.value=motorAlternativo;
-      url=motorAlternativo;
-      tipoEl.value='iframe';
+    if(info.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+      nomEl.value=info.titulo
+        .split(/\s+[\-|–|—|\|]\s+/)[0]
+        .replace(/^(Play|Jugar)\s+/i,'')
+        .replace(/\s+(Online|Gratis|Free|en línea).*$/i,'')
+        .trim();
+      nomEl.dataset.auto='1';
+    }
+    if(info.imagen && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
+      imgEl.value=info.imagen;
+      imgEl.dataset.auto='1';
+    }
+
+    if(info.embedUrl && info.embedUrl!==url){
+      urlEl.value=info.embedUrl;
+      url=info.embedUrl;
+      tipoEl.value=info.tipoSugerido || detectarTipoUrl(url) || 'iframe';
       actualizarVistaPrevia(prefijo);
       buscarPortadasAutomaticas(prefijo,false);
+      const panelHtml=renderPanelEnlacesBookmarklet(prefijo,info.enlaces||[],url);
       mostrarDiagnosticoWeb(
         prefijo,
         'ok',
-        `🪄 <b>¡Motor HTML5 directo encontrado!</b> Se reemplazó el enlace bloqueado por el juego embebido limpio (<code>${escapeHtml(motorAlternativo)}</code>) para que cargue directo dentro del recuadro de tu página.`
+        `🪄 <b>¡Juego directo extraído!</b> Se aplicó automáticamente el mejor enlace (<code>${escapeHtml(url.slice(0,68))}${url.length>68?'...':''}</code>).${panelHtml}`
+      );
+      return;
+    }else if(Array.isArray(info.enlaces) && info.enlaces.length){
+      const panelHtml=renderPanelEnlacesBookmarklet(prefijo,info.enlaces,url);
+      mostrarDiagnosticoWeb(
+        prefijo,
+        'ok',
+        `✅ Escaneo completado (${info.enlaces.length} enlace(s) encontrados).${panelHtml}`
       );
       return;
     }
+  }
 
+  /* Si el dominio aún bloquea iframes externos, activar Modo Pestaña Normal dentro del recuadro */
+  if(sitioBloqueaIframeDirecto(url)){
     tipoEl.value='ventana';
     mostrarDiagnosticoWeb(
       prefijo,
       'warn',
-      `⚠️ <b>Aviso de bloqueo de Iframe:</b> Esta página (<b>${escapeHtml(new URL(url).hostname)}</b>) bloquea iframes normales. Se activó <b>"🪟 Visor interno (en el recuadro)"</b> para cargarlo dentro del recuadro de tu página sin abrir ventanas externas.`
+      `🪟 Se activó <b>"Nueva ventanita (en el recuadro)"</b> para que <b>${escapeHtml(new URL(url).hostname)}</b> crea que está en una pestaña normal y abra al instante en tu recuadro.`
     );
   }else if(forzarMensaje){
     mostrarDiagnosticoWeb(
       prefijo,
       'ok',
-      `✅ Enlace verificado y listo para jugarse dentro del recuadro de tu página.`
+      `✅ Enlace listo para abrir inmediatamente dentro del recuadro.`
     );
   }else{
     mostrarDiagnosticoWeb(prefijo,'','');
@@ -3556,6 +4066,7 @@ function cancelarEditor(){
 function accionPorTipo(tipo){
   if(tipo==='snes')return 'abrirEmuladorSNES';
   if(tipo==='ventana')return 'abrirEnVentanita';
+  if(tipo==='ventana2')return 'abrirEnVentana2';
   if(tipo==='newtab')return 'abrirEnNuevaPestana';
   if(tipo==='youtube')return 'abrirYouTube';
   return 'abrirJuego';
@@ -3715,6 +4226,10 @@ function mostrarMultiples(){
 
               <option value="ventana">
                 🪟 Nueva ventanita
+              </option>
+
+              <option value="ventana2">
+                🪟 Nueva ventana 2
               </option>
 
               <option value="snes">
@@ -3960,11 +4475,24 @@ function editarJuego(id){
 
         <label>
           Categoría
-
-          <select id="eCat">
-            ${opcionesCategorias()}
-          </select>
-
+          <div style="display:flex;gap:6px">
+            <select id="eCat" style="flex:1">
+              ${opcionesCategorias()}
+            </select>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="agregarNuevaCategoriaEnFormulario('eCat','eNuevaCatBox')"
+              title="Escribir nueva categoría con el teclado"
+            >
+              ➕ Nueva
+            </button>
+          </div>
+          <div id="eNuevaCatBox" style="display:none;gap:6px;margin-top:6px">
+            <input placeholder="Escribe la nueva categoría..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmarNuevaCategoriaEnFormulario('eCat','eNuevaCatBox');}">
+            <button type="button" onclick="confirmarNuevaCategoriaEnFormulario('eCat','eNuevaCatBox')" style="background:#2b6cb0;color:#fff;font-weight:bold">✔ Crear</button>
+          </div>
         </label>
 
         <label>
@@ -3981,6 +4509,10 @@ function editarJuego(id){
 
             <option value="ventana">
               🪟 Nueva ventanita (en el recuadro, salta bloqueos)
+            </option>
+
+            <option value="ventana2">
+              🪟 Nueva ventana 2 (pestaña virtual dentro del cuadrado)
             </option>
 
             <option value="snes">
@@ -4504,40 +5036,56 @@ async function subirArchivoGitHub(cfg,ruta,contenido,mensaje){
     'X-GitHub-Api-Version':'2022-11-28'
   };
 
-  let sha=null;
+  for(let intento=0;intento<3;intento++){
+    let sha=ultimosShaGitHub[ruta] || null;
 
-  const getResponse=await fetch(
-    apiUrl+'?ref='+encodeURIComponent(cfg.branch),
-    {headers}
-  );
+    if(!sha || intento>0){
+      const getResponse=await fetch(
+        apiUrl+'?ref='+encodeURIComponent(cfg.branch)+'&_t='+Date.now(),
+        {headers,cache:'no-store'}
+      );
 
-  if(getResponse.ok){
-    sha=(await getResponse.json()).sha;
-  }else if(getResponse.status!==404){
-    const error=await getResponse.json().catch(()=>({}));
-    throw new Error(error.message || 'No se pudo leer '+ruta+' en GitHub.');
-  }
-
-  const body={
-    message:mensaje,
-    content:textoBase64UTF8(contenido),
-    branch:cfg.branch
-  };
-
-  if(sha) body.sha=sha;
-
-  const putResponse=await fetch(
-    apiUrl,
-    {
-      method:'PUT',
-      headers:{...headers,'Content-Type':'application/json'},
-      body:JSON.stringify(body)
+      if(getResponse.ok){
+        sha=(await getResponse.json()).sha;
+        if(sha)ultimosShaGitHub[ruta]=sha;
+      }else if(getResponse.status!==404){
+        const error=await getResponse.json().catch(()=>({}));
+        throw new Error(error.message || 'No se pudo leer '+ruta+' en GitHub.');
+      }
     }
-  );
 
-  const result=await putResponse.json().catch(()=>({}));
+    const body={
+      message:mensaje,
+      content:textoBase64UTF8(contenido),
+      branch:cfg.branch
+    };
 
-  if(!putResponse.ok){
+    if(sha) body.sha=sha;
+
+    const putResponse=await fetch(
+      apiUrl,
+      {
+        method:'PUT',
+        headers:{...headers,'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      }
+    );
+
+    const result=await putResponse.json().catch(()=>({}));
+
+    if(putResponse.ok){
+      const nuevoSha=result?.content?.sha;
+      if(nuevoSha)ultimosShaGitHub[ruta]=nuevoSha;
+      return;
+    }
+
+    /* Si hubo conflicto de SHA por varios cambios rápidos, refrescar SHA y reintentar automáticamente */
+    if((putResponse.status===409 || putResponse.status===422) && intento<2){
+      delete ultimosShaGitHub[ruta];
+      await new Promise(r=>setTimeout(r,450*(intento+1)));
+      continue;
+    }
+
     throw new Error(result.message || 'GitHub rechazó la actualización de '+ruta+'.');
   }
 
