@@ -452,11 +452,11 @@
     },
     {
       "id": "game-1790893653107",
-      "nombre": "UNO",
-      "imagen": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
-      "url": "https://www.minijuegos.com/juego/uno",
-      "tipo": "ventana",
-      "accion": "abrirEnVentanita",
+      "nombre": "UNO GBA",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqS-kg4MbxiWPQGkUpL7_4MYWsaMzyrrBvYiggFqScog&s=10",
+      "url": "https://f.kbhgames.com/emujs/play.php?c=gba&f=uno-free-fall.gba",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 43
