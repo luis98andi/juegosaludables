@@ -1,8 +1,6 @@
 {
   "version": 1,
-  "categorias": [
-    "gato"
-  ],
+  "categorias": [],
   "juegos": [
     {
       "id": "game-001",
@@ -426,7 +424,7 @@
       "url": "https://playhop.com/es/dist-app/272485?utm_source=distrib&utm_medium=playgamescom&header=no&skip-guard=1&flags=%7B%22adv_sticky_banner_disabled%22%3Atrue%7D",
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
-      "categoria": "gato",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 40
     },
@@ -437,7 +435,7 @@
       "url": "https://minigamesville.com/play/dual-cat-max/",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "gato",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 41
     },
