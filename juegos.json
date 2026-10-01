@@ -1,7 +1,8 @@
 {
   "version": 1,
   "categorias": [
-    "Gatos"
+    "Gatos",
+    "Educativos"
   ],
   "juegos": [
     {
@@ -64,7 +65,7 @@
       "url": "https://itch.io/embed-upload/7740774?color=333333",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "",
+      "categoria": "Educativos",
       "orden": 6,
       "youtubeStart": 0
     },
