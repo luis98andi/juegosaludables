@@ -449,6 +449,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 42
+    },
+    {
+      "id": "game-1790893653107",
+      "nombre": "UNO",
+      "imagen": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
+      "url": "https://www.minijuegos.com/juego/uno",
+      "tipo": "ventana",
+      "accion": "abrirEnVentanita",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 43
     }
   ]
 }
