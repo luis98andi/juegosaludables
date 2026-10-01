@@ -87,7 +87,7 @@
       "url": "https://blockly.games/",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "",
+      "categoria": "Educativos",
       "orden": 8,
       "youtubeStart": 0
     },
