@@ -463,11 +463,11 @@
     },
     {
       "id": "game-1790893864164",
-      "nombre": "play.php?c=gba&f=uno-free-fall.gba",
-      "imagen": "https://f.kbhgames.com/favicon.ico",
+      "nombre": "Uno",
+      "imagen": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
       "url": "https://www.minijuegos.com/embed/uno",
-      "tipo": "ventana",
-      "accion": "abrirEnVentanita",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 44
