@@ -334,6 +334,17 @@
       "categoria": "Habilidad",
       "youtubeStart": 0,
       "orden": 32
+    },
+    {
+      "id": "game-1790813474678",
+      "nombre": "Sonic head 3",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQchO8qdMaUUEsBoFWiu85cdLEN01v4KcWgwzjdvmVwYw&s=10",
+      "url": "https://retrogamesnexus.com/embed/games/sonic-the-hedgehog-3",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 33
     }
   ]
 }
