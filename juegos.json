@@ -26,11 +26,12 @@
       "id": "game-003",
       "nombre": "Cut the Rope",
       "imagen": "https://cdn.blipzi.com/cu/tt/cut-the-rope-d.jpg",
-      "url": "https://play.famobi.com/cut-the-rope",
+      "url": "https://games.cdn.famobi.com/html5games/c/cut-the-rope/v100/?fg_domain=play.famobi.com&fg_aid=A1000-111&fg_uid=4531b37c-a8e0-4a67-9ebd-e8d3190b6277&fg_pid=e37ab3ce-88cd-4438-9b9c-a37df5d33736&fg_beat=956&original_ref=https%3A%2F%2Fplay.famobi.com%2Fcut-the-rope",
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 3
+      "orden": 3,
+      "youtubeStart": 0
     },
     {
       "id": "game-004",
