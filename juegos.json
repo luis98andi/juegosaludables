@@ -465,9 +465,9 @@
       "id": "game-1790893864164",
       "nombre": "Uno",
       "imagen": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
-      "url": "https://www.minijuegos.com/embed/uno",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
+      "url": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
+      "tipo": "ventana",
+      "accion": "abrirEnVentanita",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 44
