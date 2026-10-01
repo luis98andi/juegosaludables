@@ -551,8 +551,8 @@ h1{margin:10px 0}
 }
 
 /* MODO ORDENAR / EDITAR EN LA PÁGINA PRINCIPAL */
-.handle,.card-tools{display:none}
-.modo-orden .card{cursor:default;user-select:none;-webkit-user-select:none}
+.handle,.card-tools,.card-cat-wrap{display:none}
+.modo-orden .card{cursor:default;user-select:none;-webkit-user-select:none;padding-bottom:8px}
 .modo-orden .card:hover{transform:none}
 .modo-orden .card p{opacity:1}
 .modo-orden .card img{outline:2px dashed rgba(255,255,255,.55);outline-offset:-2px}
@@ -564,6 +564,28 @@ h1{margin:10px 0}
 }
 .modo-orden .card-tools{display:flex;gap:6px;position:absolute;top:14px;right:14px;z-index:3}
 .card-tools button{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);cursor:pointer}
+.modo-orden .card-cat-wrap{
+  display:block;
+  margin-top:5px;
+  padding:0 4px;
+}
+.card-cat-select{
+  width:100%;
+  padding:5px 8px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(15,23,42,.88);
+  color:#fff;
+  font-size:12px;
+  font-weight:bold;
+  cursor:pointer;
+  text-align:center;
+}
+.card-cat-select:hover,.card-cat-select:focus{
+  border-color:#3a7bd5;
+  background:#1e293b;
+  outline:none;
+}
 .card.arrastrando{transition:none!important;z-index:60;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.6);border-radius:16px}
 #orden-bar{
   display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:70px;z-index:998;
@@ -654,6 +676,87 @@ h1{margin:10px 0}
 .cover-thumb.selected{
   border-color:#3a7bd5;
   transform:scale(1.06);
+}
+
+/* SELECTOR DE EMOJIS PARA CUENTAS */
+#emoji-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.82);
+  z-index:2100;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+}
+.emoji-modal-box{
+  background:#1e1e1e;
+  border:1px solid #444;
+  border-radius:18px;
+  padding:18px;
+  max-width:480px;
+  width:100%;
+  max-height:86vh;
+  overflow-y:auto;
+  text-align:center;
+  box-shadow:0 14px 44px rgba(0,0,0,.65);
+}
+.emoji-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(44px,1fr));
+  gap:8px;
+  margin:12px 0;
+}
+.emoji-btn{
+  font-size:26px;
+  height:46px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  background:#2a2a2a;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.15s;
+}
+.emoji-btn:hover{
+  background:#3a7bd5;
+  transform:scale(1.12);
+}
+.emoji-cat-title{
+  text-align:left;
+  font-size:12px;
+  color:#bbb;
+  margin:10px 0 4px;
+  font-weight:bold;
+}
+
+/* DIAGNÓSTICO DE EXTRACCIÓN WEB / BLOQUEO IFRAME */
+.web-diag-box{
+  grid-column:1/-1;
+  padding:10px 12px;
+  border-radius:9px;
+  font-size:13px;
+  line-height:1.4;
+  display:none;
+}
+.web-diag-box.ok{
+  display:block;
+  background:rgba(47,133,90,.25);
+  border:1px solid #48bb78;
+  color:#c6f6d5;
+}
+.web-diag-box.warn{
+  display:block;
+  background:rgba(197,48,48,.25);
+  border:1px solid #fc8181;
+  color:#fed7d7;
+}
+.web-diag-box.info{
+  display:block;
+  background:rgba(43,108,176,.25);
+  border:1px solid #63b3ed;
+  color:#bee3f8;
 }
 
 @media(max-width:600px){
@@ -749,13 +852,6 @@ h1{margin:10px 0}
 
 </div>
 
-<!-- BOTÓN DISIMULADO PARA OCULTAR / DESOCULTAR JUEGOS FUERA DE ADMIN -->
-<button
-  id="btn-ocultos"
-  title="Ocultar o mostrar juegos ocultos"
-  onclick="toggleModoOcultar()"
->👁️</button>
-
 <div id="toast-sync"></div>
 
 <button
@@ -782,19 +878,38 @@ h1{margin:10px 0}
       <p id="cuentas-clave-error" style="color:#ff8b8b"></p>
     </div>
 
+    <button id="cuentas-cambiar-emoji" class="btn" style="background:#3a7bd5;color:#fff;font-weight:bold" onclick="abrirSelectorEmojiCuenta(cuentaActual ? cuentaActual.id : (cuentas[0]&&cuentas[0].id))">🎨 Cambiar mi emoji</button>
     <button id="cuentas-cerrar" class="btn" style="display:none" onclick="ocultarSelector()">Volver</button>
+  </div>
+</div>
+
+<!-- MODAL SELECTOR DE EMOJIS -->
+<div id="emoji-modal" onclick="if(event.target===this)cerrarSelectorEmoji()">
+  <div class="emoji-modal-box">
+    <h3 id="emoji-modal-titulo" style="margin:0 0 6px">🎨 Elige tu emoji favorito</h3>
+    <p class="admin-muted" style="margin:0 0 10px">Toca cualquier emoji de la lista o escribe uno desde tu teclado:</p>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-bottom:10px">
+      <input id="emoji-custom-input" placeholder="📱 Escribe o pega un emoji..." maxlength="8" style="width:190px;padding:8px 10px;border-radius:10px;border:1px solid #555;background:#292929;color:#fff;font-size:18px;text-align:center">
+      <button onclick="aplicarEmojiPersonalizado()" style="padding:9px 14px;border:0;border-radius:10px;background:#2b6cb0;color:#fff;font-weight:bold;cursor:pointer">Usar este</button>
+    </div>
+    <div id="emoji-categorias-cont"></div>
+    <div style="margin-top:12px">
+      <button onclick="cerrarSelectorEmoji()" style="padding:9px 18px;border:0;border-radius:10px;background:#3a3a3a;color:#fff;cursor:pointer">Cerrar</button>
+    </div>
   </div>
 </div>
 
 <button id="btn-cuentas" onclick="mostrarSelector()"></button>
 
 <div id="orden-bar">
-  <span id="orden-msg">Arrastra ⠿ para mover · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
+  <span id="orden-msg">Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
   <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
   <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
   <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
+  <button id="btn-orden-ocultos" onclick="toggleFiltroOcultosAdmin()" style="background:#333;color:#fff" title="Ver todos o filtrar solo los juegos ocultos">🙈 Ocultos</button>
   <button onclick="abrirHerramientaAdmin('cuentas')" style="background:#333;color:#fff">👤 Cuentas</button>
   <button onclick="ordenSubirGitHub()" style="background:#2f855a;color:#fff">☁️ GitHub</button>
+  <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">🔍 Verificar GitHub</button>
   <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
   <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
 </div>
@@ -858,12 +973,20 @@ h1{margin:10px 0}
           🔄 Traer de otra cuenta
         </button>
 
+        <button id="btn-admin-ocultos" onclick="cerrarAdmin();toggleFiltroOcultosAdmin()">
+          🙈 Ver ocultos
+        </button>
+
         <button onclick="mostrarCuentas()">
           👤 Cuentas
         </button>
 
         <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold">
           ☁️ Actualizar GitHub
+        </button>
+
+        <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff;font-weight:bold">
+          🔍 Verificar GitHub
         </button>
 
         <button onclick="mostrarGitHub(true)" title="Configurar token o repositorio de GitHub">
@@ -1134,34 +1257,41 @@ function mostrarToastSync(texto){
   toastTimer=setTimeout(()=>{t.style.display='none';},3500);
 }
 
+let filtroSoloOcultosAdmin=false;
+
 function actualizarBotonOcultos(){
-  const btn=document.getElementById('btn-ocultos');
-  if(!btn)return;
   const cantOcultos=(catalogo.juegos||[]).filter(j=>j.oculto).length;
-  btn.classList.toggle('activo',modoOcultar);
-  btn.textContent=modoOcultar ? '👁️' : (cantOcultos>0 ? '🙈' : '👁️');
-  btn.title=modoOcultar
-    ? 'Salir de ocultar/mostrar juegos'
-    : (cantOcultos>0
-        ? `Ver / desocultar juegos (${cantOcultos} oculto${cantOcultos===1?'':'s'})`
-        : 'Ocultar juegos rápidamente');
+  const bOrden=document.getElementById('btn-orden-ocultos');
+  if(bOrden){
+    bOrden.textContent=filtroSoloOcultosAdmin
+      ? `👁️ Viendo ocultos (${cantOcultos}) · Ver todos`
+      : `🙈 Ocultos (${cantOcultos})`;
+    bOrden.style.background=filtroSoloOcultosAdmin ? '#e94560' : '#333';
+  }
+  const bAdmin=document.getElementById('btn-admin-ocultos');
+  if(bAdmin){
+    bAdmin.textContent=`🙈 Ocultos (${cantOcultos})`;
+  }
 }
 
-function toggleModoOcultar(){
-  if(modoOrden)salirModoOrden();
-  modoOcultar=!modoOcultar;
+function toggleFiltroOcultosAdmin(){
+  if(!modoOrden){
+    entrarModoOrden();
+  }
+  filtroSoloOcultosAdmin=!filtroSoloOcultosAdmin;
   actualizarBotonOcultos();
   aplicarFiltros();
-  if(modoOcultar){
-    const cant=(catalogo.juegos||[]).filter(j=>j.oculto).length;
-    mostrarToastSync(`👁️ Modo ocultar activo (${cant} oculto${cant===1?'':'s'}). Toca un juego para ocultar o mostrar.`);
+  const cant=(catalogo.juegos||[]).filter(j=>j.oculto).length;
+  if(filtroSoloOcultosAdmin){
+    mostrarToastSync(`🙈 Mostrando solo los ${cant} juego(s) ocultos. Toca 👁️ en la tarjeta para desocultar.`);
   }else{
-    mostrarToastSync('✅ Vista normal restaurada.');
+    mostrarToastSync('👁️ Mostrando todas las tarjetas en administración.');
   }
 }
 
 async function alternarOcultoJuego(id,ev){
   if(ev)ev.stopPropagation();
+  if(!modoOrden)return; /* Solo permitido con contraseña dentro de administración */
   const j=catalogo.juegos.find(x=>x.id===id);
   if(!j)return;
   j.oculto=!j.oculto;
@@ -1171,24 +1301,69 @@ async function alternarOcultoJuego(id,ev){
   if(document.getElementById('admin-panel').style.display==='block'){
     renderAdmin();
   }
-  await sincronizarGitHubSilencioso(
-    j.oculto ? `🙈 "${j.nombre}" ocultado` : `👁️ "${j.nombre}" visible de nuevo`
+  programarAutoSyncGitHub(
+    j.oculto ? `🙈 "${j.nombre}" ocultado` : `👁️ "${j.nombre}" visible de nuevo`,
+    900
   );
+}
+
+async function cambiarCategoriaRapida(id,nuevaCat,ev){
+  if(ev)ev.stopPropagation();
+  const j=catalogo.juegos.find(x=>x.id===id);
+  if(!j)return;
+
+  if(nuevaCat==='__nueva__'){
+    const personalizada=prompt('Escribe el nombre de la nueva categoría:', j.categoria||'');
+    if(personalizada===null){
+      aplicarFiltros();
+      return;
+    }
+    nuevaCat=personalizada.trim();
+  }
+
+  j.categoria=nuevaCat;
+  renderCategorias();
+  aplicarFiltros();
+  programarAutoSyncGitHub(`🏷️ "${j.nombre}" → ${nuevaCat||'Todos'}`, 900);
+}
+
+function listaCategoriasDisponibles(){
+  const base=[
+    "Infantil",
+    "Educativos",
+    "Habilidad",
+    "Arcade",
+    "Aventura",
+    "SNES",
+    "Flash",
+    "Música",
+    "Videos"
+  ];
+  const set=new Set(base);
+  (catalogo.juegos||[]).forEach(j=>{
+    if(j.categoria && j.categoria.trim())set.add(j.categoria.trim());
+  });
+  return Array.from(set);
 }
 
 let autoSyncTimer=null;
 let syncEnCurso=false;
 let syncPendienteMsg=null;
+let huboCambiosSesionOrden=false;
+let cambiosPendientesSync=false;
 
 function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=1200){
+  huboCambiosSesionOrden=true;
+  cambiosPendientesSync=true;
   const cfg=obtenerConfigGitHub();
   if(!cfg || !cfg.token){
     mostrarToastSync(`✅ ${prefijoMsg} (guarda tu token en 🔑 para auto-sincronizar con GitHub).`);
     return;
   }
-  mostrarToastSync(`✅ ${prefijoMsg} · ⏳ Auto-sincronizando con GitHub...`);
+  mostrarToastSync(`⏳ Actualizando GitHub... (${prefijoMsg})`);
   if(autoSyncTimer)clearTimeout(autoSyncTimer);
   autoSyncTimer=setTimeout(()=>{
+    autoSyncTimer=null;
     sincronizarGitHubSilencioso(prefijoMsg);
   },demoraMs);
 }
@@ -1204,7 +1379,6 @@ async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
     return;
   }
   syncEnCurso=true;
-  mostrarToastSync(`${prefijoMsg} · ⏳ Sincronizando con GitHub...`);
   try{
     reordenar();
     const fullCfg={
@@ -1228,10 +1402,11 @@ async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
       JSON.stringify(catalogo,null,2),
       'Actualizar '+cuentaActual.archivo+' desde FreshMind Games'
     );
-    mostrarToastSync(`${prefijoMsg} · ☁️ Sincronizado en GitHub`);
+    cambiosPendientesSync=false;
+    mostrarToastSync(`✅ Ya terminó de actualizar en GitHub`);
     const ordenMsg=document.getElementById('orden-msg');
     if(modoOrden && ordenMsg){
-      ordenMsg.textContent='☁️ Sincronizado con GitHub · Arrastra ⠿ · ✏️ editar · 🗑️ borrar';
+      ordenMsg.textContent='✅ Ya actualizado en GitHub · Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🗑️ borrar';
     }
   }catch(e){
     console.error(e);
@@ -1257,7 +1432,7 @@ function renderCategorias(){
   const categorias=new Set();
 
   catalogo.juegos.forEach(j=>{
-    if(j.oculto && !modoOcultar)return;
+    if(j.oculto && !modoOrden)return;
     if(j.categoria){
       categorias.add(j.categoria);
     }
@@ -1311,7 +1486,10 @@ function aplicarFiltros(){
     .sort((a,b)=>(a.orden||0)-(b.orden||0))
     .filter(j=>{
 
-      if(j.oculto && !modoOcultar && !modoOrden)return false;
+      /* Fuera de modoOrden jamás se muestran los juegos ocultos */
+      if(j.oculto && !modoOrden)return false;
+      /* Si dentro de modoOrden activó el filtro de ver solo ocultos */
+      if(modoOrden && filtroSoloOcultosAdmin && !j.oculto)return false;
 
       const coincideCategoria=
         categoriaActual==="Todos" ||
@@ -1336,18 +1514,17 @@ function renderJuegos(lista=null){
 
   grid.innerHTML='';
 
-  const base=
+  const juegos=
     lista ||
     [...catalogo.juegos]
       .sort((a,b)=>
         (a.orden||0)-(b.orden||0)
       )
-      .filter(j=>modoOcultar || modoOrden || !j.oculto);
-
-  /* En modoOcultar mostramos primero los ocultos o los destacamos claramente */
-  const juegos=modoOcultar
-    ? [...base].sort((a,b)=>(b.oculto?1:0)-(a.oculto?1:0) || (a.orden||0)-(b.orden||0))
-    : base;
+      .filter(j=>{
+        if(j.oculto && !modoOrden)return false;
+        if(modoOrden && filtroSoloOcultosAdmin && !j.oculto)return false;
+        return true;
+      });
 
   actualizarBotonOcultos();
 
@@ -1355,13 +1532,17 @@ function renderJuegos(lista=null){
 
     grid.innerHTML=
       '<p style="text-align:center;grid-column:1/-1">'+
-      (catalogo.juegos.length
-        ? 'No se encontraron juegos visibles en esta sección.'
-        : 'Esta cuenta aún no tiene juegos. Toca ⚙️ para agregar el primero.')+
+      (modoOrden && filtroSoloOcultosAdmin
+        ? 'No tienes ningún juego oculto en este momento.'
+        : (catalogo.juegos.length
+            ? 'No se encontraron juegos visibles en esta sección.'
+            : 'Esta cuenta aún no tiene juegos. Toca ⚙️ para agregar el primero.'))+
       '</p>';
 
     return;
   }
+
+  const catsDisponibles=modoOrden ? listaCategoriasDisponibles() : [];
 
   juegos.forEach(j=>{
 
@@ -1373,10 +1554,6 @@ function renderJuegos(lista=null){
 
     card.onclick=()=>{
       if(modoOrden)return;
-      if(modoOcultar){
-        alternarOcultoJuego(j.id);
-        return;
-      }
       abrirJuego(
         j.url,
         j.tipo,
@@ -1394,19 +1571,32 @@ function renderJuegos(lista=null){
     const p=document.createElement('p');
 
     p.textContent=j.nombre+(j.oculto?' (Oculto)':'');
-    if(j.oculto || modoOcultar)p.style.opacity='1';
+    if(j.oculto || modoOrden)p.style.opacity='1';
 
     card.append(img,p);
 
-    if(modoOcultar && !modoOrden){
-      const hb=document.createElement('button');
-      hb.className='quick-hide-btn';
-      hb.innerHTML=j.oculto ? '👁️ Desocultar' : '🙈 Ocultar';
-      hb.onclick=e=>alternarOcultoJuego(j.id,e);
-      card.appendChild(hb);
-    }
-
     if(modoOrden){
+
+      /* Selector rápido e intuitivo de Categoría directo en cada tarjeta */
+      const catWrap=document.createElement('div');
+      catWrap.className='card-cat-wrap';
+      catWrap.onclick=e=>e.stopPropagation();
+
+      const sel=document.createElement('select');
+      sel.className='card-cat-select';
+      sel.title='Cambiar categoría de este juego';
+
+      const catActual=(j.categoria||'').trim();
+      let optsHtml=`<option value="" ${!catActual?'selected':''}>🏷️ Todos (General)</option>`;
+      catsDisponibles.forEach(c=>{
+        optsHtml+=`<option value="${escapeAttr(c)}" ${catActual===c?'selected':''}>🏷️ ${escapeHtml(c)}</option>`;
+      });
+      optsHtml+=`<option value="__nueva__">➕ Nueva categoría...</option>`;
+      sel.innerHTML=optsHtml;
+      sel.onchange=e=>cambiarCategoriaRapida(j.id,e.target.value,e);
+
+      catWrap.appendChild(sel);
+      card.appendChild(catWrap);
 
       const h=document.createElement('div');
       h.className='handle';
@@ -1434,16 +1624,28 @@ function renderJuegos(lista=null){
 }
 
 /* =========================
-   ABRIR JUEGOS
+   ABRIR JUEGOS (100% DENTRO DEL RECUADRO DE LA PÁGINA)
 ========================= */
 
+let ventanaJuegoActual=null;
+let ultimoJuegoAbierto=null;
+
 function abrirJuego(ruta,tipo,accion,juego=null){
+
+  ultimoJuegoAbierto={ruta,tipo,accion,juego};
 
   if(
     accion==='abrirEmuladorSNES' ||
     tipo==='snes'
   ){
     return abrirEmuladorSNES(ruta);
+  }
+
+  if(
+    accion==='abrirEnVentanita' ||
+    tipo==='ventana'
+  ){
+    return abrirEnVentanita(ruta,juego);
   }
 
   if(
@@ -1461,6 +1663,11 @@ function abrirJuego(ruta,tipo,accion,juego=null){
       juego?.youtubeStart || obtenerStartDesdeUrl(ruta)
     );
 
+  }
+
+  /* Si el usuario dejó tipo="iframe" pero la URL es de un sitio que bloquea iframe normal (como poki.com), usamos automáticamente el visor interno dentro del recuadro */
+  if(sitioBloqueaIframeDirecto(ruta)){
+    return abrirEnVentanita(ruta,juego);
   }
 
   const target=
@@ -1513,6 +1720,169 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
   mostrarPlayer();
 
+}
+
+async function buscarEmbedAlternativoPorNombre(nombreJuego,urlOriginal=''){
+  /* Busca automáticamente el motor HTML5 embebible (GameMonetize / GameDistribution / CrazyGames) para juegos de Poki/Minijuegos */
+  const slugBase= extraerslugJuego(nombreJuego,urlOriginal);
+  if(!slugBase)return '';
+
+  /* 1. Buscar en el buscador público de GameMonetize a través del proxy */
+  try{
+    const q=encodeURIComponent(slugBase.replace(/-/g,' '));
+    const htmlGM=await leerHtmlRemoto(`https://gamemonetize.com/search?q=${q}`);
+    if(htmlGM){
+      const mId=htmlGM.match(/https?:\/\/img\.gamemonetize\.com\/([a-z0-9]{20,40})\//i);
+      if(mId && mId[1]){
+        return `https://html5.gamemonetize.co/${mId[1]}/`;
+      }
+    }
+  }catch(e){}
+
+  /* 2. Buscar en KBHGames o JuegosArea que alojan iframes directos de juegos de Poki */
+  try{
+    const q=encodeURIComponent(slugBase.replace(/-/g,' '));
+    const htmlKbh=await leerHtmlRemoto(`https://kbhgames.com/?s=${q}`);
+    if(htmlKbh){
+      const mPage=htmlKbh.match(/https?:\/\/kbhgames\.com\/game\/[a-z0-9\-_]+/i);
+      if(mPage && mPage[0]){
+        const gameHtml=await leerHtmlRemoto(mPage[0]);
+        const ex=extraerJuegoDesdeHtml(gameHtml,mPage[0]);
+        if(ex.embedUrl && !sitioBloqueaIframeDirecto(ex.embedUrl)){
+          return ex.embedUrl;
+        }
+      }
+    }
+  }catch(e){}
+
+  return '';
+}
+
+function extraerslugJuego(nombre,url){
+  if(nombre){
+    const s=nombre.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-|-$/g,'');
+    if(s)return s;
+  }
+  try{
+    const u=new URL(url,location.href);
+    const segs=u.pathname.split('/').filter(Boolean);
+    return segs[segs.length-1]||'';
+  }catch(e){
+    return '';
+  }
+}
+
+async function abrirEnVentanita(ruta,juego=null){
+  /* Abre el juego 100% DENTRO del recuadro #ruffle-target de tu página (sin ventanas emergentes de Edge afuera) */
+  const target=document.getElementById('ruffle-target');
+  document.getElementById('youtube-controls').style.display='none';
+
+  mostrarPlayer();
+
+  const nombre=juego?.nombre || extraerTituloDesdeUrl(ruta) || 'Juego';
+
+  target.innerHTML=`
+    <div id="visor-interno-loading" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0f17;color:#fff;gap:12px;padding:20px;text-align:center">
+      <div style="font-size:38px">🪄</div>
+      <h3 style="margin:0">${escapeHtml(nombre)}</h3>
+      <p style="margin:0;color:#a0aec0;font-size:14px">Cargando juego dentro de tu recuadro (saltando bloqueo de iframe)...</p>
+    </div>
+  `;
+
+  /* 1. Si ya es un enlace embebible directo que no bloquea iframe, cargarlo directo */
+  if(!sitioBloqueaIframeDirecto(ruta)){
+    cargarIframeDirectoEnTarget(ruta);
+    return;
+  }
+
+  /* 2. Intentar extraer el motor embebible del HTML de la página o buscar su motor HTML5 equivalente */
+  const html=await leerHtmlRemoto(ruta);
+  if(html){
+    const ex=extraerJuegoDesdeHtml(html,ruta);
+    if(ex.embedUrl && !sitioBloqueaIframeDirecto(ex.embedUrl)){
+      if(juego)juego.url=ex.embedUrl;
+      cargarIframeDirectoEnTarget(ex.embedUrl);
+      return;
+    }
+  }
+
+  /* 3. Buscar motor HTML5 embebible directo por el nombre del juego (ej. Dual Cat Max) */
+  const motorDirecto=await buscarEmbedAlternativoPorNombre(nombre,ruta);
+  if(motorDirecto){
+    if(juego){
+      juego.url=motorDirecto;
+      juego.tipo='iframe';
+      juego.accion='abrirJuego';
+      programarAutoSyncGitHub(`🪄 Motor directo guardado para "${nombre}"`,1200);
+    }
+    cargarIframeDirectoEnTarget(motorDirecto);
+    return;
+  }
+
+  /* 4. Si la página no tiene mirror externo, renderizar el HTML dentro del propio recuadro usando Visor Interno srcdoc */
+  if(html){
+    cargarHtmlEnVisorSrcdoc(html,ruta);
+    return;
+  }
+
+  /* 5. Último respaldo dentro del recuadro */
+  cargarIframeDirectoEnTarget(ruta);
+}
+
+function cargarIframeDirectoEnTarget(url){
+  const target=document.getElementById('ruffle-target');
+  target.innerHTML='';
+  const iframe=document.createElement('iframe');
+  iframe.src=url;
+  iframe.style.width='100%';
+  iframe.style.height='100%';
+  iframe.style.border='none';
+  iframe.allowFullscreen=true;
+  iframe.setAttribute('allowfullscreen','true');
+  iframe.allow='fullscreen; autoplay; gamepad; pointer-lock';
+  target.appendChild(iframe);
+}
+
+function cargarHtmlEnVisorSrcdoc(htmlOriginal,urlBase){
+  const target=document.getElementById('ruffle-target');
+  target.innerHTML='';
+
+  let origen='';
+  try{
+    const u=new URL(urlBase,location.href);
+    origen=u.origin + u.pathname.replace(/[^/]*$/,'');
+  }catch(e){
+    origen=urlBase;
+  }
+
+  /* Neutralizar bloqueos anti-iframe dentro del HTML descargado e inyectar <base> para que cargue dentro de #ruffle-target */
+  const baseTag=`<base href="${escapeAttr(origen)}"><style>html,body{margin:0;padding:0;overflow:auto;height:100%}</style>`;
+  let htmlLimpio=htmlOriginal
+    .replace(/top\s*!==?\s*self/g,'false')
+    .replace(/self\s*!==?\s*top/g,'false')
+    .replace(/window\.top\s*!==?\s*window\.self/g,'false')
+    .replace(/parent\s*!==?\s*window/g,'false');
+
+  if(/<head[^>]*>/i.test(htmlLimpio)){
+    htmlLimpio=htmlLimpio.replace(/<head[^>]*>/i, m=>m+baseTag);
+  }else{
+    htmlLimpio=baseTag+htmlLimpio;
+  }
+
+  const iframe=document.createElement('iframe');
+  iframe.style.width='100%';
+  iframe.style.height='100%';
+  iframe.style.border='none';
+  iframe.style.background='#fff';
+  iframe.allowFullscreen=true;
+  iframe.setAttribute('allowfullscreen','true');
+  iframe.allow='fullscreen; autoplay; gamepad; pointer-lock';
+  iframe.srcdoc=htmlLimpio;
+
+  target.appendChild(iframe);
 }
 
 /* =========================
@@ -2045,6 +2415,13 @@ document.addEventListener(
 
 function cerrarJuego(){
 
+  try{
+    if(ventanaJuegoActual && !ventanaJuegoActual.closed){
+      ventanaJuegoActual.close();
+    }
+  }catch(e){}
+  ventanaJuegoActual=null;
+
   if(document.fullscreenElement){
 
     if(document.exitFullscreen)
@@ -2243,7 +2620,7 @@ function buscarImagen(inputId,nombreId){
 }
 
 /* =========================
-   FORMULARIO AGREGAR CON AUTODETECTOR Y VISTA PREVIA
+   FORMULARIO AGREGAR CON EXTRACTOR MÁGICO Y VISTA PREVIA
 ========================= */
 
 function mostrarAgregar(){
@@ -2262,19 +2639,33 @@ function mostrarAgregar(){
 
       <h3>➕ Nuevo juego</h3>
       <p class="admin-muted" style="margin-top:-6px;margin-bottom:10px">
-        💡 Pega primero el <b>enlace (URL)</b>: el sistema detectará automáticamente el título, el tipo y las mejores portadas con vista previa.
+        🪄 Pega cualquier <b>enlace normal de una web</b> (ej. RetroGames.cc, Minijuegos, Archive.org, YouTube) o un embed: el sistema extrae automáticamente el juego embebido/SWF, detecta si hay bloqueo de iframe y busca la mejor portada.
       </p>
 
       <div class="form-grid">
 
         <label style="grid-column:1/-1">
-          🔗 URL del juego / video (pega aquí el enlace embed, YouTube, SNES, Genesis, etc.)
-          <input
-            id="fUrl"
-            placeholder="https://..."
-            oninput="autoAgregar()"
-          >
+          🔗 Enlace (URL normal de página web, embed, SWF o YouTube)
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <input
+              id="fUrl"
+              style="flex:1;min-width:220px"
+              placeholder="https://www.retrogames.cc/... o cualquier página de juego"
+              oninput="autoAgregar()"
+            >
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              onclick="analizarYExtraerJuegoDeWeb('f',true)"
+              title="Extraer automáticamente el embed/SWF de la página web y verificar bloqueo de iframe"
+            >
+              🪄 Extraer juego de la web
+            </button>
+          </div>
         </label>
+
+        <div id="fWebDiag" class="web-diag-box"></div>
 
         <label>
           Nombre (se autocompleta o puedes editarlo)
@@ -2295,7 +2686,7 @@ function mostrarAgregar(){
         </label>
 
         <label>
-          Tipo
+          Tipo / Modo de apertura
 
           <select
             id="fTipo"
@@ -2306,12 +2697,16 @@ function mostrarAgregar(){
               Juego online / iframe
             </option>
 
-            <option value="swf">
-              Flash SWF
+            <option value="ventana">
+              🪟 Nueva ventanita (en el recuadro, salta bloqueos)
             </option>
 
             <option value="snes">
               SNES / Genesis / emulador
+            </option>
+
+            <option value="swf">
+              Flash SWF
             </option>
 
             <option value="youtube">
@@ -2319,7 +2714,7 @@ function mostrarAgregar(){
             </option>
 
             <option value="newtab">
-              Abrir en otra pestaña
+              ↗️ Abrir en otra pestaña
             </option>
 
           </select>
@@ -2383,7 +2778,7 @@ function mostrarAgregar(){
             <div id="fPreviewTitle">Vista previa</div>
           </div>
           <div class="cover-suggestions">
-            <div class="admin-muted" id="fAutoStatus">Pega un enlace arriba para detectar título y portadas automáticamente.</div>
+            <div class="admin-muted" id="fAutoStatus">Pega un enlace arriba para extraer el juego, título y portadas automáticamente.</div>
             <div id="fCoverThumbs" class="cover-thumbs"></div>
           </div>
         </div>
@@ -2442,6 +2837,324 @@ function actualizarCamposYouTube(selectId,extraId){
 }
 
 /* =========================
+   EXTRACTOR MÁGICO DE ENLACES WEB Y DETECTOR DE BLOQUEO IFRAME
+========================= */
+
+const SITIOS_BLOQUEAN_IFRAME=[
+  'poki.com',
+  'crazygames.com',
+  'minijuegos.com',
+  'miniplay.com',
+  'playhop.com',
+  'yandex.com',
+  'arbolabcgames.top',
+  'arbolabc.com',
+  'chesskid.com',
+  'igroutka.ru',
+  'friv.com',
+  'coolmathgames.com',
+  'roblox.com',
+  'pbskids.org',
+  'nickjr.com',
+  'cokitos.com'
+];
+
+function sitioBloqueaIframeDirecto(url){
+  try{
+    const u=new URL(url,location.href);
+    const host=u.hostname.toLowerCase();
+    const ruta=u.pathname.toLowerCase();
+    /* Si ya es una ruta /embed/ de sitios que sí permiten su propio /embed/ */
+    if(host.includes('retrogames.cc') && ruta.includes('/embed/'))return false;
+    if(host.includes('archive.org') && ruta.includes('/embed/'))return false;
+    if(host.includes('wordwall.net') && ruta.includes('/embed/'))return false;
+    if(host.includes('gamedistribution.com') || host.includes('gamemonetize.'))return false;
+    if(host.includes('itch.zone') || (host.includes('itch.io') && ruta.includes('embed')))return false;
+
+    return SITIOS_BLOQUEAN_IFRAME.some(d=>host===d || host.endsWith('.'+d));
+  }catch(e){
+    return false;
+  }
+}
+
+function mostrarDiagnosticoWeb(prefijo,clase,htmlMsg){
+  const el=document.getElementById(prefijo+'WebDiag');
+  if(!el)return;
+  if(!htmlMsg){
+    el.className='web-diag-box';
+    el.style.display='none';
+    el.innerHTML='';
+    return;
+  }
+  el.className='web-diag-box '+clase;
+  el.style.display='block';
+  el.innerHTML=htmlMsg;
+}
+
+async function leerHtmlRemoto(url){
+  const proxies=[
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+  ];
+  for(const p of proxies){
+    try{
+      const ctrl=new AbortController();
+      const t=setTimeout(()=>ctrl.abort(),6500);
+      const r=await fetch(p,{signal:ctrl.signal});
+      clearTimeout(t);
+      if(r.ok){
+        const txt=await r.text();
+        if(txt && txt.length>150)return txt;
+      }
+    }catch(e){}
+  }
+  return '';
+}
+
+function resolverUrlRelativa(candidata,baseUrl){
+  if(!candidata)return '';
+  let limpia=candidata.replace(/&amp;/g,'&').replace(/\\\//g,'/').trim();
+  if(limpia.startsWith('//'))limpia='https:'+limpia;
+  try{
+    return new URL(limpia,baseUrl).href;
+  }catch(e){
+    return '';
+  }
+}
+
+function extraerJuegoDesdeHtml(html,baseUrl){
+  const res={
+    embedUrl:'',
+    tipoSugerido:'',
+    titulo:'',
+    imagen:''
+  };
+
+  if(!html)return res;
+
+  /* 1. Título OpenGraph o <title> */
+  const ogTitle=html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)
+             || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i)
+             || html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  if(ogTitle && ogTitle[1]){
+    res.titulo=ogTitle[1]
+      .replace(/&amp;/g,'&')
+      .replace(/&#039;|&#39;/g,"'")
+      .replace(/&quot;/g,'"')
+      .split(/\s+[\-|–|—|\|]\s+/)[0]
+      .replace(/^(Play|Jugar)\s+/i,'')
+      .replace(/\s+(Online|Gratis|Free|en línea).*$/i,'')
+      .trim();
+  }
+
+  /* 2. Imagen OpenGraph */
+  const ogImg=html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+           || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)
+           || html.match(/<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i);
+  if(ogImg && ogImg[1]){
+    res.imagen=resolverUrlRelativa(ogImg[1],baseUrl);
+  }
+
+  /* 3. Caso especial: RetroGames.cc (saca el enlace /embed/XXXXX-nombre.html) */
+  const retroMatch=html.match(/https?:\/\/(?:www\.)?retrogames\.cc\/embed\/\d+-[a-z0-9\-_.]+\.html/i)
+                || html.match(/\/embed\/\d+-[a-z0-9\-_.]+\.html/i);
+  if(retroMatch){
+    res.embedUrl=resolverUrlRelativa(retroMatch[0],baseUrl);
+    res.tipoSugerido='snes';
+    return res;
+  }
+
+  /* 4. Buscar archivo Flash .swf directo en la página */
+  const swfMatch=html.match(/["'](https?:\/\/[^"'<>\\\s]+\.swf(?:\?[^"'<>\\\s]*)?)["']/i)
+              || html.match(/["'](\/[^"'<>\\\s]+\.swf(?:\?[^"'<>\\\s]*)?)["']/i);
+  if(swfMatch && swfMatch[1]){
+    res.embedUrl=resolverUrlRelativa(swfMatch[1],baseUrl);
+    res.tipoSugerido='swf';
+    return res;
+  }
+
+  /* 5. Buscar iframes de proveedores conocidos de juegos HTML5 / Emuladores */
+  const patronesEmbed=[
+    /https?:\/\/html5\.gamedistribution\.com\/[a-z0-9\-_/]+/i,
+    /https?:\/\/html5\.gamemonetize\.(?:co|com)\/[a-z0-9\-_/]+/i,
+    /https?:\/\/(?:www\.)?retrogamesnexus\.com\/embed\/[^\s"'<>\\]+/i,
+    /https?:\/\/(?:www\.)?archive\.org\/embed\/[^\s"'<>\\]+/i,
+    /https?:\/\/[a-z0-9.-]*itch\.zone\/html\/[^\s"'<>\\]+/i,
+    /https?:\/\/(?:www\.)?itch\.io\/embed-upload\/[^\s"'<>\\]+/i,
+    /https?:\/\/play\.wgplayground\.com\/[^\s"'<>\\]+/i,
+    /https?:\/\/games\.crazygames\.com\/[^\s"'<>\\]+/i,
+    /https?:\/\/[a-z0-9.-]*minijuegosgratis\.com\/[^\s"'<>\\]+/i,
+    /https?:\/\/[a-z0-9.-]*silvergames\.com\/[a-z]{2}\/[^"'<>\\\s]+\/iframe/i
+  ];
+
+  for(const pat of patronesEmbed){
+    const m=html.match(pat);
+    if(m && m[0]){
+      res.embedUrl=resolverUrlRelativa(m[0],baseUrl);
+      res.tipoSugerido=res.embedUrl.includes('retrogames') || res.embedUrl.includes('archive.org') ? 'snes' : 'iframe';
+      return res;
+    }
+  }
+
+  /* 6. Buscar cualquier <iframe id="game..." src="..." o data-src="..."> en la página */
+  const iframeRegex=/<iframe[^>]+(?:data-src|data-iframe-src|src)=["']([^"']+)["'][^>]*>/gi;
+  let m;
+  while((m=iframeRegex.exec(html))!==null){
+    const tag=m[0].toLowerCase();
+    const src=m[1];
+    if(!src || src.startsWith('javascript:') || src.includes('google') || src.includes('facebook') || src.includes('doubleclick') || src.includes('ads') || src.includes(' Disqus'))continue;
+    if(
+      tag.includes('game') ||
+      tag.includes('player') ||
+      tag.includes('emulator') ||
+      src.includes('embed') ||
+      src.includes('html5') ||
+      src.includes('game')
+    ){
+      res.embedUrl=resolverUrlRelativa(src,baseUrl);
+      res.tipoSugerido=detectarTipoUrl(res.embedUrl) || 'iframe';
+      return res;
+    }
+  }
+
+  return res;
+}
+
+async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
+  const urlEl=document.getElementById(prefijo+'Url');
+  const tipoEl=document.getElementById(prefijo+'Tipo');
+  const nomEl=document.getElementById(prefijo+'Nombre');
+  const imgEl=document.getElementById(prefijo+'Imagen');
+  if(!urlEl||!tipoEl)return;
+
+  let url=urlEl.value.trim();
+  if(!url)return;
+
+  /* Si el usuario pegó todo el código <iframe src="..."> en vez de solo la URL, extraer src al instante */
+  if(url.toLowerCase().includes('<iframe')){
+    const m=url.match(/src=["']([^"']+)["']/i);
+    if(m && m[1]){
+      url=m[1].trim();
+      urlEl.value=url;
+      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Se extrajo automáticamente el enlace limpio desde el código <code>&lt;iframe&gt;</code>.');
+    }
+  }
+
+  if(extraerYouTubeId(url)){
+    mostrarDiagnosticoWeb(prefijo,'ok','🎬 Video de YouTube detectado y listo.');
+    return;
+  }
+
+  /* Conversión instantánea de enlaces conocidos (Archive.org / Wordwall) */
+  try{
+    const u=new URL(url,location.href);
+    if(u.hostname.includes('archive.org') && u.pathname.startsWith('/details/')){
+      const nuevo=url.replace('/details/','/embed/');
+      urlEl.value=nuevo;
+      url=nuevo;
+      tipoEl.value='snes';
+      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Enlace de Archive.org convertido automáticamente a <b>/embed/</b> listo para jugar.');
+    }else if(u.hostname.includes('wordwall.net') && u.pathname.includes('/resource/') && !u.pathname.includes('/embed/')){
+      const nuevo=url.replace('/resource/','/embed/resource/');
+      urlEl.value=nuevo;
+      url=nuevo;
+      tipoEl.value='iframe';
+      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Enlace de Wordwall convertido automáticamente a su versión embebida.');
+    }
+  }catch(e){}
+
+  /* Si es una página web normal (ej. retrogames.cc sin /embed/, minijuegos, etc.), analizamos su HTML */
+  let esEmbedDirecto=false;
+  try{
+    const u=new URL(url,location.href);
+    const p=u.pathname.toLowerCase();
+    esEmbedDirecto=p.includes('/embed') || p.endsWith('.swf') || u.hostname.includes('gamedistribution.com') || u.hostname.includes('gamemonetize.');
+  }catch(e){}
+
+  if(!esEmbedDirecto && /^https?:\/\//i.test(url)){
+    mostrarDiagnosticoWeb(prefijo,'info','🪄 Analizando página web para extraer el juego embebido / SWF y verificar bloqueos...');
+    const html=await leerHtmlRemoto(url);
+    if(html){
+      const extraido=extraerJuegoDesdeHtml(html,url);
+
+      if(extraido.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+        nomEl.value=extraido.titulo;
+        nomEl.dataset.auto='1';
+      }
+      if(extraido.imagen && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
+        imgEl.value=extraido.imagen;
+        imgEl.dataset.auto='1';
+      }
+
+      if(extraido.embedUrl && extraido.embedUrl!==url){
+        urlEl.value=extraido.embedUrl;
+        url=extraido.embedUrl;
+        if(extraido.tipoSugerido){
+          tipoEl.value=extraido.tipoSugerido;
+        }
+        actualizarVistaPrevia(prefijo);
+        buscarPortadasAutomaticas(prefijo,false);
+
+        if(sitioBloqueaIframeDirecto(url)){
+          tipoEl.value='ventana';
+          mostrarDiagnosticoWeb(
+            prefijo,
+            'warn',
+            `⚠️ Se encontró el juego, pero el servidor (<b>${escapeHtml(new URL(url).hostname)}</b>) bloquea iframes externos. Se seleccionó <b>"🪟 Nueva ventanita"</b> automáticamente para que abra en el recuadro sin bloqueo.`
+          );
+        }else{
+          mostrarDiagnosticoWeb(
+            prefijo,
+            'ok',
+            `🪄 <b>¡Juego extraído con éxito!</b> Se obtuvo el enlace embebido directo (<code>${escapeHtml(url.slice(0,68))}${url.length>68?'...':''}</code>) y se configuró como <b>${escapeHtml(tipoEl.options[tipoEl.selectedIndex]?.text||tipoEl.value)}</b>.`
+          );
+        }
+        return;
+      }
+    }
+  }
+
+  /* Verificar si la URL actual tiene bloqueo de iframe conocido */
+  if(sitioBloqueaIframeDirecto(url)){
+    const nombreJuego=(nomEl?.value||'').trim() || extraerTituloDesdeUrl(url);
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'info',
+      `🔎 <b>${escapeHtml(new URL(url).hostname)}</b> bloquea iframes directos. Buscando automáticamente el motor HTML5 limpio de <b>"${escapeHtml(nombreJuego)}"</b> para incrustarlo dentro de tu página...`
+    );
+    const motorAlternativo=await buscarEmbedAlternativoPorNombre(nombreJuego,url);
+    if(motorAlternativo){
+      urlEl.value=motorAlternativo;
+      url=motorAlternativo;
+      tipoEl.value='iframe';
+      actualizarVistaPrevia(prefijo);
+      buscarPortadasAutomaticas(prefijo,false);
+      mostrarDiagnosticoWeb(
+        prefijo,
+        'ok',
+        `🪄 <b>¡Motor HTML5 directo encontrado!</b> Se reemplazó el enlace bloqueado por el juego embebido limpio (<code>${escapeHtml(motorAlternativo)}</code>) para que cargue directo dentro del recuadro de tu página.`
+      );
+      return;
+    }
+
+    tipoEl.value='ventana';
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'warn',
+      `⚠️ <b>Aviso de bloqueo de Iframe:</b> Esta página (<b>${escapeHtml(new URL(url).hostname)}</b>) bloquea iframes normales. Se activó <b>"🪟 Visor interno (en el recuadro)"</b> para cargarlo dentro del recuadro de tu página sin abrir ventanas externas.`
+    );
+  }else if(forzarMensaje){
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'ok',
+      `✅ Enlace verificado y listo para jugarse dentro del recuadro de tu página.`
+    );
+  }else{
+    mostrarDiagnosticoWeb(prefijo,'','');
+  }
+}
+
+/* =========================
    DETECTOR INTELIGENTE DE TÍTULO, TIPO E IMAGEN DESDE URL
 ========================= */
 
@@ -2468,12 +3181,9 @@ function detectarTipoUrl(url){
     host.includes('arcadespot')
   )return 'snes';
 
-  if(
-    host.includes('playhop.com') ||
-    host.includes('arbolabcgames') ||
-    host.includes('chesskid.com') ||
-    host.includes('igroutka.ru')
-  )return 'newtab';
+  if(sitioBloqueaIframeDirecto(url)){
+    return 'ventana';
+  }
 
   return 'iframe';
 
@@ -2706,14 +3416,24 @@ async function buscarPortadasAutomaticas(prefijo,forzar=false){
 }
 
 let timerAutoUrl=null;
+let timerExtraerWeb=null;
 
 function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl,nomEl=null,prefijo=null){
 
   if(!urlEl||!tipoEl)return;
 
-  const url=urlEl.value.trim();
+  let url=urlEl.value.trim();
 
   if(!url)return;
+
+  /* Si pegaron un código <iframe src="...">, sacar la URL al instante */
+  if(url.toLowerCase().includes('<iframe')){
+    const m=url.match(/src=["']([^"']+)["']/i);
+    if(m && m[1]){
+      url=m[1].trim();
+      urlEl.value=url;
+    }
+  }
 
   const tipo=detectarTipoUrl(url);
 
@@ -2748,6 +3468,9 @@ function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl,nomEl=null,prefijo=null
     actualizarVistaPrevia(prefijo);
     if(timerAutoUrl)clearTimeout(timerAutoUrl);
     timerAutoUrl=setTimeout(()=>buscarPortadasAutomaticas(prefijo,false),280);
+
+    if(timerExtraerWeb)clearTimeout(timerExtraerWeb);
+    timerExtraerWeb=setTimeout(()=>analizarYExtraerJuegoDeWeb(prefijo,false),350);
   }
 
 }
@@ -2783,8 +3506,8 @@ async function autoMulti(i){
 
   autoDesdeUrl(urlEl,tipoEl,imgEl,null,startEl,nomEl,null);
 
-  /* También buscar título/portada en segundo plano para filas múltiples */
-  const url=(urlEl?.value||'').trim();
+  /* También extraer embed y buscar título/portada en segundo plano para filas múltiples */
+  let url=(urlEl?.value||'').trim();
   if(!url)return;
   const ytId=extraerYouTubeId(url);
   if(ytId && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
@@ -2797,18 +3520,25 @@ async function autoMulti(i){
     }catch(e){}
   }else if(/^https?:\/\//i.test(url)){
     try{
-      const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
-      if(r.ok){
-        const j=await r.json();
-        if(j?.data?.title && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
-          nomEl.value=j.data.title.split(/\s+[\-|–|—|\|]\s+/)[0].trim();
+      const html=await leerHtmlRemoto(url);
+      if(html){
+        const ex=extraerJuegoDesdeHtml(html,url);
+        if(ex.embedUrl && urlEl){
+          urlEl.value=ex.embedUrl;
+          url=ex.embedUrl;
+          if(ex.tipoSugerido && tipoEl)tipoEl.value=ex.tipoSugerido;
+        }
+        if(ex.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+          nomEl.value=ex.titulo;
           nomEl.dataset.auto='1';
         }
-        const mImg=j?.data?.image?.url || j?.data?.logo?.url;
-        if(mImg && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
-          imgEl.value=mImg;
+        if(ex.imagen && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
+          imgEl.value=ex.imagen;
           imgEl.dataset.auto='1';
         }
+      }
+      if(sitioBloqueaIframeDirecto(url) && tipoEl){
+        tipoEl.value='ventana';
       }
     }catch(e){}
   }
@@ -2821,6 +3551,14 @@ function cancelarEditor(){
     'editor'
   ).innerHTML='';
 
+}
+
+function accionPorTipo(tipo){
+  if(tipo==='snes')return 'abrirEmuladorSNES';
+  if(tipo==='ventana')return 'abrirEnVentanita';
+  if(tipo==='newtab')return 'abrirEnNuevaPestana';
+  if(tipo==='youtube')return 'abrirYouTube';
+  return 'abrirJuego';
 }
 
 function guardarNuevo(){
@@ -2896,14 +3634,7 @@ function guardarNuevo(){
 
     tipo,
 
-    accion:
-      tipo==='snes'
-        ? 'abrirEmuladorSNES'
-        : tipo==='newtab'
-          ? 'abrirEnNuevaPestana'
-          : tipo==='youtube'
-            ? 'abrirYouTube'
-            : 'abrirJuego',
+    accion:accionPorTipo(tipo),
 
     categoria,
 
@@ -2982,12 +3713,16 @@ function mostrarMultiples(){
                 iframe
               </option>
 
-              <option value="swf">
-                SWF
+              <option value="ventana">
+                🪟 Nueva ventanita
               </option>
 
               <option value="snes">
-                SNES
+                SNES / emulador
+              </option>
+
+              <option value="swf">
+                SWF
               </option>
 
               <option value="youtube">
@@ -2995,7 +3730,7 @@ function mostrarMultiples(){
               </option>
 
               <option value="newtab">
-                Nueva pestaña
+                ↗️ Nueva pestaña
               </option>
 
             </select>
@@ -3054,7 +3789,7 @@ function mostrarMultiples(){
       </h3>
 
       <p class="admin-muted">
-        Solo pega las URLs: el título, tipo, portada y categoría ("Todos") se rellenan solos.
+        Solo pega las URLs: el sistema extrae el embed, título, tipo, portada y categoría ("Todos") automáticamente.
       </p>
 
       ${rows}
@@ -3128,14 +3863,7 @@ function guardarMultiples(){
 
       tipo,
 
-      accion:
-        tipo==='snes'
-          ? 'abrirEmuladorSNES'
-          : tipo==='newtab'
-            ? 'abrirEnNuevaPestana'
-            : tipo==='youtube'
-              ? 'abrirYouTube'
-              : 'abrirJuego',
+      accion:accionPorTipo(tipo),
 
       categoria,
 
@@ -3200,12 +3928,25 @@ function editarJuego(id){
 
         <label style="grid-column:1/-1">
           🔗 URL
-          <input
-            id="eUrl"
-            value="${escapeAttr(j.url)}"
-            oninput="autoEditar()"
-          >
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <input
+              id="eUrl"
+              style="flex:1;min-width:220px"
+              value="${escapeAttr(j.url)}"
+              oninput="autoEditar()"
+            >
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              onclick="analizarYExtraerJuegoDeWeb('e',true)"
+            >
+              🪄 Extraer juego de la web
+            </button>
+          </div>
         </label>
+
+        <div id="eWebDiag" class="web-diag-box"></div>
 
         <label>
           Nombre
@@ -3227,7 +3968,7 @@ function editarJuego(id){
         </label>
 
         <label>
-          Tipo
+          Tipo / Modo de apertura
 
           <select
             id="eTipo"
@@ -3235,15 +3976,19 @@ function editarJuego(id){
           >
 
             <option value="iframe">
-              iframe
+              Juego online / iframe
             </option>
 
-            <option value="swf">
-              SWF
+            <option value="ventana">
+              🪟 Nueva ventanita (en el recuadro, salta bloqueos)
             </option>
 
             <option value="snes">
-              SNES / emulador
+              SNES / Genesis / emulador
+            </option>
+
+            <option value="swf">
+              Flash SWF
             </option>
 
             <option value="youtube">
@@ -3251,7 +3996,7 @@ function editarJuego(id){
             </option>
 
             <option value="newtab">
-              Nueva pestaña
+              ↗️ Nueva pestaña
             </option>
 
           </select>
@@ -3431,14 +4176,7 @@ function guardarEdicion(id){
 
   }
 
-  j.accion=
-    j.tipo==='snes'
-      ? 'abrirEmuladorSNES'
-      : j.tipo==='newtab'
-        ? 'abrirEnNuevaPestana'
-        : j.tipo==='youtube'
-          ? 'abrirYouTube'
-          : 'abrirJuego';
+  j.accion=accionPorTipo(j.tipo);
 
   renderCategorias();
   aplicarFiltros();
@@ -3605,6 +4343,86 @@ async function clicActualizarGitHub(){
     if(quick)quick.textContent='✅ '+cuentaActual.archivo+' actualizado en GitHub con 1 clic.';
   }catch(err){
     if(quick)quick.textContent='❌ Error al subir a GitHub: '+err.message+' (revisa tu token en 🔑 Token).';
+  }
+}
+
+function base64ATextoUTF8(b64){
+  const limpio=String(b64||'').replace(/\s+/g,'');
+  const bin=atob(limpio);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+async function verificarEstadoGitHub(){
+  const cfg=obtenerConfigGitHub();
+  const owner=cfg.owner || 'luis98andi';
+  const repo=cfg.repo || 'juegosaludables';
+  const branch=cfg.branch || 'main';
+  const ruta=cuentaActual ? cuentaActual.archivo : 'juegos.json';
+
+  mostrarToastSync('🔍 Comprobando en vivo el estado de tu GitHub...');
+  const ordenMsg=document.getElementById('orden-msg');
+  if(modoOrden && ordenMsg)ordenMsg.textContent='🔍 Comprobando sincronización en GitHub...';
+
+  const quick=document.getElementById('github-quick-status');
+  if(quick){
+    quick.style.display='block';
+    quick.textContent='🔍 Consultando archivo en GitHub...';
+  }
+
+  try{
+    reordenar();
+    const apiUrl=`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${ruta.split('/').map(encodeURIComponent).join('')}?ref=${encodeURIComponent(branch)}&_t=${Date.now()}`;
+    const headers={'Accept':'application/vnd.github+json'};
+    if(cfg.token)headers['Authorization']='Bearer '+cfg.token;
+
+    const r=await fetch(apiUrl,{headers,cache:'no-store'});
+    if(!r.ok){
+      throw new Error(`No se pudo leer ${ruta} en GitHub (código ${r.status}).`);
+    }
+    const d=await r.json();
+    const contenidoRemoto=base64ATextoUTF8(d.content||'');
+    const jsonRemoto=JSON.parse(contenidoRemoto);
+
+    const juegosLocal=catalogo.juegos||[];
+    const juegosRemoto=jsonRemoto.juegos||[];
+
+    const firma=lista=>JSON.stringify(
+      lista.map(j=>({
+        id:j.id,
+        nombre:j.nombre,
+        url:j.url,
+        imagen:j.imagen,
+        categoria:j.categoria||'',
+        tipo:j.tipo||'iframe',
+        orden:j.orden||0,
+        oculto:!!j.oculto
+      }))
+    );
+
+    const coincide=firma(juegosLocal)===firma(juegosRemoto) && !cuentasSucias && !cambiosPendientesSync;
+
+    if(coincide){
+      const msgOk=`✅ ¡Verificado! GitHub está 100% actualizado (${juegosRemoto.length} juegos en "${cuentaActual?.nombre||'Principal'}").`;
+      mostrarToastSync(msgOk);
+      if(modoOrden && ordenMsg)ordenMsg.textContent=msgOk;
+      if(quick)quick.textContent=msgOk;
+    }else{
+      const difMsg=`⚠️ Hay cambios pendientes: en pantalla tienes ${juegosLocal.length} juego(s) y en GitHub hay ${juegosRemoto.length}.`;
+      if(cfg.token){
+        mostrarToastSync(difMsg+' Subiendo automáticamente ahora...');
+        await sincronizarGitHubSilencioso('Sincronización tras verificar');
+        if(quick)quick.textContent=`✅ Se detectaron diferencias y ya quedaron 100% subidas a GitHub (${juegosLocal.length} juegos).`;
+      }else{
+        mostrarToastSync(difMsg+' Configura tu token en 🔑 para subirlos.');
+        if(quick)quick.textContent=difMsg+' Configura tu token en 🔑 Token para subirlos.';
+      }
+    }
+  }catch(err){
+    const errMsg='❌ No se pudo verificar GitHub: '+err.message;
+    mostrarToastSync(errMsg);
+    if(quick)quick.textContent=errMsg;
   }
 }
 
@@ -3891,10 +4709,12 @@ function entrarModoOrden(){
   cerrarAdmin();
 
   modoOrden=true;
+  filtroSoloOcultosAdmin=false;
+  huboCambiosSesionOrden=false;
   document.body.classList.add('modo-orden');
   document.getElementById('orden-bar').style.display='flex';
   document.getElementById('orden-msg').textContent=
-    'Arrastra ⠿ para mover · ✏️ editar · 🙈 ocultar · 🗑️ borrar';
+    'Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar';
 
   renderCategorias();
   aplicarFiltros();
@@ -3906,12 +4726,27 @@ function entrarModoOrden(){
 
 }
 
-function salirModoOrden(){
+async function salirModoOrden(){
 
   modoOrden=false;
+  filtroSoloOcultosAdmin=false;
   document.body.classList.remove('modo-orden');
   document.getElementById('orden-bar').style.display='none';
+  renderCategorias();
   aplicarFiltros();
+
+  /* Si el usuario agregó, quitó o movió juegos y presionó Listo sin tocar Actualizar GitHub */
+  const cfg=obtenerConfigGitHub();
+  if(autoSyncTimer){
+    clearTimeout(autoSyncTimer);
+    autoSyncTimer=null;
+    await sincronizarGitHubSilencioso('Cambios listos');
+  }else if(cambiosPendientesSync && cfg && cfg.token && !syncEnCurso){
+    await sincronizarGitHubSilencioso('Cambios listos');
+  }else if(huboCambiosSesionOrden && cfg && cfg.token){
+    mostrarToastSync('✅ Ya terminó de actualizar en GitHub');
+  }
+  huboCambiosSesionOrden=false;
 
 }
 
@@ -4095,7 +4930,96 @@ let cuentaActual=null;
 let cuentasSucias=false;
 let cuentaPendiente=null;
 
-const AVATARES=['🐣','🦄','🚀','🐱','🐶','🦖','🌈','⭐','🎨','🎮','🐼','🦊'];
+const AVATARES=['🐣','🦄','🚀','🐱','🐶','🦖','🌈','⭐','🎨','🎮','🐼','🦊','🐰','🦋','🐬','👸','🧚‍♀️','🧜‍♀️','👑','💖','🌸','🍓','🍦','🧁'];
+
+const CATEGORIAS_EMOJIS=[
+  {
+    titulo:'🐾 Animalitos tiernos',
+    emojis:['🐱','🐶','🐰','🦊','🐼','🐨','🦄','🐣','🦋','🐬','🦖','🦖','🐢','🐙','🐝','🐞','🦩','🦢','🐹','🐻‍❄️']
+  },
+  {
+    titulo:'👑 Fantasía, Princesas y Magia',
+    emojis:['👸','🧚‍♀️','🧜‍♀️','🦸‍♀️','🧙‍♀️','👑','💖','🌈','⭐','🌟','🌸','🌺','🌷','🪄','💎','🎀','🩰','🎠']
+  },
+  {
+    titulo:'🎮 Juegos, Música y Diversión',
+    emojis:['🎮','🕹️','🎲','🎨','🎵','🎧','🚀','🛸','🏆','⚽','🏀','🛹','🎯','🎪','🎬','🎸','🎹','🧩']
+  },
+  {
+    titulo:'🍓 Dulces, Frutas y Caritas',
+    emojis:['🍓','🍒','🍉','🍑','🍦','🧁','🍭','🍩','🍪','🍕','😊','😎','🥳','🤩','😺','👼','🤠','🤖']
+  }
+];
+
+let cuentaIdEditandoEmoji=null;
+
+function abrirSelectorEmojiCuenta(idCuenta){
+  const targetId=idCuenta || (cuentaActual ? cuentaActual.id : (cuentas[0]&&cuentas[0].id));
+  const c=cuentas.find(x=>x.id===targetId) || cuentaActual || cuentas[0];
+  if(!c)return;
+
+  cuentaIdEditandoEmoji=c.id;
+  document.getElementById('emoji-modal-titulo').textContent=`🎨 Elige el icono para "${c.nombre}" (actual: ${c.avatar})`;
+  const customInp=document.getElementById('emoji-custom-input');
+  if(customInp)customInp.value=c.avatar||'';
+
+  const cont=document.getElementById('emoji-categorias-cont');
+  cont.innerHTML=CATEGORIAS_EMOJIS.map(cat=>`
+    <div class="emoji-cat-title">${escapeHtml(cat.titulo)}</div>
+    <div class="emoji-grid">
+      ${cat.emojis.map(em=>`
+        <button type="button" class="emoji-btn" onclick="seleccionarEmojiCuenta('${escapeAttr(em)}')">${escapeHtml(em)}</button>
+      `).join('')}
+    </div>
+  `).join('');
+
+  document.getElementById('emoji-modal').style.display='flex';
+}
+
+function cerrarSelectorEmoji(){
+  document.getElementById('emoji-modal').style.display='none';
+  cuentaIdEditandoEmoji=null;
+}
+
+function aplicarEmojiPersonalizado(){
+  const val=(document.getElementById('emoji-custom-input')?.value||'').trim();
+  if(!val){
+    mostrarToastSync('⚠️ Escribe o pega un emoji primero.');
+    return;
+  }
+  /* Tomar el primer emoji / símbolo escrito */
+  const chars=Array.from(val);
+  const emoji=chars.slice(0,2).join('');
+  seleccionarEmojiCuenta(emoji);
+}
+
+async function seleccionarEmojiCuenta(nuevoEmoji){
+  const emoji=String(nuevoEmoji||'').trim();
+  if(!emoji)return;
+
+  const c=cuentas.find(x=>x.id===cuentaIdEditandoEmoji) || cuentaActual || cuentas[0];
+  if(!c)return;
+
+  c.avatar=emoji;
+  cuentasSucias=true;
+
+  /* Guardar también localmente por si aún no tiene token de GitHub */
+  try{
+    localStorage.setItem('freshmind_avatar_'+c.id, emoji);
+  }catch(e){}
+
+  actualizarBotonCuentas();
+
+  if(document.getElementById('cuentas-screen').style.display==='block'){
+    mostrarSelector();
+  }
+  if(document.getElementById('admin-panel').style.display==='block' && document.getElementById('editor').innerHTML.includes('👤 Cuentas')){
+    mostrarCuentas();
+  }
+
+  cerrarSelectorEmoji();
+  programarAutoSyncGitHub(`🎨 Icono cambiado a ${emoji}`, 800);
+}
 
 function normalizarCuenta(c,i){
 
@@ -4205,6 +5129,15 @@ async function iniciarCuentas(){
 
   if(!cuentas.length)cuentas=[cuentaPrincipal()];
 
+  if( Array.isArray(cuentas) ){
+    cuentas.forEach(c=>{
+      try{
+        const guardado=localStorage.getItem('freshmind_avatar_'+c.id);
+        if(guardado)c.avatar=guardado;
+      }catch(e){}
+    });
+  }
+
   /* Siempre se abre la cuenta principal sin elegir (o la del enlace ?cuenta=id) */
   const pedida=new URLSearchParams(location.search).get('cuenta');
   const inicial=cuentas.find(c=>c.id===pedida)||cuentas[0];
@@ -4247,13 +5180,13 @@ function actualizarBotonCuentas(){
 
   const b=document.getElementById('btn-cuentas');
 
-  b.style.display=cuentas.length>1?'flex':'none';
+  b.style.display='flex';
   b.textContent=cuentaActual
     ? cuentaActual.avatar
     : '🎮';
   b.title=cuentaActual
-    ? 'Cuenta actual: '+cuentaActual.nombre+' (clic para cambiar)'
-    : 'Cambiar cuenta';
+    ? 'Cuenta: '+cuentaActual.nombre+' (toca para cambiar cuenta o cambiar tu emoji)'
+    : 'Cambiar cuenta o emoji';
 
   document.getElementById('admin-cuenta').textContent=
     cuentas.length>1 && cuentaActual ? '· '+cuentaActual.nombre : '';
@@ -4557,7 +5490,7 @@ function mostrarCuentas(){
 
     filas+=`
       <div class="cuenta-fila">
-        <span style="font-size:26px">${escapeHtml(c.avatar)}</span>
+        <button type="button" onclick="abrirSelectorEmojiCuenta('${escapeAttr(c.id)}')" title="Cambiar emoji de ${escapeAttr(c.nombre)}" style="font-size:26px;background:#1f1f1f;border:1px solid #444;border-radius:10px;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center">${escapeHtml(c.avatar)}</button>
         <div class="grow">
           <b>${escapeHtml(c.nombre)}</b>${c.id===cuentaActual.id?' (abierta)':''}
           <div class="admin-muted">
@@ -4566,6 +5499,7 @@ function mostrarCuentas(){
             ${(c.claveAdmin||!c.adminLibre)?' · 🛠️ admin':''}
           </div>
         </div>
+        <button onclick="abrirSelectorEmojiCuenta('${escapeAttr(c.id)}')">🎨 Emoji</button>
         <button onclick="cerrarAdmin();elegirCuenta('${escapeAttr(c.id)}')">Abrir</button>
         ${i>0?`<button onclick="eliminarCuenta('${escapeAttr(c.id)}')">🗑️</button>`:''}
       </div>`;
