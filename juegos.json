@@ -86,7 +86,7 @@
       "url": "https://blockly.games/",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "orden": 8,
       "youtubeStart": 0
     },
@@ -107,7 +107,7 @@
       "url": "https://retrogamesnexus.com/embed/games/sonic-the-hedgehog-3",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 10
     },
@@ -128,7 +128,7 @@
       "url": "https://www.madkidgames.com/full/purble-place",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 12
     },
@@ -150,7 +150,7 @@
       "url": "https://playgama.com/export/game/mahjong-classic?clid=p_ae5af802-1a10-4cc0-9e2a-989216d478af",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 14
     },
@@ -171,7 +171,7 @@
       "url": "https://www.gameboss.com/games/mahjongclassic/index.html?lang=en",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 16
     },
@@ -192,7 +192,7 @@
       "url": "https://files.crazygames.com/mahjong-titans/1/mahjong%20titans.swf",
       "tipo": "swf",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 18
     },
@@ -213,7 +213,7 @@
       "url": "https://www.crazygames.com/embed/mahjongg-solitaire",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 20
     },
@@ -234,7 +234,7 @@
       "url": "https://ext.minijuegosgratis.com/pacman/index.html?mp_assets=https%3A%2F%2Fs2.minijuegosgratis.com%2F&mp_embed=0&mp_game_id=2399&mp_game_uid=pacman&mp_game_url=https%3A%2F%2Fwww.minijuegos.com%2Fjuego%2Fpacman&mp_int=1&mp_locale=es_ES&mp_player_type=IFRAME&mp_site_https_url=https%3A%2F%2Fwww.minijuegos.com%2F&mp_site_name=minijuegos.com&mp_site_url=https%3A%2F%2Fwww.minijuegos.com%2F&mp_timezone=America%2FGuayaquil&mp_view_type=",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "Infantil",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 22
     },
