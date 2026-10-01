@@ -198,12 +198,13 @@
     {
       "id": "game-020",
       "nombre": "Blocky Logica",
-      "imagen": "https://blockly.games/index/title.svg",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4RdNXRRGkkbKRSojRoeZzeqHvq417D7HNcpOPT-DBGw&s=10",
       "url": "https://blockly.games/",
       "tipo": "iframe",
       "accion": "abrirJuego",
-      "categoria": "",
-      "orden": 20
+      "categoria": "Infantil",
+      "orden": 20,
+      "youtubeStart": 0
     },
     {
       "id": "game-021",
