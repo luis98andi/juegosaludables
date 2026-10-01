@@ -347,7 +347,7 @@
       "url": "https://www.youtube.com/watch?v=MUCy1gOwG0Y",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Videos",
+      "categoria": "",
       "orden": 33,
       "youtubeStart": 0
     },
@@ -358,7 +358,7 @@
       "url": "https://www.youtube.com/watch?v=2Zdqm65FZ7g&t=157s",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Videos",
+      "categoria": "",
       "orden": 34,
       "youtubeStart": 0
     },
@@ -369,7 +369,7 @@
       "url": "https://www.youtube.com/watch?v=0vhhyUuDTl4&list=RD0vhhyUuDTl4&start_radio=1",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Videos",
+      "categoria": "",
       "orden": 35,
       "youtubeStart": 0
     },
@@ -380,7 +380,7 @@
       "url": "https://youtu.be/4Vo41Pl1zWc?si=0CHp0WUdmjk4vyfg",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Videos",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 36
     },
@@ -391,7 +391,7 @@
       "url": "https://www.youtube.com/watch?v=4Vo41Pl1zWc&list=RD4Vo41Pl1zWc&start_radio=1",
       "tipo": "youtube",
       "accion": "abrirYouTube",
-      "categoria": "Videos",
+      "categoria": "",
       "youtubeStart": 0,
       "orden": 37
     },
@@ -465,7 +465,7 @@
       "id": "game-1790893864164",
       "nombre": "Uno",
       "imagen": "https://www2.minijuegosgratis.com/v3/games/thumbnails/10635_1.jpg",
-      "url": "https://www.minijuegos.com/embed/uno",
+      "url": "https://www3.minijuegosgratis.com/v3/games/videos/10635.mp4?v=_1782025832",
       "tipo": "ventana",
       "accion": "abrirEnVentanita",
       "categoria": "",
