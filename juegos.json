@@ -389,6 +389,28 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 37
+    },
+    {
+      "id": "game-1790819550623",
+      "nombre": "Mohjong Flash",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvx6qWBEUbCqpR2zph0Vhi369kntsKY6rsB9UGXSrDXA&s",
+      "url": "https://files.crazygames.com/mahjong-titans/1/mahjong%20titans.swf",
+      "tipo": "swf",
+      "accion": "abrirJuego",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 38
+    },
+    {
+      "id": "game-1790819682774",
+      "nombre": "Mahojang Solitare",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWLpcdIeh0K8NU1EeI1YB0ll9921sovnkTd73_ilvYww&s=10",
+      "url": "https://www.crazygames.com/embed/mahjongg-solitaire",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 39
     }
   ]
 }
