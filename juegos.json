@@ -16,6 +16,16 @@
       "orden": 1
     },
     {
+      "id": "game-006",
+      "nombre": "Bubble Shooter",
+      "imagen": "https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg",
+      "url": "https://html5.gamemonetize.co/yp7vtch9c6vott101pztfdfm0p19c5c5/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "orden": 2
+    },
+    {
       "id": "game-015",
       "nombre": "Donkey Country 2",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuOdn0_yA-ig64EiTAXioVs0rG3pj26_Zc9FTyf4wzdg&s=10",
@@ -23,7 +33,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 2,
+      "orden": 3,
       "youtubeStart": 0
     },
     {
@@ -34,7 +44,7 @@
       "tipo": "swf",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 3
+      "orden": 4
     },
     {
       "id": "game-018",
@@ -44,7 +54,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 4,
+      "orden": 5,
       "youtubeStart": 0
     },
     {
@@ -55,7 +65,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 5,
+      "orden": 6,
       "youtubeStart": 0
     },
     {
@@ -66,7 +76,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 6,
+      "orden": 7,
       "youtubeStart": 0
     },
     {
@@ -77,7 +87,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 7,
+      "orden": 8,
       "youtubeStart": 0
     },
     {
@@ -88,7 +98,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 8,
+      "orden": 9,
       "youtubeStart": 0
     },
     {
@@ -99,7 +109,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 9
+      "orden": 10
     },
     {
       "id": "game-1790813474678",
@@ -110,16 +120,6 @@
       "accion": "abrirEmuladorSNES",
       "categoria": "",
       "youtubeStart": 0,
-      "orden": 10
-    },
-    {
-      "id": "game-006",
-      "nombre": "Bubble Shooter",
-      "imagen": "https://img.gamemonetize.com/yp7vtch9c6vott101pztfdfm0p19c5c5/512x340.jpg",
-      "url": "https://html5.gamemonetize.co/yp7vtch9c6vott101pztfdfm0p19c5c5/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
       "orden": 11
     },
     {
