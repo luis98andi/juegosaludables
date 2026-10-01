@@ -442,8 +442,8 @@
     {
       "id": "game-1790892712323",
       "nombre": "Garfield Checkers",
-      "imagen": "https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.play-games.com/game/25684/garfield-checkers.html&size=128",
-      "url": "https://www.play-games.com/game/25684/garfield-checkers.html",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2bcAW1dVJX4jmB3PiPWK8hM9juDRoZH_qaSCJGkzANw&s=10",
+      "url": "https://www.play-games.com/iframe/25684.html",
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
