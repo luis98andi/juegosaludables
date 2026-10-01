@@ -789,9 +789,26 @@ h1{margin:10px 0}
 <button id="btn-cuentas" onclick="mostrarSelector()"></button>
 
 <div id="orden-bar">
-  <span id="orden-msg"></span>
-  <button onclick="ordenSubirGitHub()">☁️ Guardar en GitHub</button>
-  <button onclick="salirModoOrden()">✅ Listo</button>
+  <span id="orden-msg">Arrastra ⠿ para mover · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
+  <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
+  <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
+  <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
+  <button onclick="abrirHerramientaAdmin('cuentas')" style="background:#333;color:#fff">👤 Cuentas</button>
+  <button onclick="ordenSubirGitHub()" style="background:#2f855a;color:#fff">☁️ GitHub</button>
+  <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
+  <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN PROPIO (PARA QUE EL BASURERO SIEMPRE FUNCIONE) -->
+<div id="confirm-modal" onclick="if(event.target===this)cerrarConfirmModal(false)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;align-items:center;justify-content:center;padding:18px">
+  <div style="background:#1e1e1e;border:1px solid #444;border-radius:14px;padding:20px;max-width:400px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.6)">
+    <h3 id="confirm-modal-title" style="margin:0 0 10px">🗑️ Confirmar eliminación</h3>
+    <p id="confirm-modal-text" class="admin-muted" style="font-size:14px;margin:0 0 18px"></p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button id="confirm-modal-yes" onclick="cerrarConfirmModal(true)" style="padding:10px 18px;border:0;border-radius:8px;background:#e94560;color:#fff;font-weight:bold;cursor:pointer">🗑️ Sí, eliminar</button>
+      <button onclick="cerrarConfirmModal(false)" style="padding:10px 18px;border:0;border-radius:8px;background:#3a3a3a;color:#fff;cursor:pointer">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <div id="admin-panel" onclick="if(event.target===this)cerrarAdmin()">
@@ -822,13 +839,12 @@ h1{margin:10px 0}
 
     <div id="admin-content" style="display:none">
 
-      <h2>⚙️ Administrar FreshMind Games <span id="admin-cuenta" style="font-size:16px;opacity:.8"></span></h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <h2 style="margin:0">⚙️ Administrar <span id="admin-cuenta" style="font-size:16px;opacity:.8"></span></h2>
+        <span class="admin-muted">Catálogo: <b id="admin-archivo">juegos.json</b></span>
+      </div>
 
-      <p class="admin-muted">
-        Catálogo cargado desde <b id="admin-archivo">juegos.json</b>.
-      </p>
-
-      <div class="admin-actions">
+      <div class="admin-actions" style="margin-top:12px">
 
         <button onclick="mostrarAgregar()">
           ➕ Agregar juego
@@ -846,10 +862,6 @@ h1{margin:10px 0}
           👤 Cuentas
         </button>
 
-        <button onclick="entrarModoOrden()">
-          ✋ Ordenar en la página
-        </button>
-
         <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold">
           ☁️ Actualizar GitHub
         </button>
@@ -863,7 +875,7 @@ h1{margin:10px 0}
         </button>
 
         <button onclick="cerrarAdmin()">
-          Cerrar
+          Volver a las tarjetas
         </button>
 
         <input
@@ -880,7 +892,7 @@ h1{margin:10px 0}
 
       <div id="respaldo-json-box" style="display:none;margin:10px 0 14px;padding:12px;border-radius:10px;background:#222">
         <div class="admin-muted" style="margin-bottom:8px">
-          <b>Respaldo manual en archivo (.json):</b> Solo es necesario si quieres guardar una copia en tu computadora o restaurar un archivo descargado. Para publicar cambios normales usa <b>☁️ Actualizar GitHub</b>.
+          <b>Respaldo manual en archivo (.json):</b> Solo es necesario si quieres guardar una copia en tu computadora o restaurar un archivo descargado.
         </div>
         <div class="admin-actions" style="margin-bottom:0">
           <button onclick="exportarJSON()">💾 Descargar copia (.json)</button>
@@ -891,7 +903,7 @@ h1{margin:10px 0}
       <div id="github-config" style="display:none;margin:14px 0;padding:14px;border-radius:14px;background:rgba(0,0,0,.16)">
         <h3 style="margin:0 0 8px">🔑 Configuración de GitHub</h3>
         <p class="admin-muted" style="margin:0 0 10px">
-          Una vez guardado tu token aquí, el botón <b>☁️ Actualizar GitHub</b> subirá los cambios directo en 1 solo clic sin volver a abrir esta ventana.
+          Una vez guardado tu token aquí, los cambios se sincronizarán automáticamente con GitHub al agregar, editar, mover o borrar juegos.
         </p>
         <div style="display:grid;gap:8px">
           <input id="gh-owner" placeholder="Usuario de GitHub" value="luis98andi">
@@ -909,11 +921,6 @@ h1{margin:10px 0}
       </div>
 
       <div id="editor"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 8px;flex-wrap:wrap">
-        <span class="admin-muted" id="admin-count-label">Juegos del catálogo</span>
-        <input id="admin-filter-input" placeholder="🔎 Filtrar en la lista..." oninput="renderAdmin()" style="padding:7px 10px;border-radius:6px;border:1px solid #444;background:#242424;color:#fff;font-size:13px;width:220px">
-      </div>
-      <div id="admin-list" class="admin-list"></div>
 
     </div>
 
@@ -1169,30 +1176,73 @@ async function alternarOcultoJuego(id,ev){
   );
 }
 
+let autoSyncTimer=null;
+let syncEnCurso=false;
+let syncPendienteMsg=null;
+
+function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=1200){
+  const cfg=obtenerConfigGitHub();
+  if(!cfg || !cfg.token){
+    mostrarToastSync(`✅ ${prefijoMsg} (guarda tu token en 🔑 para auto-sincronizar con GitHub).`);
+    return;
+  }
+  mostrarToastSync(`✅ ${prefijoMsg} · ⏳ Auto-sincronizando con GitHub...`);
+  if(autoSyncTimer)clearTimeout(autoSyncTimer);
+  autoSyncTimer=setTimeout(()=>{
+    sincronizarGitHubSilencioso(prefijoMsg);
+  },demoraMs);
+}
+
 async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
   const cfg=obtenerConfigGitHub();
   if(!cfg || !cfg.token){
     mostrarToastSync(`${prefijoMsg} (guarda tu token en ⚙️ → 🔑 para sincronizar con GitHub).`);
     return;
   }
+  if(syncEnCurso){
+    syncPendienteMsg=prefijoMsg;
+    return;
+  }
+  syncEnCurso=true;
   mostrarToastSync(`${prefijoMsg} · ⏳ Sincronizando con GitHub...`);
   try{
     reordenar();
+    const fullCfg={
+      owner:cfg.owner||'luis98andi',
+      repo:cfg.repo||'juegosaludables',
+      branch:cfg.branch||'main',
+      token:cfg.token
+    };
+    if(cuentasSucias){
+      await subirArchivoGitHub(
+        fullCfg,
+        'cuentas.json',
+        JSON.stringify(datosCuentas(),null,2),
+        'Actualizar cuentas desde FreshMind Games'
+      );
+      cuentasSucias=false;
+    }
     await subirArchivoGitHub(
-      {
-        owner:cfg.owner||'luis98andi',
-        repo:cfg.repo||'juegosaludables',
-        branch:cfg.branch||'main',
-        token:cfg.token
-      },
+      fullCfg,
       cuentaActual.archivo,
       JSON.stringify(catalogo,null,2),
       'Actualizar '+cuentaActual.archivo+' desde FreshMind Games'
     );
     mostrarToastSync(`${prefijoMsg} · ☁️ Sincronizado en GitHub`);
+    const ordenMsg=document.getElementById('orden-msg');
+    if(modoOrden && ordenMsg){
+      ordenMsg.textContent='☁️ Sincronizado con GitHub · Arrastra ⠿ · ✏️ editar · 🗑️ borrar';
+    }
   }catch(e){
     console.error(e);
     mostrarToastSync(`⚠️ ${prefijoMsg}, pero falló GitHub: ${e.message}`);
+  }finally{
+    syncEnCurso=false;
+    if(syncPendienteMsg){
+      const msg=syncPendienteMsg;
+      syncPendienteMsg=null;
+      sincronizarGitHubSilencioso(msg);
+    }
   }
 }
 
@@ -2026,32 +2076,68 @@ function cerrarJuego(){
 }
 
 /* =========================
-   ADMIN
+   ADMIN Y CONFIRMACIÓN PROPIA
 ========================= */
+
+let confirmCallback=null;
+
+function pedirConfirmacion(titulo,texto,textoBoton='🗑️ Sí, eliminar'){
+  return new Promise(resolve=>{
+    confirmCallback=resolve;
+    document.getElementById('confirm-modal-title').textContent=titulo||'Confirmar';
+    document.getElementById('confirm-modal-text').textContent=texto||'¿Estás seguro?';
+    document.getElementById('confirm-modal-yes').textContent=textoBoton;
+    document.getElementById('confirm-modal').style.display='flex';
+  });
+}
+
+function cerrarConfirmModal(ok){
+  document.getElementById('confirm-modal').style.display='none';
+  if(confirmCallback){
+    const cb=confirmCallback;
+    confirmCallback=null;
+    cb(!!ok);
+  }
+}
 
 function abrirAdmin(){
 
-  document.getElementById(
-    'admin-panel'
-  ).style.display='block';
-
-  if(cuentaActual && cuentaActual.adminLibre){
-
-    /* esta cuenta no tiene contraseña de administración */
-    document.getElementById('pin-screen').style.display='none';
-    document.getElementById('admin-content').style.display='block';
-    renderAdmin();
+  /* Si ya estamos en modo ordenar/administrar en la página principal, abrimos las herramientas */
+  if(modoOrden){
+    abrirHerramientaAdmin('agregar');
     return;
-
   }
 
+  if(cuentaActual && cuentaActual.adminLibre){
+    /* Cuenta sin contraseña de administración: va directo a ordenar/administrar en la página principal */
+    entrarModoOrden();
+    return;
+  }
+
+  document.getElementById('admin-panel').style.display='block';
   document.getElementById('pin-screen').style.display='block';
   document.getElementById('admin-content').style.display='none';
+  document.getElementById('pin').focus();
 
-  document.getElementById(
-    'pin'
-  ).focus();
+}
 
+function abrirHerramientaAdmin(herramienta){
+  document.getElementById('admin-panel').style.display='block';
+  document.getElementById('pin-screen').style.display='none';
+  document.getElementById('admin-content').style.display='block';
+
+  if(herramienta==='agregar'){
+    mostrarAgregar();
+  }else if(herramienta==='multiples'){
+    mostrarMultiples();
+  }else if(herramienta==='traer'){
+    mostrarTraerDeCuenta();
+  }else if(herramienta==='cuentas'){
+    mostrarCuentas();
+  }else if(herramienta==='token'){
+    cancelarEditor();
+    mostrarGitHub(true);
+  }
 }
 
 function cerrarAdmin(){
@@ -2088,10 +2174,8 @@ async function validarPin(){
   if(ok){
 
     document.getElementById('pin-error').textContent='';
-    document.getElementById('pin-screen').style.display='none';
-    document.getElementById('admin-content').style.display='block';
-
-    renderAdmin();
+    /* Al validar el PIN, lleva directo a la página principal en modo ordenar/distribuir tarjetas */
+    entrarModoOrden();
 
   }else{
 
@@ -2104,70 +2188,8 @@ async function validarPin(){
 }
 
 function renderAdmin(){
-
-  const list=
-    document.getElementById(
-      'admin-list'
-    );
-
-  if(!list)return;
-
-  list.innerHTML='';
-
-  const filtro=(document.getElementById('admin-filter-input')?.value||'').trim().toLowerCase();
-  const total=(catalogo.juegos||[]).length;
-  const ocultos=(catalogo.juegos||[]).filter(x=>x.oculto).length;
-  const countLabel=document.getElementById('admin-count-label');
-  if(countLabel){
-    countLabel.textContent=`Total: ${total} juego${total===1?'':'s'}${ocultos?` · ${ocultos} oculto${ocultos===1?'':'s'}`:''}`;
-  }
-
-  [...catalogo.juegos]
-    .sort((a,b)=>
-      (a.orden||0)-(b.orden||0)
-    )
-    .filter(j=>!filtro || String(j.nombre||'').toLowerCase().includes(filtro) || String(j.categoria||'').toLowerCase().includes(filtro))
-    .forEach(j=>{
-
-      const row=
-        document.createElement('div');
-
-      row.className='admin-row';
-      if(j.oculto)row.style.opacity='0.6';
-
-      row.innerHTML=`
-        <img
-          src="${escapeAttr(j.imagen)}"
-          alt=""
-        >
-
-        <div class="grow">
-          <b>${escapeHtml(j.nombre)}</b>
-          ${j.oculto?'<span style="color:#ffb703;font-size:12px"> (Oculto)</span>':''}
-
-          <div class="admin-muted">
-            ${escapeHtml(j.tipo||'iframe')}
-            · ${escapeHtml(j.categoria||'Todos')}
-          </div>
-        </div>
-
-        <button onclick="alternarOcultoJuego('${j.id}')" title="${j.oculto?'Desocultar juego':'Ocultar juego'}">
-          ${j.oculto?'👁️':'🙈'}
-        </button>
-
-        <button onclick="editarJuego('${j.id}')" title="Editar juego">
-          ✏️
-        </button>
-
-        <button onclick="eliminarJuego('${j.id}')" title="Eliminar juego">
-          🗑️
-        </button>
-      `;
-
-      list.appendChild(row);
-
-    });
-
+  /* Opción B activa: la gestión visual de tarjetas se hace directo en la página principal */
+  actualizarBotonOcultos();
 }
 
 function escapeHtml(s){
@@ -2893,9 +2915,12 @@ function guardarNuevo(){
   });
 
   renderCategorias();
-  renderJuegos();
+  aplicarFiltros();
   renderAdmin();
   cancelarEditor();
+  cerrarAdmin();
+
+  programarAutoSyncGitHub(`➕ "${nombre}" agregado`, 900);
 
 }
 
@@ -3128,15 +3153,18 @@ function guardarMultiples(){
 
   }
 
+  if(!added){
+    mostrarToastSync('⚠️ Pega al menos un enlace antes de guardar.');
+    return;
+  }
+
   renderCategorias();
-  renderJuegos();
+  aplicarFiltros();
   renderAdmin();
   cancelarEditor();
+  cerrarAdmin();
 
-  alert(
-    added+
-    ' juego(s) añadidos. Pulsa ☁️ Actualizar GitHub para guardar los cambios.'
-  );
+  programarAutoSyncGitHub(`➕ ${added} juego(s) agregados`, 900);
 
 }
 
@@ -3413,21 +3441,31 @@ function guardarEdicion(id){
           : 'abrirJuego';
 
   renderCategorias();
-  renderJuegos();
+  aplicarFiltros();
   renderAdmin();
   cancelarEditor();
+  cerrarAdmin();
+
+  programarAutoSyncGitHub(`✏️ "${j.nombre}" actualizado`, 900);
 
 }
 
 /* =========================
-   ORDEN / ELIMINAR
+   ORDEN / ELIMINAR (SIN WINDOW.CONFIRM BLOQUEADO)
 ========================= */
 
-function eliminarJuego(id){
+async function eliminarJuego(id){
 
-  if(!confirm(
-    '¿Eliminar este juego del catálogo actual?'
-  ))return;
+  const j=catalogo.juegos.find(x=>x.id===id);
+  const nombre=j ? j.nombre : 'este juego';
+
+  const ok=await pedirConfirmacion(
+    '🗑️ Eliminar juego',
+    `¿Seguro que deseas eliminar "${nombre}" del catálogo de ${cuentaActual?.nombre||'esta cuenta'}?`,
+    '🗑️ Sí, eliminar'
+  );
+
+  if(!ok)return;
 
   catalogo.juegos=
     catalogo.juegos.filter(
@@ -3437,8 +3475,10 @@ function eliminarJuego(id){
   reordenar();
 
   renderCategorias();
-  renderJuegos();
+  aplicarFiltros();
   renderAdmin();
+
+  programarAutoSyncGitHub(`🗑️ "${nombre}" eliminado`, 900);
 
 }
 
@@ -3854,13 +3894,13 @@ function entrarModoOrden(){
   document.body.classList.add('modo-orden');
   document.getElementById('orden-bar').style.display='flex';
   document.getElementById('orden-msg').textContent=
-    'Arrastra ⠿ para mover · ✏️ editar · 🗑️ eliminar';
+    'Arrastra ⠿ para mover · ✏️ editar · 🙈 ocultar · 🗑️ borrar';
 
   renderCategorias();
-  renderJuegos();
+  aplicarFiltros();
 
   window.scrollTo({
-    top:document.getElementById('grid').offsetTop-20,
+    top:Math.max(0, document.getElementById('grid').offsetTop-65),
     behavior:'smooth'
   });
 
@@ -3871,7 +3911,7 @@ function salirModoOrden(){
   modoOrden=false;
   document.body.classList.remove('modo-orden');
   document.getElementById('orden-bar').style.display='none';
-  renderJuegos();
+  aplicarFiltros();
 
 }
 
@@ -3893,19 +3933,13 @@ async function ordenSubirGitHub(){
   const msg=document.getElementById('orden-msg');
 
   if(!obtenerConfigGitHub().token){
-    msg.textContent='Primero guarda tu token en ⚙️ → Actualizar GitHub.';
+    abrirHerramientaAdmin('token');
     return;
   }
 
-  mostrarGitHub();
-  msg.textContent='⏳ Subiendo a GitHub...';
-
-  await actualizarGitHub();
-
-  msg.textContent=
-    document.getElementById('github-status').textContent;
-
-  ocultarGitHub();
+  msg.textContent='⏳ Subiendo cambios a GitHub...';
+  await sincronizarGitHubSilencioso('Catálogo guardado');
+  msg.textContent='✅ Catálogo sincronizado en GitHub';
 
 }
 
@@ -4040,9 +4074,10 @@ async function ordenSubirGitHub(){
     catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
 
     document.getElementById('orden-msg').textContent=
-      '✔ Orden cambiado. Pulsa ☁️ Guardar para verlo en todos tus dispositivos.';
+      '✔ Orden actualizado · ☁️ Sincronizando con GitHub...';
 
-    renderJuegos();
+    aplicarFiltros();
+    programarAutoSyncGitHub('🔀 Nuevo orden de juegos', 1800);
 
   }
 
@@ -4374,8 +4409,9 @@ async function confirmarTraerJuegos(){
   aplicarFiltros();
   renderAdmin();
   cancelarEditor();
+  cerrarAdmin();
 
-  await sincronizarGitHubSilencioso(`📥 ${agregados} juego(s) traído(s) a ${cuentaActual.nombre}`);
+  programarAutoSyncGitHub(`📥 ${agregados} juego(s) traído(s) a ${cuentaActual.nombre}`, 900);
 }
 
 function mostrarSelector(){
@@ -4660,22 +4696,25 @@ async function crearCuenta(){
 
 }
 
-function eliminarCuenta(id){
+async function eliminarCuenta(id){
 
   const c=cuentas.find(x=>x.id===id);
 
   if(!c||c.id===cuentas[0].id)return;
 
-  if(!confirm(
-    '¿Eliminar la cuenta "'+c.nombre+'"?\n\n'+
-    'Su archivo '+c.archivo+' seguirá en GitHub hasta que lo borres allí.'
-  ))return;
+  const ok=await pedirConfirmacion(
+    '🗑️ Eliminar cuenta',
+    `¿Eliminar la cuenta "${c.nombre}"? (Su archivo ${c.archivo} seguirá en GitHub hasta que lo borres allí).`,
+    '🗑️ Sí, eliminar cuenta'
+  );
+
+  if(!ok)return;
 
   cuentas=cuentas.filter(x=>x.id!==id);
   cuentasSucias=true;
 
   if(cuentaActual.id===id){
-    abrirCuenta(cuentas[0]);
+    await abrirCuenta(cuentas[0]);
   }
 
   mostrarCuentas();
