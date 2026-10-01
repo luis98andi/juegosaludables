@@ -26,17 +26,6 @@
       "orden": 2
     },
     {
-      "id": "game-015",
-      "nombre": "Donkey Country 2",
-      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuOdn0_yA-ig64EiTAXioVs0rG3pj26_Zc9FTyf4wzdg&s=10",
-      "url": "https://www.retrogames.cc/embed/17336-donkey-kong-country-2-diddy-s-kong-quest-usa-en-fr-rev-a.html",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 3,
-      "youtubeStart": 0
-    },
-    {
       "id": "game-002",
       "nombre": "Manicure barbie secret",
       "imagen": "portadas/manicure1.PNG",
@@ -44,7 +33,7 @@
       "tipo": "swf",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 4
+      "orden": 3
     },
     {
       "id": "game-018",
@@ -54,7 +43,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 5,
+      "orden": 4,
       "youtubeStart": 0
     },
     {
@@ -65,7 +54,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 6,
+      "orden": 5,
       "youtubeStart": 0
     },
     {
@@ -76,7 +65,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 7,
+      "orden": 6,
       "youtubeStart": 0
     },
     {
@@ -87,7 +76,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 8,
+      "orden": 7,
       "youtubeStart": 0
     },
     {
@@ -98,7 +87,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 9,
+      "orden": 8,
       "youtubeStart": 0
     },
     {
@@ -109,7 +98,18 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 10
+      "orden": 9
+    },
+    {
+      "id": "game-015",
+      "nombre": "Donkey Country 2",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuOdn0_yA-ig64EiTAXioVs0rG3pj26_Zc9FTyf4wzdg&s=10",
+      "url": "https://www.retrogames.cc/embed/17336-donkey-kong-country-2-diddy-s-kong-quest-usa-en-fr-rev-a.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 10,
+      "youtubeStart": 0
     },
     {
       "id": "game-1790813474678",
