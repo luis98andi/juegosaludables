@@ -69,8 +69,8 @@
       "nombre": "Vortella Dress Up",
       "imagen": "https://gogamego.io/wp-content/uploads/thumbs/custom/V/Vortellas-Dress-Up.webp",
       "url": "https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html",
-      "tipo": "ventana",
-      "accion": "abrirEnVentanita",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "orden": 7,
       "youtubeStart": 0
