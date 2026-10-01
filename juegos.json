@@ -293,9 +293,9 @@
     },
     {
       "id": "game-1790792403767",
-      "nombre": "Jus dance caracoles",
+      "nombre": "Jus dance meneo",
       "imagen": "https://i.ytimg.com/vi/4Vo41Pl1zWc/maxresdefault.jpg",
-      "url": "https://www.youtube.com/watch?v=DsUPVERZFlI&list=RDDsUPVERZFlI&start_radio=1",
+      "url": "https://youtu.be/4Vo41Pl1zWc?si=0CHp0WUdmjk4vyfg",
       "tipo": "youtube",
       "accion": "abrirYouTube",
       "categoria": "Videos",
