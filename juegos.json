@@ -156,16 +156,6 @@
       "orden": 14
     },
     {
-      "id": "game-008",
-      "nombre": "Mine – Online",
-      "imagen": "portadas/mine online.jpg",
-      "url": "https://playhop.com/dist-app/448223?header=no&skip-guard=1&utm_source=parent_window_api&utm_medium=playgama&clid=2951034&flags={%22adv_types_disabled%22:16}",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
-      "categoria": "",
-      "orden": 15
-    },
-    {
       "id": "game-1790819131104",
       "nombre": "Manjoh classic 2",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6SMGqOyVzS7zhvCgd7bsnW0M9JNl_e0jR7EVqcd1xA&s=10",
@@ -174,6 +164,16 @@
       "accion": "abrirJuego",
       "categoria": "",
       "youtubeStart": 0,
+      "orden": 15
+    },
+    {
+      "id": "game-008",
+      "nombre": "Mine – Online",
+      "imagen": "portadas/mine online.jpg",
+      "url": "https://playhop.com/dist-app/448223?header=no&skip-guard=1&utm_source=parent_window_api&utm_medium=playgama&clid=2951034&flags={%22adv_types_disabled%22:16}",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "",
       "orden": 16
     },
     {
