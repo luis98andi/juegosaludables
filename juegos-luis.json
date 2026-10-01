@@ -12,6 +12,17 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 1
+    },
+    {
+      "id": "game-1790821335030",
+      "nombre": "worms 2",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlfiI4ACzxOQKIBA9Wt0of3MM7QxWNWIRxUWY87NN2Pg&s=10",
+      "url": "https://dos.zone/worms2-eng/",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 2
     }
   ]
 }
