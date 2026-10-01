@@ -1,5 +1,17 @@
 {
   "version": 1,
   "categorias": [],
-  "juegos": []
+  "juegos": [
+    {
+      "id": "game-1790813060102",
+      "nombre": "retrocc",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn6-KlqvMoT_i3UCBDnMbfbPoGZORqY6sm04gNuNCYSvZR69VpdtaOr7E&s=10",
+      "url": "https://retrogamesnexus.com/es",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 1
+    }
+  ]
 }
