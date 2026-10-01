@@ -242,16 +242,20 @@ h1{margin:10px 0}
 #toast-sync{
   display:none;
   position:fixed;
-  bottom:70px;
+  bottom:68px;
   right:16px;
   z-index:1200;
-  background:rgba(15,15,20,.92);
-  color:#fff;
-  padding:8px 14px;
-  border-radius:10px;
-  font-size:13px;
-  box-shadow:0 4px 16px rgba(0,0,0,.4);
-  border:1px solid rgba(255,255,255,.15);
+  background:rgba(15,23,42,.88);
+  backdrop-filter:blur(6px);
+  color:#e2e8f0;
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.2px;
+  box-shadow:0 3px 12px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.14);
+  pointer-events:none;
 }
 
 /* REPRODUCTOR */
@@ -941,6 +945,7 @@ h1{margin:10px 0}
 <div id="orden-bar">
   <span id="orden-msg">Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
   <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
+  <button onclick="abrirBuscadorEnlacesPrimerPlano()" style="background:#805ad5;color:#fff" title="Abrir el Buscador JS de enlaces en primer plano">🔎 Buscador JS</button>
   <button onclick="abrirHerramientaAdmin('categorias')" style="background:#333;color:#fff" title="Crear o gestionar categorías con el teclado">🏷️ Categorías</button>
   <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
   <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
@@ -950,6 +955,30 @@ h1{margin:10px 0}
   <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">🔍 Verificar GitHub</button>
   <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
   <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
+</div>
+
+<!-- VENTANA EN PRIMER PLANO DEL BUSCADOR DE ENLACES JS (BOOKMARKLET INTEGRADO) -->
+<div id="bm-floating-modal" style="display:none;position:fixed;right:14px;top:14px;z-index:2200;width:440px;max-width:95vw;max-height:88vh;background:#151515;color:#eee;border:2px solid #3a7bd5;border-radius:12px;box-shadow:0 12px 38px rgba(0,0,0,.65);font:13px Arial,sans-serif;flex-direction:column;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:#222;border-bottom:1px solid #333">
+    <b style="font-size:14px">🔎 Buscador de enlaces JS (En primer plano)</b>
+    <div style="display:flex;gap:4px">
+      <button type="button" id="bm-modal-pause-btn" onclick="togglePausaBuscadorHtml()" style="border:0;border-radius:6px;padding:5px 8px;cursor:pointer;font:12px Arial,sans-serif;background:#d69e2e;color:#fff;font-weight:bold">⏸️ Pausar búsqueda</button>
+      <button type="button" onclick="cerrarBuscadorEnlacesPrimerPlano()" style="border:0;border-radius:6px;padding:5px 9px;cursor:pointer;font:12px Arial,sans-serif;background:#c0392b;color:#fff;font-weight:bold">✕</button>
+    </div>
+  </div>
+  <div style="padding:8px 10px;background:#1b1b1b;border-bottom:1px solid #2c2c2c;display:grid;gap:6px">
+    <div style="display:flex;gap:6px">
+      <input id="bm-modal-url" placeholder="Pega aquí la URL de la página web a escanear..." style="flex:1;padding:7px 9px;border-radius:6px;border:1px solid #444;background:#262626;color:#fff;font:12px Arial,sans-serif" onkeydown="if(event.key==='Enter')ejecutarBuscadorEnModal()">
+      <button type="button" onclick="ejecutarBuscadorEnModal()" style="border:0;border-radius:6px;padding:6px 10px;cursor:pointer;font:bold 12px Arial,sans-serif;background:#3a7bd5;color:#fff">🔄 Buscar</button>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <input id="bm-modal-filter" placeholder="Filtrar por texto o dominio..." oninput="renderResultadosModalBookmarklet()" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid #444;background:#262626;color:#fff;font:12px Arial,sans-serif">
+      <span id="bm-modal-status" style="font-size:11px;color:#90cdf4">Listo para buscar</span>
+    </div>
+  </div>
+  <div id="bm-modal-list" style="padding:8px 10px;overflow-y:auto;max-height:62vh">
+    <div style="padding:12px;color:#ccc;font-size:12px">Pega arriba el enlace de cualquier web de juegos y toca <b>🔄 Buscar</b>. Aquí verás el enlace original y todos los enlaces SWF, Emuladores, HTML5 e iframes encontrados sin que se cambie tu enlace sin permiso.</div>
+  </div>
 </div>
 
 <!-- MODAL DE CONFIRMACIÓN PROPIO (PARA QUE EL BASURERO SIEMPRE FUNCIONE) -->
@@ -1001,6 +1030,10 @@ h1{margin:10px 0}
 
         <button onclick="mostrarAgregar()">
           ➕ Agregar juego
+        </button>
+
+        <button onclick="abrirBuscadorEnlacesPrimerPlano()" style="background:#805ad5;color:#fff;font-weight:bold">
+          🔎 Buscador JS (En primer plano)
         </button>
 
         <button onclick="mostrarCategoriasAdmin()">
@@ -1290,13 +1323,13 @@ function cerrarBuscadorSiVacio(){
   }
 }
 
-function mostrarToastSync(texto){
+function mostrarToastSync(texto,duracion=2400){
   const t=document.getElementById('toast-sync');
   if(!t)return;
   t.textContent=texto;
   t.style.display='block';
   if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{t.style.display='none';},3500);
+  toastTimer=setTimeout(()=>{t.style.display='none';},duracion);
 }
 
 let filtroSoloOcultosAdmin=false;
@@ -1551,27 +1584,26 @@ let huboCambiosSesionOrden=false;
 let cambiosPendientesSync=false;
 const ultimosShaGitHub={};
 
-function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=2600){
+function programarAutoSyncGitHub(prefijoMsg='Cambios guardados',demoraMs=2400){
   huboCambiosSesionOrden=true;
   cambiosPendientesSync=true;
   const cfg=obtenerConfigGitHub();
   if(!cfg || !cfg.token){
-    mostrarToastSync(`✅ ${prefijoMsg} (guarda tu token en 🔑 para auto-sincronizar con GitHub).`);
+    mostrarToastSync(`✓ ${prefijoMsg}`, 2000);
     return;
   }
-  mostrarToastSync(`⏳ Sincronizando en GitHub... (${prefijoMsg})`);
+  mostrarToastSync(`☁️ Guardando en GitHub...`, 2200);
   if(autoSyncTimer)clearTimeout(autoSyncTimer);
-  /* Espera 2.6s para agrupar varios cambios rápidos seguidos en una sola subida sin errores */
+  /* Espera 2.4s para agrupar varios cambios rápidos seguidos en una sola subida sin errores */
   autoSyncTimer=setTimeout(()=>{
     autoSyncTimer=null;
     sincronizarGitHubSilencioso(prefijoMsg);
-  },Math.max(2200,demoraMs));
+  },Math.max(2000,demoraMs));
 }
 
 async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
   const cfg=obtenerConfigGitHub();
   if(!cfg || !cfg.token){
-    mostrarToastSync(`${prefijoMsg} (guarda tu token en ⚙️ → 🔑 para sincronizar con GitHub).`);
     return;
   }
   if(syncEnCurso){
@@ -1603,14 +1635,14 @@ async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
       'Actualizar '+cuentaActual.archivo+' desde FreshMind Games'
     );
     cambiosPendientesSync=false;
-    mostrarToastSync(`✅ Ya terminó de actualizar en GitHub`);
+    mostrarToastSync(`☁️ GitHub actualizado ✓`, 2400);
     const ordenMsg=document.getElementById('orden-msg');
     if(modoOrden && ordenMsg){
-      ordenMsg.textContent='✅ Ya actualizado en GitHub · Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🗑️ borrar';
+      ordenMsg.textContent='☁️ GitHub actualizado ✓ · Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🗑️ borrar';
     }
   }catch(e){
     console.error(e);
-    mostrarToastSync(`⚠️ ${prefijoMsg}, pero falló GitHub: ${e.message}`);
+    mostrarToastSync(`⚠️ Error GitHub: ${e.message}`, 3200);
   }finally{
     syncEnCurso=false;
     if(syncPendienteMsg){
@@ -1884,7 +1916,6 @@ function normalizarUrlParaPestanaNormal(url){
 
 function abrirJuego(ruta,tipo,accion,juego=null){
 
-  ruta=normalizarUrlParaPestanaNormal(ruta);
   ultimoJuegoAbierto={ruta,tipo,accion,juego};
 
   if(
@@ -1925,10 +1956,7 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
   }
 
-  if(sitioBloqueaIframeDirecto(ruta)){
-    return abrirEnVentanita(ruta,juego);
-  }
-
+  /* SECCIÓN IFRAME Y SWF 100% PURA E INTACTA COMO AL INICIO DEL PROYECTO */
   const target=
     document.getElementById('ruffle-target');
 
@@ -1954,7 +1982,36 @@ function abrirJuego(ruta,tipo,accion,juego=null){
 
   }else{
 
-    cargarIframeDirectoEnTarget(ruta);
+    const iframe=
+      document.createElement('iframe');
+
+    iframe.src=ruta;
+
+    iframe.style.width='100%';
+    iframe.style.height='100%';
+    iframe.style.border='none';
+
+    iframe.allowFullscreen=true;
+
+    iframe.setAttribute(
+      'allowfullscreen',
+      'true'
+    );
+
+    iframe.setAttribute(
+      'webkitallowfullscreen',
+      'true'
+    );
+
+    iframe.setAttribute(
+      'mozallowfullscreen',
+      'true'
+    );
+
+    iframe.allow=
+      'fullscreen; autoplay; gamepad';
+
+    target.appendChild(iframe);
 
   }
 
@@ -2051,9 +2108,33 @@ async function desenvuelverIframesProfundo(urlInicial){
   };
 }
 
+function abrirPopupAcopladoSobreCuadro(url){
+  try{
+    if(ventanaJuegoActual && !ventanaJuegoActual.closed){
+      ventanaJuegoActual.close();
+    }
+  }catch(e){}
+
+  const target=document.getElementById('ruffle-target');
+  const rect=target ? target.getBoundingClientRect() : {left:120,top:120,width:854,height:520};
+  const w=Math.max(360,Math.round(rect.width||854));
+  const h=Math.max(300,Math.round(rect.height||520));
+  const chromeTop=Math.max(0,(window.outerHeight-window.innerHeight)||0);
+  const chromeLeft=Math.max(0,Math.round(((window.outerWidth-window.innerWidth)||0)/2));
+  const left=Math.max(0,Math.round((window.screenX||window.screenLeft||0)+rect.left+chromeLeft));
+  const top=Math.max(0,Math.round((window.screenY||window.screenTop||0)+rect.top+chromeTop));
+
+  const features=`popup=yes,width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+  const win=window.open(url,'freshmind_visor_cuadro',features);
+  if(win){
+    ventanaJuegoActual=win;
+    try{win.focus();}catch(e){}
+  }
+  return win;
+}
+
 async function abrirEnVentanita(ruta,juego=null){
-  /* Abre el enlace INMEDIATAMENTE dentro del recuadro #ruffle-target sin ninguna pantalla de espera,
-     extrayendo el motor limpio y haciendo creer a la página que está en una pestaña normal */
+  /* NUEVA VENTANITA: Abre el enlace inmediatamente dentro del recuadro #ruffle-target sin pantalla de preparación */
   document.getElementById('youtube-controls').style.display='none';
 
   const urlLimpia=normalizarUrlParaPestanaNormal(ruta);
@@ -2065,13 +2146,13 @@ async function abrirEnVentanita(ruta,juego=null){
     return;
   }
 
-  cargarIframeDirectoEnTarget(urlLimpia,true);
+  /* Cargar sin no-referrer para que los embeds no queden en negro */
+  cargarIframeDirectoEnTarget(urlLimpia,false);
 
   if(sitioBloqueaIframeDirecto(urlLimpia) || urlLimpia.includes('minigamesville.com')){
     const info=await desenvuelverIframesProfundo(urlLimpia);
-    if(info.embedUrl && info.embedUrl!==urlLimpia && !sitioBloqueaIframeDirecto(info.embedUrl) && !info.embedUrl.includes('minigamesville.com')){
-      if(juego)juego.url=info.embedUrl;
-      cargarIframeDirectoEnTarget(info.embedUrl,true);
+    if(info.embedUrl && info.embedUrl!==urlLimpia && !sitioBloqueaIframeDirecto(info.embedUrl)){
+      cargarIframeDirectoEnTarget(info.embedUrl,false);
       return;
     }
     const htmlFinal=info.html || (await leerHtmlRemoto(info.embedUrl||urlLimpia));
@@ -2082,26 +2163,49 @@ async function abrirEnVentanita(ruta,juego=null){
 }
 
 async function abrirEnVentana2(ruta,juego=null){
-  /* NUEVA VENTANA 2: Abre cualquier sitio o juego como una Pestaña Virtual Completa DENTRO del cuadrado #ruffle-target.
-     Cualquier popup o enlace interno se abre ahí mismo dentro del cuadrado sin salir de tu página y creyendo que es una pestaña nueva normal. */
+  /* NUEVA VENTANA 2: Combina la ventanita popup real (100% pestaña nueva indetectable, posicionada justo encima de tu cuadrado #ruffle-target)
+     y el visor interno en el cuadrado con controles para que nunca quede en negro y cualquier enlace abra al instante */
   document.getElementById('youtube-controls').style.display='none';
 
   const urlLimpia=normalizarUrlParaPestanaNormal(ruta);
+  const target=document.getElementById('ruffle-target');
 
-  mostrarPlayer();
+  document.getElementById('player-container').style.display='block';
+  target.scrollIntoView({behavior:'instant',block:'center'});
 
-  if(!location.hostname.includes('github.io')){
-    cargarIframeDirectoEnTarget(`/api/proxy-tab?url=${encodeURIComponent(urlLimpia)}`,false);
-    return;
-  }
+  /* 1. Abrir inmediatamente la ventanita acoplada justo en las coordenadas exactas del cuadrado #ruffle-target */
+  const win=abrirPopupAcopladoSobreCuadro(urlLimpia);
 
-  /* En GitHub Pages: iniciar al instante y montar contenedor de pestaña virtual srcdoc con interceptor de links/popups */
-  cargarIframeDirectoEnTarget(urlLimpia,true);
-  const info=await desenvuelverIframesProfundo(urlLimpia);
-  const urlObjetivo=info.embedUrl || urlLimpia;
-  const htmlFinal=info.html || (await leerHtmlRemoto(urlObjetivo));
-  if(htmlFinal){
-    cargarHtmlEnVisorSrcdoc(htmlFinal,urlObjetivo);
+  /* 2. Dentro del cuadrado #ruffle-target, mostrar también el visor + barra rápida para re-enfocar o jugar adentro sin pantalla negra */
+  const srcInterno=!location.hostname.includes('github.io')
+    ? `/api/proxy-tab?url=${encodeURIComponent(urlLimpia)}`
+    : urlLimpia;
+
+  target.innerHTML=`
+    <div style="width:100%;height:100%;display:flex;flex-direction:column;background:#0f172a">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;background:#1e293b;border-bottom:1px solid #334155;font-size:12px;color:#e2e8f0;flex-shrink:0;flex-wrap:wrap">
+        <span>🪟 <b>Nueva ventana 2 activa</b> (el sitio ve una pestaña nueva 100% real)</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button type="button" onclick="abrirPopupAcopladoSobreCuadro('${escapeAttr(urlLimpia)}')" style="padding:4px 10px;border:0;border-radius:6px;background:#3a7bd5;color:#fff;font-weight:bold;cursor:pointer;font-size:12px">
+            🪟 Abrir / Traer ventana sobre este cuadro
+          </button>
+          <button type="button" onclick="document.getElementById('v2-inner-frame').src='${escapeAttr(srcInterno)}'" style="padding:4px 9px;border:0;border-radius:6px;background:#334155;color:#fff;cursor:pointer;font-size:12px">
+            🔄 Recargar en cuadro
+          </button>
+        </div>
+      </div>
+      <iframe
+        id="v2-inner-frame"
+        src="${escapeAttr(srcInterno)}"
+        style="width:100%;flex:1;border:0;background:#111"
+        allow="fullscreen; autoplay; gamepad; pointer-lock"
+        allowfullscreen="true"
+      ></iframe>
+    </div>
+  `;
+
+  if(win){
+    setTimeout(()=>{try{win.focus();}catch(e){}},120);
   }
 }
 
@@ -3011,12 +3115,12 @@ function mostrarAgregar(){
       <div class="form-grid">
 
         <label style="grid-column:1/-1">
-          🔗 Enlace (URL normal de página web, embed, SWF o YouTube)
+          🔗 Enlace (tu enlace original se respeta intacto; abajo puedes elegir si quieres otro enlace detectado o pausar la búsqueda)
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <input
               id="fUrl"
               style="flex:1;min-width:220px"
-              placeholder="https://www.retrogames.cc/... o cualquier página de juego"
+              placeholder="https://... pega el enlace de tu juego o página"
               oninput="autoAgregar()"
             >
             <button
@@ -3024,9 +3128,28 @@ function mostrarAgregar(){
               class="image-search-button"
               style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
               onclick="analizarYExtraerJuegoDeWeb('f',true)"
-              title="Extraer automáticamente el embed/SWF de la página web y verificar bloqueo de iframe"
+              title="Buscar enlaces ocultos (SWF, Emuladores, HTML5, iframes) sin borrar tu enlace original"
             >
-              🪄 Extraer juego de la web
+              🔎 Buscar enlaces en web
+            </button>
+            <button
+              type="button"
+              id="fBtnPausaHtml"
+              class="image-search-button"
+              style="margin-top:0;background:${buscadorHtmlPausado?'#38a169':'#d69e2e'};color:#fff;font-weight:bold"
+              onclick="togglePausaBuscadorHtml('f')"
+              title="Pausar o detener la búsqueda de HTML embebido para editar el enlace libremente y dejarlo intacto"
+            >
+              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML'}
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#805ad5;color:#fff;font-weight:bold"
+              onclick="abrirBuscadorEnlacesPrimerPlano(document.getElementById('fUrl')?.value,'f')"
+              title="Abrir la ventana del Buscador JS en primer plano"
+            >
+              🪟 Ventana JS
             </button>
           </div>
         </label>
@@ -3264,14 +3387,120 @@ function mostrarDiagnosticoWeb(prefijo,clase,htmlMsg){
   el.innerHTML=htmlMsg;
 }
 
+let buscadorHtmlPausado=false;
+let abortadorBusquedaHtml=null;
+const urlOriginalPegada={f:'',e:''};
+let ultimosEnlacesModal=[];
+let prefijoActivoModal='f';
+
+function actualizarBotonesPausaHtml(){
+  ['fBtnPausaHtml','eBtnPausaHtml','bm-modal-pause-btn'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(!b)return;
+    b.style.background=buscadorHtmlPausado?'#38a169':'#d69e2e';
+    b.textContent=buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML';
+  });
+}
+
+function togglePausaBuscadorHtml(prefijo=null){
+  buscadorHtmlPausado=!buscadorHtmlPausado;
+  if(buscadorHtmlPausado){
+    if(timerExtraerWeb){clearTimeout(timerExtraerWeb);timerExtraerWeb=null;}
+    if(abortadorBusquedaHtml){
+      try{abortadorBusquedaHtml.abort();}catch(e){}
+      abortadorBusquedaHtml=null;
+    }
+    actualizarBotonesPausaHtml();
+    if(prefijo){
+      const urlActual=document.getElementById(prefijo+'Url')?.value.trim()||'';
+      const orig=urlOriginalPegada[prefijo]||urlActual;
+      mostrarDiagnosticoWeb(
+        prefijo,
+        'info',
+        `⏸️ <b>Búsqueda de HTML embebido PAUSADA.</b> Puedes escribir o editar tu enlace libremente y quedará <b>100% intacto</b>.`+
+        (orig && orig!==urlActual ? ` <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(orig)}','iframe')" style="margin-left:6px;padding:3px 8px;border:0;border-radius:5px;background:#2b6cb0;color:#fff;font-size:11px;cursor:pointer">↩️ Restaurar original pegado</button>` : '')
+      );
+    }
+    const st=document.getElementById('bm-modal-status');
+    if(st)st.textContent='⏸️ Búsqueda pausada (enlace intacto)';
+    mostrarToastSync('⏸️ Búsqueda HTML pausada: tu enlace queda intacto');
+  }else{
+    actualizarBotonesPausaHtml();
+    const st=document.getElementById('bm-modal-status');
+    if(st)st.textContent='▶️ Búsqueda activa';
+    mostrarToastSync('▶️ Búsqueda de enlaces HTML reanudada');
+    if(prefijo){
+      analizarYExtraerJuegoDeWeb(prefijo,true);
+    }
+  }
+}
+
+function abrirBuscadorEnlacesPrimerPlano(urlInicial='',prefijo='f'){
+  prefijoActivoModal=prefijo||'f';
+  const modal=document.getElementById('bm-floating-modal');
+  if(!modal)return;
+  modal.style.display='flex';
+  actualizarBotonesPausaHtml();
+  const inp=document.getElementById('bm-modal-url');
+  const urlFormulario=urlInicial || document.getElementById(prefijoActivoModal+'Url')?.value.trim() || '';
+  if(inp && urlFormulario){
+    inp.value=urlFormulario;
+    ejecutarBuscadorEnModal();
+  }else if(inp){
+    inp.focus();
+  }
+}
+
+function cerrarBuscadorEnlacesPrimerPlano(){
+  const modal=document.getElementById('bm-floating-modal');
+  if(modal)modal.style.display='none';
+}
+
+async function ejecutarBuscadorEnModal(){
+  const inp=document.getElementById('bm-modal-url');
+  const statusEl=document.getElementById('bm-modal-status');
+  const listEl=document.getElementById('bm-modal-list');
+  if(!inp||!listEl)return;
+  const rawUrl=inp.value.trim();
+  if(!rawUrl){
+    if(statusEl)statusEl.textContent='Escribe o pega una URL arriba';
+    return;
+  }
+  if(buscadorHtmlPausado){
+    if(statusEl)statusEl.textContent='⏸️ Pausado (pulsa Reanudar arriba)';
+    return;
+  }
+  if(statusEl)statusEl.textContent='⏳ Escaneando página e iframes...';
+  listEl.innerHTML='<div style="padding:12px;color:#90cdf4">🔍 Buscando enlaces SWF, Emuladores, HTML5 e iframes en la página...</div>';
+  const info=await desenvuelverIframesProfundo(rawUrl);
+  ultimosEnlacesModal=info.enlaces || [];
+  if(statusEl)statusEl.textContent=`👁 ${ultimosEnlacesModal.length} enlace(s) encontrados`;
+  renderResultadosModalBookmarklet(rawUrl);
+}
+
+function renderResultadosModalBookmarklet(urlOriginalExplicita=''){
+  const listEl=document.getElementById('bm-modal-list');
+  if(!listEl)return;
+  const orig=urlOriginalExplicita || document.getElementById('bm-modal-url')?.value.trim() || '';
+  const q=(document.getElementById('bm-modal-filter')?.value||'').toLowerCase().trim();
+  const pref=document.getElementById('eUrl') ? 'e' : (prefijoActivoModal||'f');
+  const urlEnFormulario=document.getElementById(pref+'Url')?.value.trim() || '';
+
+  const filtrados=ultimosEnlacesModal.filter(x=>!q || x.url.toLowerCase().includes(q));
+  listEl.innerHTML=renderPanelEnlacesBookmarklet(pref,filtrados,urlEnFormulario,orig,true);
+}
+
 async function leerHtmlRemoto(url){
+  if(buscadorHtmlPausado)return '';
   const proxies=[
     `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
   ];
   for(const p of proxies){
+    if(buscadorHtmlPausado)return '';
     try{
       const ctrl=new AbortController();
+      abortadorBusquedaHtml=ctrl;
       const t=setTimeout(()=>ctrl.abort(),6500);
       const r=await fetch(p,{signal:ctrl.signal});
       clearTimeout(t);
@@ -3504,60 +3733,87 @@ function extraerJuegoDesdeHtml(html,baseUrl,depth=0,externalMap=null){
 function seleccionarEnlaceDelBuscador(prefijo,url,tipo){
   const urlEl=document.getElementById(prefijo+'Url');
   const tipoEl=document.getElementById(prefijo+'Tipo');
-  if(urlEl)urlEl.value=url;
+  if(urlEl){
+    urlEl.value=url;
+  }
   if(tipoEl && tipo){
     tipoEl.value=tipo;
     const extraId=prefijo==='f'?'fYoutubeExtra':'eYoutubeExtra';
     actualizarCamposYouTube(tipoEl.id,extraId);
   }
   actualizarVistaPrevia(prefijo);
-  mostrarToastSync('✅ Enlace seleccionado y aplicado al formulario.');
+  mostrarToastSync('✅ Enlace elegido y colocado en el campo URL');
 }
 
-function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada){
-  if(!Array.isArray(enlaces) || enlaces.length<=1)return '';
-  let bloquesHtml='';
-  BM_ORDER.forEach(cat=>{
-    const grupo=enlaces.filter(x=>x.cat===cat);
-    if(!grupo.length)return;
-    const filas=grupo.map(x=>{
-      const esActual=x.url===urlSeleccionada;
-      const tipo=x.tipo || BM_TIPO[x.cat] || 'iframe';
-      return `
-        <div class="bm-link-row" style="${esActual?'border:1px solid #38a169':''}">
-          <div class="bm-link-url">${escapeHtml(x.url)}</div>
+function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOriginal='',esModal=false){
+  const orig=urlOriginal || urlOriginalPegada[prefijo] || urlSeleccionada || '';
+  let filaOriginal='';
+  if(orig){
+    const esOrigActual=(urlSeleccionada===orig);
+    filaOriginal=`
+      <div style="margin-bottom:8px">
+        <div style="font-weight:bold;font-size:12px;color:#fbd38d;margin-bottom:3px">📌 Enlace original que pegaste (Intacto)</div>
+        <div class="bm-link-row" style="border:1px solid ${esOrigActual?'#48bb78':'#d69e2e'}">
+          <div class="bm-link-url">${escapeHtml(orig)}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
-            <span style="font-size:11px;color:#94a3b8">${escapeHtml((x.srcs||[]).join(' · '))}</span>
+            <span style="font-size:11px;color:#cbd5e1">Tu enlace original sin modificar</span>
             <div style="display:flex;gap:4px">
-              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:3px 8px;border:0;border-radius:5px;background:#2b6cb0;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
-                ${esActual?'✓ En uso':'✅ Usar este'}
+              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(orig)}','${escapeAttr(detectarTipoUrl(orig)||'iframe')}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esOrigActual?'#2f855a':'#d69e2e'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                ${esOrigActual?'✓ Dejado intacto (En uso)':'↩️ Elegir mi enlace original'}
               </button>
-              <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(x.url)}');mostrarToastSync('📋 Enlace copiado')" style="padding:3px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
+              <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(orig)}');mostrarToastSync('📋 Copiado')" style="padding:4px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
                 📋 Copiar
               </button>
             </div>
           </div>
         </div>
-      `;
-    }).join('');
-    bloquesHtml+=`
-      <div style="margin-top:6px">
-        <div style="font-weight:bold;font-size:12px;color:#fff;margin-bottom:3px">${escapeHtml(BM_NAMES[cat]||cat)} (${grupo.length})</div>
-        ${filas}
       </div>
     `;
-  });
+  }
 
-  if(!bloquesHtml)return '';
+  let bloquesHtml='';
+  if(Array.isArray(enlaces) && enlaces.length){
+    BM_ORDER.forEach(cat=>{
+      const grupo=enlaces.filter(x=>x.cat===cat && x.url!==orig);
+      if(!grupo.length)return;
+      const filas=grupo.map(x=>{
+        const esActual=x.url===urlSeleccionada;
+        const tipo=x.tipo || BM_TIPO[x.cat] || 'iframe';
+        return `
+          <div class="bm-link-row" style="${esActual?'border:1px solid #48bb78':''}">
+            <div class="bm-link-url">${escapeHtml(x.url)}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
+              <span style="font-size:11px;color:#94a3b8">${escapeHtml((x.srcs||[]).join(' · '))}</span>
+              <div style="display:flex;gap:4px">
+                <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esActual?'#2f855a':'#2b6cb0'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                  ${esActual?'✓ En uso':'✅ Elegir este enlace'}
+                </button>
+                <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(x.url)}');mostrarToastSync('📋 Copiado')" style="padding:4px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
+                  📋 Copiar
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      bloquesHtml+=`
+        <div style="margin-top:6px">
+          <div style="font-weight:bold;font-size:12px;color:#fff;margin-bottom:3px">${escapeHtml(BM_NAMES[cat]||cat)} (${grupo.length})</div>
+          ${filas}
+        </div>
+      `;
+    });
+  }
+
+  if(!bloquesHtml && !esModal){
+    return filaOriginal;
+  }
+
   return `
-    <details style="margin-top:6px">
-      <summary style="cursor:pointer;font-size:12px;color:#90cdf4;font-weight:bold">
-        🔎 Buscador de enlaces integrado (${enlaces.length} encontrados en la página · clic para ver todos)
-      </summary>
-      <div class="bm-links-box">
-        ${bloquesHtml}
-      </div>
-    </details>
+    <div class="bm-links-box" style="margin-top:6px">
+      ${filaOriginal}
+      ${bloquesHtml || '<div style="font-size:12px;color:#94a3b8;padding:4px 0">No se detectaron otros enlaces internos distintos al original.</div>'}
+    </div>
   `;
 }
 
@@ -3568,6 +3824,15 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
   const imgEl=document.getElementById(prefijo+'Imagen');
   if(!urlEl||!tipoEl)return;
 
+  if(buscadorHtmlPausado){
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'info',
+      `⏸️ <b>Búsqueda de HTML embebido en pausa.</b> Tu enlace queda 100% intacto tal como lo escribiste.`
+    );
+    return;
+  }
+
   let url=urlEl.value.trim();
   if(!url)return;
 
@@ -3577,36 +3842,27 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
     if(m && m[1]){
       url=m[1].trim();
       urlEl.value=url;
-      mostrarDiagnosticoWeb(prefijo,'ok','🪄 Se extrajo automáticamente el enlace limpio desde el código <code>&lt;iframe&gt;</code>.');
     }
   }
+
+  /* Guardar el enlace original que pegó el usuario para NUNCA perderlo ni cambiarlo sin su permiso */
+  urlOriginalPegada[prefijo]=url;
 
   if(extraerYouTubeId(url)){
     mostrarDiagnosticoWeb(prefijo,'ok','🎬 Video de YouTube detectado y listo.');
     return;
   }
 
-  /* Normalización instantánea (GameDistribution gd_sdk_referrer_url, CrazyGames /embed/, Playhop skip-guard, Archive, Wordwall) */
-  const normalizada=normalizarUrlParaPestanaNormal(url);
-  if(normalizada!==url){
-    url=normalizada;
-    urlEl.value=url;
-    tipoEl.value=detectarTipoUrl(url) || 'iframe';
-  }
+  if(/^https?:\/\//i.test(url)){
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'info',
+      `🔍 Buscando si hay enlaces embebidos dentro de la página (tu enlace original <b>NO se cambiará solo</b>)... `+
+      `<button type="button" onclick="togglePausaBuscadorHtml('${prefijo}')" style="margin-left:6px;padding:3px 8px;border:0;border-radius:5px;background:#d69e2e;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">⏸️ Parar búsqueda y dejar intacto</button>`
+    );
 
-  /* Si es una página web normal (ej. retrogames.cc sin /embed/, minigamesville, play-games, poki, etc.), escaneamos con la lógica del bookmarklet */
-  let esEmbedDirecto=false;
-  try{
-    const u=new URL(url,location.href);
-    const p=u.pathname.toLowerCase();
-    esEmbedDirecto=p.endsWith('.swf') || u.hostname.includes('gamedistribution.com') || u.hostname.includes('gamemonetize.') || p.includes('/gamelib/');
-  }catch(e){}
-
-  if((!esEmbedDirecto || forzarMensaje) && /^https?:\/\//i.test(url)){
-    if(forzarMensaje){
-      mostrarDiagnosticoWeb(prefijo,'ok','🔍 Escaneando página e iframes internos con el buscador de enlaces...');
-    }
     const info=await desenvuelverIframesProfundo(url);
+    if(buscadorHtmlPausado)return;
 
     if(info.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
       nomEl.value=info.titulo
@@ -3620,44 +3876,35 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
       imgEl.value=info.imagen;
       imgEl.dataset.auto='1';
     }
+    actualizarVistaPrevia(prefijo);
 
-    if(info.embedUrl && info.embedUrl!==url){
-      urlEl.value=info.embedUrl;
-      url=info.embedUrl;
-      tipoEl.value=info.tipoSugerido || detectarTipoUrl(url) || 'iframe';
-      actualizarVistaPrevia(prefijo);
-      buscarPortadasAutomaticas(prefijo,false);
-      const panelHtml=renderPanelEnlacesBookmarklet(prefijo,info.enlaces||[],url);
+    const listaEnlaces=Array.isArray(info.enlaces) ? info.enlaces : [];
+    if(info.embedUrl && info.embedUrl!==url && !listaEnlaces.some(x=>x.url===info.embedUrl)){
+      listaEnlaces.unshift({url:info.embedUrl,cat:'iframe',tipo:info.tipoSugerido||'iframe',srcs:['Embed detectado'],score:200});
+    }
+
+    ultimosEnlacesModal=listaEnlaces;
+    const panelHtml=renderPanelEnlacesBookmarklet(prefijo,listaEnlaces,urlEl.value.trim(),url,false);
+
+    if(listaEnlaces.length){
       mostrarDiagnosticoWeb(
         prefijo,
         'ok',
-        `🪄 <b>¡Juego directo extraído!</b> Se aplicó automáticamente el mejor enlace (<code>${escapeHtml(url.slice(0,68))}${url.length>68?'...':''}</code>).${panelHtml}`
-      );
-      return;
-    }else if(Array.isArray(info.enlaces) && info.enlaces.length){
-      const panelHtml=renderPanelEnlacesBookmarklet(prefijo,info.enlaces,url);
-      mostrarDiagnosticoWeb(
-        prefijo,
-        'ok',
-        `✅ Escaneo completado (${info.enlaces.length} enlace(s) encontrados).${panelHtml}`
+        `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">`+
+          `<span>🔎 <b>Tu enlace original se dejó intacto.</b> Encontré <b>${listaEnlaces.length}</b> opción(es) dentro de la web por si quieres elegir alguna:</span>`+
+          `<button type="button" onclick="togglePausaBuscadorHtml('${prefijo}')" style="padding:3px 8px;border:0;border-radius:5px;background:#d69e2e;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">⏸️ Pausar buscador</button>`+
+        `</div>`+
+        panelHtml
       );
       return;
     }
   }
 
-  /* Si el dominio aún bloquea iframes externos, activar Modo Pestaña Normal dentro del recuadro */
-  if(sitioBloqueaIframeDirecto(url)){
-    tipoEl.value='ventana';
-    mostrarDiagnosticoWeb(
-      prefijo,
-      'warn',
-      `🪟 Se activó <b>"Nueva ventanita (en el recuadro)"</b> para que <b>${escapeHtml(new URL(url).hostname)}</b> crea que está en una pestaña normal y abra al instante en tu recuadro.`
-    );
-  }else if(forzarMensaje){
+  if(forzarMensaje){
     mostrarDiagnosticoWeb(
       prefijo,
       'ok',
-      `✅ Enlace listo para abrir inmediatamente dentro del recuadro.`
+      `✅ Tu enlace original está intacto y listo.`
     );
   }else{
     mostrarDiagnosticoWeb(prefijo,'','');
@@ -3691,10 +3938,7 @@ function detectarTipoUrl(url){
     host.includes('arcadespot')
   )return 'snes';
 
-  if(sitioBloqueaIframeDirecto(url)){
-    return 'ventana';
-  }
-
+  /* Por defecto SIEMPRE respeta la sección 'iframe' original sin cambiarse solo a ventana */
   return 'iframe';
 
 }
@@ -4028,16 +4272,11 @@ async function autoMulti(i){
         if(d.title){nomEl.value=d.title.trim();nomEl.dataset.auto='1';}
       }
     }catch(e){}
-  }else if(/^https?:\/\//i.test(url)){
+  }else if(/^https?:\/\//i.test(url) && !buscadorHtmlPausado){
     try{
       const html=await leerHtmlRemoto(url);
       if(html){
         const ex=extraerJuegoDesdeHtml(html,url);
-        if(ex.embedUrl && urlEl){
-          urlEl.value=ex.embedUrl;
-          url=ex.embedUrl;
-          if(ex.tipoSugerido && tipoEl)tipoEl.value=ex.tipoSugerido;
-        }
         if(ex.titulo && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
           nomEl.value=ex.titulo;
           nomEl.dataset.auto='1';
@@ -4046,9 +4285,6 @@ async function autoMulti(i){
           imgEl.value=ex.imagen;
           imgEl.dataset.auto='1';
         }
-      }
-      if(sitioBloqueaIframeDirecto(url) && tipoEl){
-        tipoEl.value='ventana';
       }
     }catch(e){}
   }
@@ -4442,7 +4678,7 @@ function editarJuego(id){
       <div class="form-grid">
 
         <label style="grid-column:1/-1">
-          🔗 URL
+          🔗 URL (tu enlace se mantiene intacto; abajo puedes ver otros enlaces de la web o pausar el buscador)
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <input
               id="eUrl"
@@ -4456,7 +4692,24 @@ function editarJuego(id){
               style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
               onclick="analizarYExtraerJuegoDeWeb('e',true)"
             >
-              🪄 Extraer juego de la web
+              🔎 Buscar enlaces en web
+            </button>
+            <button
+              type="button"
+              id="eBtnPausaHtml"
+              class="image-search-button"
+              style="margin-top:0;background:${buscadorHtmlPausado?'#38a169':'#d69e2e'};color:#fff;font-weight:bold"
+              onclick="togglePausaBuscadorHtml('e')"
+            >
+              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML'}
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#805ad5;color:#fff;font-weight:bold"
+              onclick="abrirBuscadorEnlacesPrimerPlano(document.getElementById('eUrl')?.value,'e')"
+            >
+              🪟 Ventana JS
             </button>
           </div>
         </label>
@@ -5292,7 +5545,7 @@ async function salirModoOrden(){
   }else if(cambiosPendientesSync && cfg && cfg.token && !syncEnCurso){
     await sincronizarGitHubSilencioso('Cambios listos');
   }else if(huboCambiosSesionOrden && cfg && cfg.token){
-    mostrarToastSync('✅ Ya terminó de actualizar en GitHub');
+    mostrarToastSync('☁️ GitHub actualizado ✓', 2400);
   }
   huboCambiosSesionOrden=false;
 
@@ -5482,20 +5735,20 @@ const AVATARES=['🐣','🦄','🚀','🐱','🐶','🦖','🌈','⭐','🎨','�
 
 const CATEGORIAS_EMOJIS=[
   {
-    titulo:'🐾 Animalitos tiernos',
-    emojis:['🐱','🐶','🐰','🦊','🐼','🐨','🦄','🐣','🦋','🐬','🦖','🦖','🐢','🐙','🐝','🐞','🦩','🦢','🐹','🐻‍❄️']
+    titulo:'👑 Princesas, Hadas, Unicornios y Magia',
+    emojis:['🦄','👸','🧚‍♀️','🧜‍♀️','🦸‍♀️','🧙‍♀️','👑','🎀','💖','💝','💘','💗','💓','💞','💕','🌸','🌺','🌷','🌹','🌻','🌼','🪄','💎','💍','🩰','🎠','🎡','🌈','⭐','🌟','✨','💫']
   },
   {
-    titulo:'👑 Fantasía, Princesas y Magia',
-    emojis:['👸','🧚‍♀️','🧜‍♀️','🦸‍♀️','🧙‍♀️','👑','💖','🌈','⭐','🌟','🌸','🌺','🌷','🪄','💎','🎀','🩰','🎠']
+    titulo:'🐾 Animalitos Tiernos',
+    emojis:['🐱','🐶','🐰','🦊','🐼','🐨','🐣','🐥','🦋','🐬','🐳','🦖','🦕','🐢','🐙','🐝','🐞','🦩','🦢','🐹','🐻','🐻‍❄️','🐯','🦁','🐮','🐷','🐸','🐵','🐧','🐦','🦉','🐴']
   },
   {
-    titulo:'🎮 Juegos, Música y Diversión',
-    emojis:['🎮','🕹️','🎲','🎨','🎵','🎧','🚀','🛸','🏆','⚽','🏀','🛹','🎯','🎪','🎬','🎸','🎹','🧩']
+    titulo:'🍓 Dulces, Postres y Frutas',
+    emojis:['🍓','🍒','🍉','🍑','🍎','🍍','🍌','🍇','🍦','🍧','🍨','🧁','🍰','🎂','🍭','🍬','🍫','🍩','🍪','🍿','🧋','🧃','🍕','🍔','🍟','🥞','🧇','🥐']
   },
   {
-    titulo:'🍓 Dulces, Frutas y Caritas',
-    emojis:['🍓','🍒','🍉','🍑','🍦','🧁','🍭','🍩','🍪','🍕','😊','😎','🥳','🤩','😺','👼','🤠','🤖']
+    titulo:'😊 Caritas, Juegos, Música y Arte',
+    emojis:['😊','🥰','😍','🤩','🥳','😎','😇','🤠','😺','😸','😻','🎨','🎮','🕹️','🎲','🧩','🎵','🎶','🎧','🎤','🎸','🎹','🚀','🛸','🏆','⚽','🏀','🛹','🛼','🎯','🎪','🎬']
   }
 ];
 
@@ -5903,16 +6156,33 @@ function mostrarSelector(){
 
   cuentas.forEach(c=>{
 
-    const b=document.createElement('button');
+    const wrap=document.createElement('div');
+    wrap.style.display='flex';
+    wrap.style.flexDirection='column';
+    wrap.style.alignItems='center';
+    wrap.style.gap='6px';
 
+    const b=document.createElement('button');
     b.className='cuenta-card';
     b.innerHTML=
       '<span class="av">'+escapeHtml(c.avatar)+'</span>'+
-      escapeHtml(c.nombre)+
+      '<b>'+escapeHtml(c.nombre)+'</b>'+
       (c.claveEntrar?' 🔒':'');
     b.onclick=()=>elegirCuenta(c.id);
 
-    l.appendChild(b);
+    const btnEmoji=document.createElement('button');
+    btnEmoji.type='button';
+    btnEmoji.className='btn';
+    btnEmoji.style.cssText='background:rgba(255,255,255,.16);color:#fff;font-size:12px;padding:6px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.25);cursor:pointer;font-weight:bold';
+    btnEmoji.textContent='🎨 Cambiar icono';
+    btnEmoji.onclick=(ev)=>{
+      ev.stopPropagation();
+      abrirSelectorEmojiCuenta(c.id);
+    };
+
+    wrap.appendChild(b);
+    wrap.appendChild(btnEmoji);
+    l.appendChild(wrap);
 
   });
 
