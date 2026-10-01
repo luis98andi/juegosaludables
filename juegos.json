@@ -1,6 +1,8 @@
 {
   "version": 1,
-  "categorias": [],
+  "categorias": [
+    "gato"
+  ],
   "juegos": [
     {
       "id": "game-001",
