@@ -413,6 +413,17 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 39
+    },
+    {
+      "id": "game-1790820983950",
+      "nombre": "Pacman Classic",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStI2g9pOPx6c1Ys2PtTG73xmv4tPfF8PO8boGcryNTOQ&s",
+      "url": "https://ext.minijuegosgratis.com/pacman/index.html?mp_assets=https%3A%2F%2Fs2.minijuegosgratis.com%2F&mp_embed=0&mp_game_id=2399&mp_game_uid=pacman&mp_game_url=https%3A%2F%2Fwww.minijuegos.com%2Fjuego%2Fpacman&mp_int=1&mp_locale=es_ES&mp_player_type=IFRAME&mp_site_https_url=https%3A%2F%2Fwww.minijuegos.com%2F&mp_site_name=minijuegos.com&mp_site_url=https%3A%2F%2Fwww.minijuegos.com%2F&mp_timezone=America%2FGuayaquil&mp_view_type=",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 40
     }
   ]
 }
