@@ -367,6 +367,17 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 35
+    },
+    {
+      "id": "game-1790818819998",
+      "nombre": "Mahjong Classic",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS6_nUjgvQPmIqqo96OUfIlV3VkBfg4hC00wbpvuK5GQ&s=10",
+      "url": "https://playgama.com/export/game/mahjong-classic?clid=p_ae5af802-1a10-4cc0-9e2a-989216d478af",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 36
     }
   ]
 }
