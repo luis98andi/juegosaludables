@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FreshMind Games</title>
+<meta name="description" content="Plataforma y catálogo interactivo de juegos saludables en línea con reproductor integrado y panel de administración.">
+<meta property="og:title" content="FreshMind Games">
+<meta property="og:description" content="Plataforma y catálogo interactivo de juegos saludables en línea con reproductor integrado y panel de administración.">
+<meta property="og:type" content="website">
 
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -38,24 +42,62 @@ h1{text-align:center}
 
 h1{margin:10px 0}
 
-/* BUSCADOR */
+/* BUSCADOR (SOLO ICONO QUE SE EXPANDE AL TOCAR) */
 .top-tools{
-  position:absolute;
-  top:20px;
-  right:25px;
+  position:fixed;
+  top:16px;
+  right:18px;
   display:flex;
+  align-items:center;
   justify-content:flex-end;
-  z-index:100;
+  z-index:200;
+}
+
+.search-wrap{
+  display:flex;
+  align-items:center;
+  background:rgba(0,0,0,.62);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:24px;
+  padding:4px;
+  backdrop-filter:blur(6px);
+  transition:all .25s ease;
+  box-shadow:0 3px 12px rgba(0,0,0,.3);
+}
+
+.search-toggle-btn{
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:#fff;
+  font-size:17px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
 }
 
 .search-box{
-  width:250px;
-  padding:9px 12px;
-  border:1px solid rgba(255,255,255,.3);
-  border-radius:20px;
-  background:rgba(0,0,0,.55);
+  width:0;
+  opacity:0;
+  padding:0;
+  border:0;
+  background:transparent;
   color:white;
   outline:none;
+  font-size:14px;
+  transition:width .25s ease, opacity .2s ease, padding .2s ease;
+  pointer-events:none;
+}
+
+.search-wrap.open .search-box{
+  width:220px;
+  opacity:1;
+  padding:6px 10px 6px 4px;
+  pointer-events:auto;
 }
 
 .search-box::placeholder{
@@ -64,7 +106,8 @@ h1{margin:10px 0}
 
 /* CATEGORÍAS */
 .categories{
-  max-width:900px;
+  max-width:1400px;
+  width:95%;
   margin:10px auto 18px;
   display:flex;
   gap:8px;
@@ -94,19 +137,20 @@ h1{margin:10px 0}
   background:#3a7bd5;
 }
 
-/* JUEGOS */
+/* JUEGOS - MÁS ICONOS EN HORIZONTAL */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:15px;
-  max-width:900px;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:14px;
+  max-width:1400px;
+  width:95%;
   margin:20px auto
 }
 
 .card{
   background:none;
   border-radius:10px;
-  padding:10px;
+  padding:8px;
   text-align:center;
   cursor:pointer;
   transition:.2s;
@@ -117,29 +161,98 @@ h1{margin:10px 0}
 
 .card img{
   width:100%;
-  height:160px;
+  height:150px;
   object-fit:cover;
   border-radius:16px
 }
 
 .card p{
   position:absolute;
-  left:10px;
-  right:10px;
-  bottom:10px;
+  left:8px;
+  right:8px;
+  bottom:8px;
   margin:0;
   padding:26px 8px 8px;
   box-sizing:border-box;
   border-radius:0 0 16px 16px;
-  background:linear-gradient(transparent,rgba(0,0,0,.75));
+  background:linear-gradient(transparent,rgba(0,0,0,.78));
   color:white;
-  font-size:14px;
+  font-size:13px;
   font-weight:bold;
   opacity:0;
   transition:.2s
 }
 
 .card:hover p{opacity:1}
+
+.card.juego-oculto-card{
+  opacity:.55;
+  filter:grayscale(.35);
+}
+.card.juego-oculto-card img{
+  outline:2px dashed #ffb703;
+}
+.quick-hide-btn{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:4;
+  border:0;
+  border-radius:16px;
+  padding:5px 9px;
+  background:rgba(0,0,0,.82);
+  color:#fff;
+  font-size:12px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.45);
+}
+.quick-hide-btn:hover{
+  background:#3a7bd5;
+}
+
+/* BOTÓN DISIMULADO PARA OCULTAR / DESOCULTAR FUERA DE ADMIN */
+#btn-ocultos{
+  position:fixed;
+  right:68px;
+  bottom:16px;
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:50%;
+  background:rgba(0,0,0,.42);
+  color:rgba(255,255,255,.65);
+  font-size:15px;
+  cursor:pointer;
+  z-index:1000;
+  opacity:.45;
+  transition:opacity .2s, transform .2s, background .2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#btn-ocultos:hover,
+#btn-ocultos.activo{
+  opacity:1;
+  background:rgba(58,123,213,.92);
+  color:#fff;
+  transform:scale(1.08);
+}
+
+#toast-sync{
+  display:none;
+  position:fixed;
+  bottom:70px;
+  right:16px;
+  z-index:1200;
+  background:rgba(15,15,20,.92);
+  color:#fff;
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:13px;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.15);
+}
 
 /* REPRODUCTOR */
 #player-container{
@@ -475,14 +588,73 @@ h1{margin:10px 0}
 #cuentas-clave input{font-size:20px;padding:10px;text-align:center;border-radius:8px;border:1px solid #666;background:#222;color:#fff}
 #cuentas-screen button.btn{padding:9px 14px;border:0;border-radius:8px;cursor:pointer;margin:0 3px}
 #btn-cuentas{
-  display:none;position:fixed;left:14px;bottom:14px;z-index:1000;border:0;border-radius:23px;
-  height:46px;padding:0 16px;background:rgba(255,255,255,.9);font-size:15px;font-weight:bold;
-  cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.35)
+  display:none;position:fixed;left:14px;bottom:14px;z-index:1000;border:0;border-radius:50%;
+  width:46px;height:46px;padding:0;background:rgba(255,255,255,.9);font-size:22px;
+  cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.35);
+  align-items:center;justify-content:center
 }
 .cuenta-fila{display:flex;align-items:center;gap:10px;background:#292929;padding:8px 10px;border-radius:8px;margin:6px 0;text-align:left}
 .cuenta-fila .grow{flex:1}
 .claves-box label.chk{flex-direction:row;align-items:center;gap:8px}
 .claves-box input[type=password],.claves-box input[type=text]{width:100%}
+
+/* VISTA PREVIA Y SUGERENCIAS AUTOMÁTICAS DE PORTADA */
+.auto-preview-box{
+  grid-column:1/-1;
+  background:#1c1c1c;
+  border:1px solid #383838;
+  border-radius:10px;
+  padding:12px;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+.auto-preview-card{
+  width:140px;
+  flex-shrink:0;
+  text-align:center;
+}
+.auto-preview-card img{
+  width:140px;
+  height:140px;
+  object-fit:cover;
+  border-radius:14px;
+  background:#111;
+  border:1px solid #444;
+  display:block;
+}
+.auto-preview-card div{
+  margin-top:6px;
+  font-size:13px;
+  font-weight:bold;
+  word-break:break-word;
+}
+.cover-suggestions{
+  flex:1;
+  min-width:220px;
+}
+.cover-thumbs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+.cover-thumb{
+  width:72px;
+  height:72px;
+  object-fit:cover;
+  border-radius:8px;
+  cursor:pointer;
+  border:2px solid transparent;
+  background:#111;
+  transition:.15s;
+}
+.cover-thumb:hover,
+.cover-thumb.selected{
+  border-color:#3a7bd5;
+  transform:scale(1.06);
+}
 
 @media(max-width:600px){
   .form-grid{grid-template-columns:1fr}
@@ -496,8 +668,8 @@ h1{margin:10px 0}
     height:42px
   }
 
-  .search-box{
-    width:210px
+  .search-wrap.open .search-box{
+    width:175px
   }
 }
 </style>
@@ -509,15 +681,26 @@ h1{margin:10px 0}
   <img src="portadas/logo.png" alt="FreshMind Games" class="logo">
 </h1>
 
-<!-- BUSCADOR ARRIBA A LA DERECHA -->
+<!-- BUSCADOR ARRIBA A LA DERECHA (SOLO ICONO QUE SE ACTIVA AL TOCAR) -->
 <div class="top-tools">
-  <input
-    id="searchInput"
-    class="search-box"
-    type="search"
-    placeholder="🔎 Buscar juego..."
-    oninput="aplicarFiltros()"
-  >
+  <div id="searchWrap" class="search-wrap">
+    <button
+      id="searchToggleBtn"
+      class="search-toggle-btn"
+      type="button"
+      title="Buscar juego"
+      onclick="toggleBuscador()"
+    >🔎</button>
+    <input
+      id="searchInput"
+      class="search-box"
+      type="search"
+      placeholder="Buscar juego..."
+      oninput="aplicarFiltros()"
+      onblur="cerrarBuscadorSiVacio()"
+      onkeydown="if(event.key==='Escape'){this.value='';aplicarFiltros();cerrarBuscadorSiVacio();this.blur();}"
+    >
+  </div>
 </div>
 
 <!-- CATEGORÍAS -->
@@ -566,6 +749,15 @@ h1{margin:10px 0}
 
 </div>
 
+<!-- BOTÓN DISIMULADO PARA OCULTAR / DESOCULTAR JUEGOS FUERA DE ADMIN -->
+<button
+  id="btn-ocultos"
+  title="Ocultar o mostrar juegos ocultos"
+  onclick="toggleModoOcultar()"
+>👁️</button>
+
+<div id="toast-sync"></div>
+
 <button
   id="admin-launcher"
   title="Administrar FreshMind Games"
@@ -574,7 +766,7 @@ h1{margin:10px 0}
 
 <!-- ADMIN -->
 <!-- SELECTOR DE CUENTAS -->
-<div id="cuentas-screen">
+<div id="cuentas-screen" onclick="if(event.target===this && cuentaActual)ocultarSelector()">
   <div class="cuentas-box">
     <img src="portadas/logo.png" alt="FreshMind Games" class="logo">
     <h2>¿Quién va a jugar?</h2>
@@ -602,7 +794,7 @@ h1{margin:10px 0}
   <button onclick="salirModoOrden()">✅ Listo</button>
 </div>
 
-<div id="admin-panel">
+<div id="admin-panel" onclick="if(event.target===this)cerrarAdmin()">
 
   <div class="admin-box">
 
@@ -646,28 +838,28 @@ h1{margin:10px 0}
           ⚙️ Agregar hasta 20
         </button>
 
+        <button onclick="mostrarTraerDeCuenta()">
+          🔄 Traer de otra cuenta
+        </button>
+
         <button onclick="mostrarCuentas()">
           👤 Cuentas
         </button>
 
         <button onclick="entrarModoOrden()">
-          ✋ Ordenar / editar en la página
+          ✋ Ordenar en la página
         </button>
 
-        <button onclick="exportarJSON()">
-          💾 Exportar catálogo
-        </button>
-
-        <button onclick="mostrarGitHub()">
+        <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold">
           ☁️ Actualizar GitHub
         </button>
 
-        <button onclick="importarJSON()">
-          📥 Importar catálogo
+        <button onclick="mostrarGitHub(true)" title="Configurar token o repositorio de GitHub">
+          🔑 Token
         </button>
 
-        <button onclick="document.getElementById('jsonFile').click()">
-          📂 Abrir JSON
+        <button onclick="toggleRespaldoJSON()" title="Descargar o cargar copia de seguridad JSON">
+          📦 Respaldo JSON
         </button>
 
         <button onclick="cerrarAdmin()">
@@ -684,10 +876,22 @@ h1{margin:10px 0}
 
       </div>
 
+      <p id="github-quick-status" class="admin-muted" style="display:none;margin:0 0 12px;padding:8px 12px;border-radius:8px;background:#222"></p>
+
+      <div id="respaldo-json-box" style="display:none;margin:10px 0 14px;padding:12px;border-radius:10px;background:#222">
+        <div class="admin-muted" style="margin-bottom:8px">
+          <b>Respaldo manual en archivo (.json):</b> Solo es necesario si quieres guardar una copia en tu computadora o restaurar un archivo descargado. Para publicar cambios normales usa <b>☁️ Actualizar GitHub</b>.
+        </div>
+        <div class="admin-actions" style="margin-bottom:0">
+          <button onclick="exportarJSON()">💾 Descargar copia (.json)</button>
+          <button onclick="importarJSON()">📥 Cargar copia (.json)</button>
+        </div>
+      </div>
+
       <div id="github-config" style="display:none;margin:14px 0;padding:14px;border-radius:14px;background:rgba(0,0,0,.16)">
-        <h3 style="margin:0 0 8px">☁️ Actualizar el catálogo de esta cuenta en GitHub</h3>
+        <h3 style="margin:0 0 8px">🔑 Configuración de GitHub</h3>
         <p class="admin-muted" style="margin:0 0 10px">
-          Usa un token de GitHub con permiso <b>Contents: Read and write</b> solamente para este repositorio.
+          Una vez guardado tu token aquí, el botón <b>☁️ Actualizar GitHub</b> subirá los cambios directo en 1 solo clic sin volver a abrir esta ventana.
         </p>
         <div style="display:grid;gap:8px">
           <input id="gh-owner" placeholder="Usuario de GitHub" value="luis98andi">
@@ -697,14 +901,18 @@ h1{margin:10px 0}
           <input id="gh-token" type="password" placeholder="Token de GitHub">
         </div>
         <div class="admin-actions" style="margin-top:10px">
-          <button onclick="guardarConfigGitHub()">💾 Guardar configuración</button>
-          <button onclick="actualizarGitHub()">☁️ ACTUALIZAR GITHUB</button>
+          <button onclick="guardarConfigGitHub()">💾 Guardar token</button>
+          <button onclick="actualizarGitHub()">☁️ Guardar y subir ahora</button>
           <button onclick="ocultarGitHub()">Cerrar</button>
         </div>
         <p id="github-status" class="admin-muted" style="margin:8px 0 0"></p>
       </div>
 
       <div id="editor"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 8px;flex-wrap:wrap">
+        <span class="admin-muted" id="admin-count-label">Juegos del catálogo</span>
+        <input id="admin-filter-input" placeholder="🔎 Filtrar en la lista..." oninput="renderAdmin()" style="padding:7px 10px;border-radius:6px;border:1px solid #444;background:#242424;color:#fff;font-size:13px;width:220px">
+      </div>
       <div id="admin-list" class="admin-list"></div>
 
     </div>
@@ -883,6 +1091,112 @@ async function cargarCatalogo(){
 }
 
 /* =========================
+   BUSCADOR DESPLEGABLE Y MODO OCULTAR
+========================= */
+
+let modoOcultar=false;
+let toastTimer=null;
+
+function toggleBuscador(){
+  const wrap=document.getElementById('searchWrap');
+  const inp=document.getElementById('searchInput');
+  if(!wrap.classList.contains('open')){
+    wrap.classList.add('open');
+    setTimeout(()=>inp.focus(),50);
+  }else if(!inp.value.trim()){
+    wrap.classList.remove('open');
+  }else{
+    inp.focus();
+  }
+}
+
+function cerrarBuscadorSiVacio(){
+  const wrap=document.getElementById('searchWrap');
+  const inp=document.getElementById('searchInput');
+  if(!inp.value.trim()){
+    wrap.classList.remove('open');
+  }
+}
+
+function mostrarToastSync(texto){
+  const t=document.getElementById('toast-sync');
+  if(!t)return;
+  t.textContent=texto;
+  t.style.display='block';
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{t.style.display='none';},3500);
+}
+
+function actualizarBotonOcultos(){
+  const btn=document.getElementById('btn-ocultos');
+  if(!btn)return;
+  const cantOcultos=(catalogo.juegos||[]).filter(j=>j.oculto).length;
+  btn.classList.toggle('activo',modoOcultar);
+  btn.textContent=modoOcultar ? '👁️' : (cantOcultos>0 ? '🙈' : '👁️');
+  btn.title=modoOcultar
+    ? 'Salir de ocultar/mostrar juegos'
+    : (cantOcultos>0
+        ? `Ver / desocultar juegos (${cantOcultos} oculto${cantOcultos===1?'':'s'})`
+        : 'Ocultar juegos rápidamente');
+}
+
+function toggleModoOcultar(){
+  if(modoOrden)salirModoOrden();
+  modoOcultar=!modoOcultar;
+  actualizarBotonOcultos();
+  aplicarFiltros();
+  if(modoOcultar){
+    const cant=(catalogo.juegos||[]).filter(j=>j.oculto).length;
+    mostrarToastSync(`👁️ Modo ocultar activo (${cant} oculto${cant===1?'':'s'}). Toca un juego para ocultar o mostrar.`);
+  }else{
+    mostrarToastSync('✅ Vista normal restaurada.');
+  }
+}
+
+async function alternarOcultoJuego(id,ev){
+  if(ev)ev.stopPropagation();
+  const j=catalogo.juegos.find(x=>x.id===id);
+  if(!j)return;
+  j.oculto=!j.oculto;
+  actualizarBotonOcultos();
+  renderCategorias();
+  aplicarFiltros();
+  if(document.getElementById('admin-panel').style.display==='block'){
+    renderAdmin();
+  }
+  await sincronizarGitHubSilencioso(
+    j.oculto ? `🙈 "${j.nombre}" ocultado` : `👁️ "${j.nombre}" visible de nuevo`
+  );
+}
+
+async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
+  const cfg=obtenerConfigGitHub();
+  if(!cfg || !cfg.token){
+    mostrarToastSync(`${prefijoMsg} (guarda tu token en ⚙️ → 🔑 para sincronizar con GitHub).`);
+    return;
+  }
+  mostrarToastSync(`${prefijoMsg} · ⏳ Sincronizando con GitHub...`);
+  try{
+    reordenar();
+    await subirArchivoGitHub(
+      {
+        owner:cfg.owner||'luis98andi',
+        repo:cfg.repo||'juegosaludables',
+        branch:cfg.branch||'main',
+        token:cfg.token
+      },
+      cuentaActual.archivo,
+      JSON.stringify(catalogo,null,2),
+      'Actualizar '+cuentaActual.archivo+' desde FreshMind Games'
+    );
+    mostrarToastSync(`${prefijoMsg} · ☁️ Sincronizado en GitHub`);
+  }catch(e){
+    console.error(e);
+    mostrarToastSync(`⚠️ ${prefijoMsg}, pero falló GitHub: ${e.message}`);
+  }
+}
+
+/* =========================
    CATEGORIAS
 ========================= */
 
@@ -893,7 +1207,7 @@ function renderCategorias(){
   const categorias=new Set();
 
   catalogo.juegos.forEach(j=>{
-
+    if(j.oculto && !modoOcultar)return;
     if(j.categoria){
       categorias.add(j.categoria);
     }
@@ -927,6 +1241,8 @@ function renderCategorias(){
 
   });
 
+  actualizarBotonOcultos();
+
 }
 
 /* =========================
@@ -941,21 +1257,25 @@ function aplicarFiltros(){
       .trim()
       .toLowerCase();
 
-  const filtrados=catalogo.juegos.filter(j=>{
+  const filtrados=[...catalogo.juegos]
+    .sort((a,b)=>(a.orden||0)-(b.orden||0))
+    .filter(j=>{
 
-    const coincideCategoria=
-      categoriaActual==="Todos" ||
-      j.categoria===categoriaActual;
+      if(j.oculto && !modoOcultar && !modoOrden)return false;
 
-    const coincideTexto=
-      !texto ||
-      String(j.nombre||'')
-        .toLowerCase()
-        .includes(texto);
+      const coincideCategoria=
+        categoriaActual==="Todos" ||
+        j.categoria===categoriaActual;
 
-    return coincideCategoria && coincideTexto;
+      const coincideTexto=
+        !texto ||
+        String(j.nombre||'')
+          .toLowerCase()
+          .includes(texto);
 
-  });
+      return coincideCategoria && coincideTexto;
+
+    });
 
   renderJuegos(filtrados);
 }
@@ -966,19 +1286,27 @@ function renderJuegos(lista=null){
 
   grid.innerHTML='';
 
-  const juegos=
+  const base=
     lista ||
     [...catalogo.juegos]
       .sort((a,b)=>
         (a.orden||0)-(b.orden||0)
-      );
+      )
+      .filter(j=>modoOcultar || modoOrden || !j.oculto);
+
+  /* En modoOcultar mostramos primero los ocultos o los destacamos claramente */
+  const juegos=modoOcultar
+    ? [...base].sort((a,b)=>(b.oculto?1:0)-(a.oculto?1:0) || (a.orden||0)-(b.orden||0))
+    : base;
+
+  actualizarBotonOcultos();
 
   if(!juegos.length){
 
     grid.innerHTML=
       '<p style="text-align:center;grid-column:1/-1">'+
       (catalogo.juegos.length
-        ? 'No se encontraron juegos.'
+        ? 'No se encontraron juegos visibles en esta sección.'
         : 'Esta cuenta aún no tiene juegos. Toca ⚙️ para agregar el primero.')+
       '</p>';
 
@@ -989,12 +1317,16 @@ function renderJuegos(lista=null){
 
     const card=document.createElement('div');
 
-    card.className='card';
+    card.className='card'+(j.oculto?' juego-oculto-card':'');
 
     card.dataset.id=j.id;
 
     card.onclick=()=>{
       if(modoOrden)return;
+      if(modoOcultar){
+        alternarOcultoJuego(j.id);
+        return;
+      }
       abrirJuego(
         j.url,
         j.tipo,
@@ -1011,9 +1343,18 @@ function renderJuegos(lista=null){
 
     const p=document.createElement('p');
 
-    p.textContent=j.nombre;
+    p.textContent=j.nombre+(j.oculto?' (Oculto)':'');
+    if(j.oculto || modoOcultar)p.style.opacity='1';
 
     card.append(img,p);
+
+    if(modoOcultar && !modoOrden){
+      const hb=document.createElement('button');
+      hb.className='quick-hide-btn';
+      hb.innerHTML=j.oculto ? '👁️ Desocultar' : '🙈 Ocultar';
+      hb.onclick=e=>alternarOcultoJuego(j.id,e);
+      card.appendChild(hb);
+    }
 
     if(modoOrden){
 
@@ -1025,10 +1366,12 @@ function renderJuegos(lista=null){
       const tools=document.createElement('div');
       tools.className='card-tools';
       tools.innerHTML=
+        `<button title="${j.oculto?'Desocultar':'Ocultar'}">${j.oculto?'👁️':'🙈'}</button>`+
         '<button title="Editar">✏️</button>'+
         '<button title="Eliminar">🗑️</button>';
-      tools.children[0].onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
-      tools.children[1].onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
+      tools.children[0].onclick=e=>alternarOcultoJuego(j.id,e);
+      tools.children[1].onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
+      tools.children[2].onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
 
       card.append(h,tools);
 
@@ -1767,18 +2110,30 @@ function renderAdmin(){
       'admin-list'
     );
 
+  if(!list)return;
+
   list.innerHTML='';
+
+  const filtro=(document.getElementById('admin-filter-input')?.value||'').trim().toLowerCase();
+  const total=(catalogo.juegos||[]).length;
+  const ocultos=(catalogo.juegos||[]).filter(x=>x.oculto).length;
+  const countLabel=document.getElementById('admin-count-label');
+  if(countLabel){
+    countLabel.textContent=`Total: ${total} juego${total===1?'':'s'}${ocultos?` · ${ocultos} oculto${ocultos===1?'':'s'}`:''}`;
+  }
 
   [...catalogo.juegos]
     .sort((a,b)=>
       (a.orden||0)-(b.orden||0)
     )
+    .filter(j=>!filtro || String(j.nombre||'').toLowerCase().includes(filtro) || String(j.categoria||'').toLowerCase().includes(filtro))
     .forEach(j=>{
 
       const row=
         document.createElement('div');
 
       row.className='admin-row';
+      if(j.oculto)row.style.opacity='0.6';
 
       row.innerHTML=`
         <img
@@ -1788,27 +2143,23 @@ function renderAdmin(){
 
         <div class="grow">
           <b>${escapeHtml(j.nombre)}</b>
+          ${j.oculto?'<span style="color:#ffb703;font-size:12px"> (Oculto)</span>':''}
 
           <div class="admin-muted">
             ${escapeHtml(j.tipo||'iframe')}
-            ${j.categoria?
-              ' · '+escapeHtml(j.categoria):''}
+            · ${escapeHtml(j.categoria||'Todos')}
           </div>
         </div>
 
-        <button onclick="editarJuego('${j.id}')">
+        <button onclick="alternarOcultoJuego('${j.id}')" title="${j.oculto?'Desocultar juego':'Ocultar juego'}">
+          ${j.oculto?'👁️':'🙈'}
+        </button>
+
+        <button onclick="editarJuego('${j.id}')" title="Editar juego">
           ✏️
         </button>
 
-        <button onclick="subirJuego('${j.id}')">
-          ⬆️
-        </button>
-
-        <button onclick="bajarJuego('${j.id}')">
-          ⬇️
-        </button>
-
-        <button onclick="eliminarJuego('${j.id}')">
+        <button onclick="eliminarJuego('${j.id}')" title="Eliminar juego">
           🗑️
         </button>
       `;
@@ -1855,7 +2206,7 @@ function buscarImagen(inputId,nombreId){
   if(!nombre){
 
     alert(
-      'Primero escribe el nombre del juego.'
+      'Primero escribe el nombre del juego o pega el enlace.'
     );
 
     return;
@@ -1870,7 +2221,7 @@ function buscarImagen(inputId,nombreId){
 }
 
 /* =========================
-   FORMULARIO AGREGAR
+   FORMULARIO AGREGAR CON AUTODETECTOR Y VISTA PREVIA
 ========================= */
 
 function mostrarAgregar(){
@@ -1888,15 +2239,37 @@ function mostrarAgregar(){
     ">
 
       <h3>➕ Nuevo juego</h3>
+      <p class="admin-muted" style="margin-top:-6px;margin-bottom:10px">
+        💡 Pega primero el <b>enlace (URL)</b>: el sistema detectará automáticamente el título, el tipo y las mejores portadas con vista previa.
+      </p>
 
       <div class="form-grid">
 
+        <label style="grid-column:1/-1">
+          🔗 URL del juego / video (pega aquí el enlace embed, YouTube, SNES, Genesis, etc.)
+          <input
+            id="fUrl"
+            placeholder="https://..."
+            oninput="autoAgregar()"
+          >
+        </label>
+
         <label>
-          Nombre
+          Nombre (se autocompleta o puedes editarlo)
           <input
             id="fNombre"
             placeholder="Ej. Kirby Dream Land 3"
+            oninput="this.dataset.auto='';actualizarVistaPrevia('f');programarBusquedaPortadasPorNombre('f')"
           >
+        </label>
+
+        <label>
+          Categoría (por defecto: Todos)
+
+          <select id="fCat">
+            ${opcionesCategorias()}
+          </select>
+
         </label>
 
         <label>
@@ -1916,7 +2289,7 @@ function mostrarAgregar(){
             </option>
 
             <option value="snes">
-              SNES / emulador
+              SNES / Genesis / emulador
             </option>
 
             <option value="youtube">
@@ -1931,39 +2304,33 @@ function mostrarAgregar(){
         </label>
 
         <label>
-          URL del juego / video
-          <input
-            id="fUrl"
-            placeholder="https://..."
-            oninput="autoAgregar()"
-          >
-        </label>
-
-        <label>
-          URL de imagen
-          <input
-            id="fImagen"
-            placeholder="https://...jpg / png / webp"
-            oninput="this.dataset.auto=''"
-          >
-
-          <button
-            type="button"
-            class="image-search-button"
-            onclick="buscarImagen('fImagen','fNombre')"
-          >
-            🔎 Buscar imagen
-          </button>
-
-        </label>
-
-        <label>
-          Categoría
-
-          <select id="fCat">
-            ${opcionesCategorias()}
-          </select>
-
+          URL de imagen (se autocompleta o elige abajo)
+          <div style="display:flex;gap:6px">
+            <input
+              id="fImagen"
+              style="flex:1"
+              placeholder="https://...jpg / png / webp"
+              oninput="this.dataset.auto='';actualizarVistaPrevia('f')"
+            >
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="buscarPortadasAutomaticas('f',true)"
+              title="Buscar portadas automáticas por el nombre"
+            >
+              ✨ Auto-portada
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="buscarImagen('fImagen','fNombre')"
+              title="Abrir Google Imágenes"
+            >
+              🔎 Google
+            </button>
+          </div>
         </label>
 
         <div
@@ -1988,11 +2355,22 @@ function mostrarAgregar(){
 
         </div>
 
+        <div id="fPreviewBox" class="auto-preview-box">
+          <div class="auto-preview-card">
+            <img id="fPreviewImg" src="portadas/logo.png" alt="Vista previa" onerror="this.src='portadas/logo.png'">
+            <div id="fPreviewTitle">Vista previa</div>
+          </div>
+          <div class="cover-suggestions">
+            <div class="admin-muted" id="fAutoStatus">Pega un enlace arriba para detectar título y portadas automáticamente.</div>
+            <div id="fCoverThumbs" class="cover-thumbs"></div>
+          </div>
+        </div>
+
       </div>
 
       <br>
 
-      <button onclick="guardarNuevo()">
+      <button onclick="guardarNuevo()" style="background:#2b6cb0;color:#fff;font-weight:bold">
         💾 Añadir al catálogo
       </button>
 
@@ -2002,6 +2380,9 @@ function mostrarAgregar(){
 
     </div>
   `;
+
+  e.scrollIntoView({behavior:'smooth',block:'nearest'});
+  setTimeout(()=>document.getElementById('fUrl')?.focus(),80);
 
 }
 
@@ -2019,7 +2400,7 @@ function opcionesCategorias(){
     "Videos"
   ];
 
-  return categorias.map(c=>
+  return `<option value="">Todos (General)</option>` + categorias.map(c=>
     `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`
   ).join('');
 
@@ -2038,7 +2419,10 @@ function actualizarCamposYouTube(selectId,extraId){
 
 }
 
-/* Detecta el tipo por la URL y, en YouTube, pone la miniatura y el minuto de inicio */
+/* =========================
+   DETECTOR INTELIGENTE DE TÍTULO, TIPO E IMAGEN DESDE URL
+========================= */
+
 function detectarTipoUrl(url){
 
   if(extraerYouTubeId(url))return 'youtube';
@@ -2046,7 +2430,7 @@ function detectarTipoUrl(url){
   let host='',ruta='';
 
   try{
-    const u=new URL(url);
+    const u=new URL(url,location.href);
     host=u.hostname.toLowerCase();
     ruta=u.pathname.toLowerCase();
   }catch(e){
@@ -2054,13 +2438,254 @@ function detectarTipoUrl(url){
   }
 
   if(ruta.endsWith('.swf'))return 'swf';
-  if(host==='retrogames.cc'||host.endsWith('.retrogames.cc'))return 'snes';
+  if(
+    host.includes('retrogames.cc') ||
+    host.includes('retrogamesnexus.com') ||
+    host.includes('emulatorgames') ||
+    host.includes('playretrogames') ||
+    host.includes('arcadespot')
+  )return 'snes';
 
-  return null;
+  if(
+    host.includes('playhop.com') ||
+    host.includes('arbolabcgames') ||
+    host.includes('chesskid.com') ||
+    host.includes('igroutka.ru')
+  )return 'newtab';
+
+  return 'iframe';
 
 }
 
-function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl){
+function extraerTituloDesdeUrl(url){
+  try{
+    const u=new URL(url,location.href);
+    const segmentos=u.pathname
+      .split('/')
+      .map(s=>decodeURIComponent(s).trim())
+      .filter(Boolean);
+
+    const ignorar=new Set(['embed','games','game','play','full','es','en','dist-app','index.html','html5','embed-upload','resource','watch']);
+    let candidato='';
+
+    for(let i=segmentos.length-1;i>=0;i--){
+      let s=segmentos[i].replace(/\.(html?|swf|php|aspx?|jsp)$/i,'');
+      if(!s || ignorar.has(s.toLowerCase()))continue;
+      if(/^[0-9a-f]{16,}$/i.test(s))continue;
+      if(/^\d+$/.test(s))continue;
+      candidato=s;
+      break;
+    }
+
+    if(!candidato)return '';
+
+    /* Quitar ID inicial tipo 23267-kirby-s-dream-land-3-usa */
+    candidato=candidato.replace(/^\d+[-_]+/,'');
+
+    /* Quitar sufijos técnicos de ROMs (usa, europe, en, fr, rev-a, english-translated, etc.) */
+    candidato=candidato
+      .replace(/[-_]+(usa|eur|europe|japan|jpn|world|en|es|fr|de|it|pt|rev[-_]?[a-z0-9]|v\d+[\d.]*|english[-_]?translated|hack|proto|beta|unl|snes|nes|genesis|megadrive|gba|gbc|n64)+$/gi,'')
+      .replace(/[-_]+(usa|eur|europe|en|fr|de|rev[-_]?[a-z0-9])+$/gi,'');
+
+    /* Arreglar posesivos comunes en slugs como kirby-s -> Kirby's */
+    let limpio=candidato
+      .replace(/-s-/gi,"'s ")
+      .replace(/[-_+]+/g,' ')
+      .replace(/\s+/g,' ')
+      .trim();
+
+    if(!limpio || /^[0-9a-f]{12,}$/i.test(limpio))return '';
+
+    return limpio.replace(/\b([a-z])/g,m=>m.toUpperCase());
+  }catch(e){
+    return '';
+  }
+}
+
+function imagenDirectaConocidaDesdeUrl(url){
+  const ytId=extraerYouTubeId(url);
+  if(ytId){
+    return `https://i.ytimg.com/vi/${encodeURIComponent(ytId)}/maxresdefault.jpg`;
+  }
+  try{
+    const u=new URL(url,location.href);
+    const host=u.hostname.toLowerCase();
+    /* Wordwall */
+    if(host.includes('wordwall.net')){
+      const m=u.pathname.match(/([0-9a-f]{24,36})/i);
+      if(m)return `https://screens.cdn.wordwall.net/200/${m[1]}_1`;
+    }
+    /* GameMonetize */
+    if(host.includes('gamemonetize.co')||host.includes('gamemonetize.com')){
+      const m=u.pathname.match(/\/([a-z0-9]{20,40})/i);
+      if(m)return `https://img.gamemonetize.com/${m[1]}/512x384.jpg`;
+    }
+    /* GameDistribution */
+    if(host.includes('gamedistribution.com')){
+      const m=u.pathname.match(/\/([0-9a-f]{24,36})/i);
+      if(m)return `https://img.gamedistribution.com/${m[1]}-512x384.jpeg`;
+    }
+  }catch(e){}
+  return '';
+}
+
+function actualizarVistaPrevia(prefijo){
+  const imgInput=document.getElementById(prefijo+'Imagen');
+  const nomInput=document.getElementById(prefijo+'Nombre');
+  const prevImg=document.getElementById(prefijo+'PreviewImg');
+  const prevTit=document.getElementById(prefijo+'PreviewTitle');
+  if(prevImg && imgInput){
+    prevImg.src=imgInput.value.trim() || 'portadas/logo.png';
+  }
+  if(prevTit && nomInput){
+    prevTit.textContent=nomInput.value.trim() || 'Sin título';
+  }
+}
+
+function renderSugerenciasPortada(prefijo,urls){
+  const cont=document.getElementById(prefijo+'CoverThumbs');
+  const imgInput=document.getElementById(prefijo+'Imagen');
+  if(!cont||!imgInput)return;
+  cont.innerHTML='';
+  const unicas=[...new Set(urls.filter(Boolean))].slice(0,6);
+  unicas.forEach(u=>{
+    const im=document.createElement('img');
+    im.className='cover-thumb'+(imgInput.value.trim()===u?' selected':'');
+    im.src=u;
+    im.title='Clic para usar esta portada';
+    im.onerror=()=>im.remove();
+    im.onclick=()=>{
+      imgInput.value=u;
+      imgInput.dataset.auto='1';
+      [...cont.querySelectorAll('.cover-thumb')].forEach(x=>x.classList.toggle('selected',x.src===im.src));
+      actualizarVistaPrevia(prefijo);
+    };
+    cont.appendChild(im);
+  });
+}
+
+let timerBusquedaNombre=null;
+function programarBusquedaPortadasPorNombre(prefijo){
+  if(timerBusquedaNombre)clearTimeout(timerBusquedaNombre);
+  timerBusquedaNombre=setTimeout(()=>{
+    const imgInput=document.getElementById(prefijo+'Imagen');
+    if(!imgInput || !imgInput.value.trim() || imgInput.dataset.auto==='1'){
+      buscarPortadasAutomaticas(prefijo,false);
+    }
+  },550);
+}
+
+async function buscarPortadasAutomaticas(prefijo,forzar=false){
+  const nomInput=document.getElementById(prefijo+'Nombre');
+  const urlInput=document.getElementById(prefijo+'Url');
+  const imgInput=document.getElementById(prefijo+'Imagen');
+  const statusEl=document.getElementById(prefijo+'AutoStatus');
+  if(!nomInput||!imgInput)return;
+
+  const nombre=nomInput.value.trim();
+  const url=(urlInput?.value||'').trim();
+  if(!nombre && !url)return;
+
+  if(statusEl)statusEl.textContent='🔍 Buscando título y mejores portadas automáticamente...';
+
+  const portadas=[];
+  const directa=imagenDirectaConocidaDesdeUrl(url);
+  if(directa){
+    portadas.push(directa);
+    const ytId=extraerYouTubeId(url);
+    if(ytId)portadas.push(`https://i.ytimg.com/vi/${encodeURIComponent(ytId)}/hqdefault.jpg`);
+  }
+
+  /* 1. Si es YouTube, obtener título oficial por oEmbed */
+  const ytId=extraerYouTubeId(url);
+  if(ytId){
+    try{
+      const r=await fetch(`https://noembed.com/embed?url=${encodeURIComponent('https://www.youtube.com/watch?v='+ytId)}`);
+      if(r.ok){
+        const d=await r.json();
+        if(d.title && (!nomInput.value.trim() || nomInput.dataset.auto==='1')){
+          nomInput.value=d.title.trim();
+          nomInput.dataset.auto='1';
+        }
+        if(d.thumbnail_url)portadas.push(d.thumbnail_url);
+      }
+    }catch(e){}
+  }
+
+  /* 2. Si es otra web, consultar metadatos OpenGraph vía Microlink (CORS libre) */
+  if(url && !ytId && /^https?:\/\//i.test(url)){
+    try{
+      const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+      if(r.ok){
+        const j=await r.json();
+        const metaTitle=j?.data?.title;
+        const metaImg=j?.data?.image?.url || j?.data?.logo?.url;
+        if(metaTitle && (!nomInput.value.trim() || nomInput.dataset.auto==='1')){
+          const limpio=metaTitle
+            .split(/\s+[\-|–|—|\|]\s+/)[0]
+            .replace(/^(Play|Jugar)\s+/i,'')
+            .replace(/\s+(Online|Gratis|Free|en línea).*$/i,'')
+            .trim();
+          if(limpio && limpio.length>=2){
+            nomInput.value=limpio;
+            nomInput.dataset.auto='1';
+          }
+        }
+        if(metaImg)portadas.push(metaImg);
+      }
+    }catch(e){}
+  }
+
+  const queryNombre=(nomInput.value.trim() || nombre).replace(/\b(snes|nes|genesis|online|swf)\b/gi,'').trim();
+
+  /* 3. Buscar carátulas oficiales por nombre en Wikipedia (EN y ES) + iTunes App Store */
+  if(queryNombre){
+    try{
+      const wikiProm=fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&generator=search&gsrsearch=${encodeURIComponent(queryNombre+' video game')}&gsrlimit=4&prop=pageimages&piprop=thumbnail&pithumbsize=600&format=json`)
+        .then(r=>r.ok?r.json():null)
+        .then(d=>{
+          if(d?.query?.pages){
+            Object.values(d.query.pages).forEach(p=>{
+              if(p?.thumbnail?.source)portadas.push(p.thumbnail.source);
+            });
+          }
+        }).catch(()=>{});
+
+      const itunesProm=fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(queryNombre)}&entity=software&limit=4`)
+        .then(r=>r.ok?r.json():null)
+        .then(d=>{
+          if(Array.isArray(d?.results)){
+            d.results.forEach(item=>{
+              const art=item.artworkUrl512 || (item.artworkUrl100 ? item.artworkUrl100.replace('100x100bb','512x512bb') : '');
+              if(art)portadas.push(art);
+            });
+          }
+        }).catch(()=>{});
+
+      await Promise.all([wikiProm,itunesProm]);
+    }catch(e){}
+  }
+
+  const unicas=[...new Set(portadas.filter(Boolean))];
+
+  if(unicas.length && (forzar || !imgInput.value.trim() || imgInput.dataset.auto==='1')){
+    imgInput.value=unicas[0];
+    imgInput.dataset.auto='1';
+  }
+
+  renderSugerenciasPortada(prefijo,unicas);
+  actualizarVistaPrevia(prefijo);
+
+  if(statusEl){
+    statusEl.textContent=unicas.length
+      ? `✅ Se encontraron ${unicas.length} portada(s) sugeridas. Toca cualquiera para elegirla.`
+      : 'No se encontró portada automática para este enlace; puedes pegar una URL de imagen o tocar 🔎 Google.';
+  }
+}
+
+let timerAutoUrl=null;
+
+function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl,nomEl=null,prefijo=null){
 
   if(!urlEl||!tipoEl)return;
 
@@ -2070,27 +2695,37 @@ function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl){
 
   const tipo=detectarTipoUrl(url);
 
-  if(!tipo)return;
+  if(tipo){
+    tipoEl.value=tipo;
+    if(extraId)
+      actualizarCamposYouTube(tipoEl.id,extraId);
+  }
 
-  tipoEl.value=tipo;
-
-  if(extraId)
-    actualizarCamposYouTube(tipoEl.id,extraId);
-
-  if(tipo==='youtube'){
-
-    const id=extraerYouTubeId(url);
-
-    if(imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
-      imgEl.value='https://img.youtube.com/vi/'+encodeURIComponent(id)+'/hqdefault.jpg';
-      imgEl.dataset.auto='1';
+  /* Autocompletar título inmediato desde el slug de la URL si está vacío o era automático */
+  if(nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+    const tSlug=extraerTituloDesdeUrl(url);
+    if(tSlug){
+      nomEl.value=tSlug;
+      nomEl.dataset.auto='1';
     }
+  }
 
-    if(startEl && !startEl.value.trim()){
-      const t=obtenerStartDesdeUrl(url);
-      if(t>0)startEl.value=segundosATiempo(t);
-    }
+  /* Autocompletar imagen inmediata si es YouTube, Wordwall o GameMonetize */
+  const imgDirecta=imagenDirectaConocidaDesdeUrl(url);
+  if(imgDirecta && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
+    imgEl.value=imgDirecta;
+    imgEl.dataset.auto='1';
+  }
 
+  if(tipo==='youtube' && startEl && !startEl.value.trim()){
+    const t=obtenerStartDesdeUrl(url);
+    if(t>0)startEl.value=segundosATiempo(t);
+  }
+
+  if(prefijo){
+    actualizarVistaPrevia(prefijo);
+    if(timerAutoUrl)clearTimeout(timerAutoUrl);
+    timerAutoUrl=setTimeout(()=>buscarPortadasAutomaticas(prefijo,false),280);
   }
 
 }
@@ -2101,7 +2736,9 @@ function autoAgregar(){
     document.getElementById('fTipo'),
     document.getElementById('fImagen'),
     'fYoutubeExtra',
-    document.getElementById('fYoutubeStart')
+    document.getElementById('fYoutubeStart'),
+    document.getElementById('fNombre'),
+    'f'
   );
 }
 
@@ -2111,15 +2748,48 @@ function autoEditar(){
     document.getElementById('eTipo'),
     document.getElementById('eImagen'),
     'eYoutubeExtra',
-    document.getElementById('eYoutubeStart')
+    document.getElementById('eYoutubeStart'),
+    document.getElementById('eNombre'),
+    'e'
   );
 }
 
-function autoMulti(i){
+async function autoMulti(i){
 
   const q=k=>document.querySelector('[data-multi="'+k+'"][data-i="'+i+'"]');
+  const urlEl=q('url'),tipoEl=q('tipo'),imgEl=q('imagen'),startEl=q('start'),nomEl=q('nombre');
 
-  autoDesdeUrl(q('url'),q('tipo'),q('imagen'),null,q('start'));
+  autoDesdeUrl(urlEl,tipoEl,imgEl,null,startEl,nomEl,null);
+
+  /* También buscar título/portada en segundo plano para filas múltiples */
+  const url=(urlEl?.value||'').trim();
+  if(!url)return;
+  const ytId=extraerYouTubeId(url);
+  if(ytId && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+    try{
+      const r=await fetch(`https://noembed.com/embed?url=${encodeURIComponent('https://www.youtube.com/watch?v='+ytId)}`);
+      if(r.ok){
+        const d=await r.json();
+        if(d.title){nomEl.value=d.title.trim();nomEl.dataset.auto='1';}
+      }
+    }catch(e){}
+  }else if(/^https?:\/\//i.test(url)){
+    try{
+      const r=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+      if(r.ok){
+        const j=await r.json();
+        if(j?.data?.title && nomEl && (!nomEl.value.trim() || nomEl.dataset.auto==='1')){
+          nomEl.value=j.data.title.split(/\s+[\-|–|—|\|]\s+/)[0].trim();
+          nomEl.dataset.auto='1';
+        }
+        const mImg=j?.data?.image?.url || j?.data?.logo?.url;
+        if(mImg && imgEl && (!imgEl.value.trim() || imgEl.dataset.auto==='1')){
+          imgEl.value=mImg;
+          imgEl.dataset.auto='1';
+        }
+      }
+    }catch(e){}
+  }
 
 }
 
@@ -2133,17 +2803,25 @@ function cancelarEditor(){
 
 function guardarNuevo(){
 
-  const nombre=
-    document.getElementById('fNombre')
-      .value.trim();
-
   const url=
     document.getElementById('fUrl')
       .value.trim();
 
-  const imagen=
+  let nombre=
+    document.getElementById('fNombre')
+      .value.trim();
+
+  if(!nombre && url){
+    nombre=extraerTituloDesdeUrl(url) || 'Juego';
+  }
+
+  let imagen=
     document.getElementById('fImagen')
       .value.trim();
+
+  if(!imagen && url){
+    imagen=imagenDirectaConocidaDesdeUrl(url) || 'portadas/logo.png';
+  }
 
   const tipo=
     document.getElementById('fTipo')
@@ -2175,10 +2853,10 @@ function guardarNuevo(){
 
   }
 
-  if(!nombre||!url||!imagen){
+  if(!url){
 
     alert(
-      'Completa nombre, URL del juego e imagen.'
+      'Pega al menos el enlace (URL) del juego o video.'
     );
 
     return;
@@ -2248,11 +2926,22 @@ function mostrarMultiples(){
         <div class="form-grid">
 
           <label>
+            URL (pega el enlace y se autocompleta)
+            <input
+              data-multi="url"
+              data-i="${i}"
+              placeholder="https://..."
+              oninput="autoMulti(${i})"
+            >
+          </label>
+
+          <label>
             Nombre
             <input
               data-multi="nombre"
               data-i="${i}"
-              placeholder="Opcional"
+              placeholder="Se autocompleta"
+              oninput="this.dataset.auto=''"
             >
           </label>
 
@@ -2286,16 +2975,6 @@ function mostrarMultiples(){
 
             </select>
 
-          </label>
-
-          <label>
-            URL
-            <input
-              data-multi="url"
-              data-i="${i}"
-              placeholder="https://..."
-              oninput="autoMulti(${i})"
-            >
           </label>
 
           <label>
@@ -2350,7 +3029,7 @@ function mostrarMultiples(){
       </h3>
 
       <p class="admin-muted">
-        Solo se añadirán las filas completas.
+        Solo pega las URLs: el título, tipo, portada y categoría ("Todos") se rellenan solos.
       </p>
 
       ${rows}
@@ -2382,14 +3061,17 @@ function guardarMultiples(){
 
   for(let i=1;i<=20;i++){
 
-    const nombre=
-      valMulti('nombre',i);
-
     const url=
       valMulti('url',i);
 
+    if(!url)
+      continue;
+
+    const nombre=
+      valMulti('nombre',i) || extraerTituloDesdeUrl(url) || ('Juego '+i);
+
     const imagen=
-      valMulti('imagen',i);
+      valMulti('imagen',i) || imagenDirectaConocidaDesdeUrl(url) || 'portadas/logo.png';
 
     const tipo=
       valMulti('tipo',i);
@@ -2399,12 +3081,6 @@ function guardarMultiples(){
 
     const start=
       valMulti('start',i);
-
-    if(!nombre&&!url&&!imagen)
-      continue;
-
-    if(!nombre||!url||!imagen)
-      continue;
 
     if(
       tipo==='youtube' &&
@@ -2459,13 +3135,13 @@ function guardarMultiples(){
 
   alert(
     added+
-    ' juego(s) añadidos. Exporta el catálogo para guardar el archivo JSON.'
+    ' juego(s) añadidos. Pulsa ☁️ Actualizar GitHub para guardar los cambios.'
   );
 
 }
 
 /* =========================
-   EDITAR
+   EDITAR (CON AUTO-SCROLL Y VISTA PREVIA)
 ========================= */
 
 function editarJuego(id){
@@ -2486,12 +3162,22 @@ function editarJuego(id){
       background:#222;
       padding:14px;
       border-radius:10px;
-      margin-bottom:15px
+      margin-bottom:15px;
+      border:1px solid #3a7bd5
     ">
 
       <h3>✏️ Editar juego</h3>
 
       <div class="form-grid">
+
+        <label style="grid-column:1/-1">
+          🔗 URL
+          <input
+            id="eUrl"
+            value="${escapeAttr(j.url)}"
+            oninput="autoEditar()"
+          >
+        </label>
 
         <label>
           Nombre
@@ -2499,7 +3185,17 @@ function editarJuego(id){
           <input
             id="eNombre"
             value="${escapeAttr(j.nombre)}"
+            oninput="this.dataset.auto='';actualizarVistaPrevia('e');programarBusquedaPortadasPorNombre('e')"
           >
+        </label>
+
+        <label>
+          Categoría
+
+          <select id="eCat">
+            ${opcionesCategorias()}
+          </select>
+
         </label>
 
         <label>
@@ -2519,7 +3215,7 @@ function editarJuego(id){
             </option>
 
             <option value="snes">
-              SNES
+              SNES / emulador
             </option>
 
             <option value="youtube">
@@ -2535,41 +3231,33 @@ function editarJuego(id){
         </label>
 
         <label>
-          URL
-
-          <input
-            id="eUrl"
-            value="${escapeAttr(j.url)}"
-            oninput="autoEditar()"
-          >
-        </label>
-
-        <label>
           Imagen
+          <div style="display:flex;gap:6px">
+            <input
+              id="eImagen"
+              style="flex:1"
+              value="${escapeAttr(j.imagen)}"
+              oninput="this.dataset.auto='';actualizarVistaPrevia('e')"
+            >
 
-          <input
-            id="eImagen"
-            value="${escapeAttr(j.imagen)}"
-            oninput="this.dataset.auto=''"
-          >
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="buscarPortadasAutomaticas('e',true)"
+            >
+              ✨ Auto-portada
+            </button>
 
-          <button
-            type="button"
-            class="image-search-button"
-            onclick="buscarImagen('eImagen','eNombre')"
-          >
-            🔎 Buscar imagen
-          </button>
-
-        </label>
-
-        <label>
-          Categoría
-
-          <select id="eCat">
-            ${opcionesCategorias()}
-          </select>
-
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0"
+              onclick="buscarImagen('eImagen','eNombre')"
+            >
+              🔎 Google
+            </button>
+          </div>
         </label>
 
         <div
@@ -2595,12 +3283,23 @@ function editarJuego(id){
 
         </div>
 
+        <div id="ePreviewBox" class="auto-preview-box">
+          <div class="auto-preview-card">
+            <img id="ePreviewImg" src="${escapeAttr(j.imagen||'portadas/logo.png')}" alt="Vista previa" onerror="this.src='portadas/logo.png'">
+            <div id="ePreviewTitle">${escapeHtml(j.nombre||'Vista previa')}</div>
+          </div>
+          <div class="cover-suggestions">
+            <div class="admin-muted" id="eAutoStatus">Toca "✨ Auto-portada" si quieres buscar nuevas portadas sugeridas.</div>
+            <div id="eCoverThumbs" class="cover-thumbs"></div>
+          </div>
+        </div>
+
       </div>
 
       <br>
 
-      <button onclick="guardarEdicion('${id}')">
-        💾 Guardar
+      <button onclick="guardarEdicion('${id}')" style="background:#2b6cb0;color:#fff;font-weight:bold">
+        💾 Guardar cambios
       </button>
 
       <button onclick="cancelarEditor()">
@@ -2614,12 +3313,16 @@ function editarJuego(id){
     j.tipo||'iframe';
 
   document.getElementById('eCat').value=
-    j.categoria||'Infantil';
+    j.categoria||'';
 
   actualizarCamposYouTube(
     'eTipo',
     'eYoutubeExtra'
   );
+
+  /* Subir automáticamente al cuadro de edición */
+  e.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>document.getElementById('eNombre')?.focus(),150);
 
 }
 
@@ -2801,8 +3504,14 @@ function bajarJuego(id){
 }
 
 /* =========================
-   GITHUB
+   GITHUB (1 SOLO CLIC SI YA TIENE TOKEN)
 ========================= */
+
+function toggleRespaldoJSON(){
+  const b=document.getElementById('respaldo-json-box');
+  if(!b)return;
+  b.style.display=b.style.display==='none'?'block':'none';
+}
 
 function obtenerConfigGitHub(){
 
@@ -2816,7 +3525,50 @@ function obtenerConfigGitHub(){
 
 }
 
-function mostrarGitHub(){
+async function clicActualizarGitHub(){
+  const cfg=obtenerConfigGitHub();
+  if(!cfg.token){
+    /* Si aún no hay token guardado, abrimos la caja por primera vez */
+    mostrarGitHub(true);
+    return;
+  }
+  /* Si ya hay token guardado, ocultamos la caja de token y subimos directo en 1 clic */
+  ocultarGitHub();
+  const quick=document.getElementById('github-quick-status');
+  if(quick){
+    quick.style.display='block';
+    quick.textContent='⏳ Subiendo cambios a GitHub...';
+  }
+  reordenar();
+  try{
+    const fullCfg={
+      owner:cfg.owner || 'luis98andi',
+      repo:cfg.repo || 'juegosaludables',
+      branch:cfg.branch || 'main',
+      token:cfg.token
+    };
+    if(cuentasSucias){
+      await subirArchivoGitHub(
+        fullCfg,
+        'cuentas.json',
+        JSON.stringify(datosCuentas(),null,2),
+        'Actualizar cuentas desde FreshMind Games'
+      );
+      cuentasSucias=false;
+    }
+    await subirArchivoGitHub(
+      fullCfg,
+      cuentaActual.archivo,
+      JSON.stringify(catalogo,null,2),
+      'Actualizar '+cuentaActual.archivo+' desde FreshMind Games'
+    );
+    if(quick)quick.textContent='✅ '+cuentaActual.archivo+' actualizado en GitHub con 1 clic.';
+  }catch(err){
+    if(quick)quick.textContent='❌ Error al subir a GitHub: '+err.message+' (revisa tu token en 🔑 Token).';
+  }
+}
+
+function mostrarGitHub(forzarMostrar=false){
 
   const box=document.getElementById('github-config');
   const cfg=obtenerConfigGitHub();
@@ -2829,7 +3581,11 @@ function mostrarGitHub(){
   document.getElementById('gh-token').value=cfg.token || '';
   document.getElementById('github-status').textContent='';
 
-  box.style.display='block';
+  if(forzarMostrar){
+    box.style.display=box.style.display==='block'?'none':'block';
+  }else{
+    box.style.display='block';
+  }
 
 }
 
@@ -2859,7 +3615,8 @@ function guardarConfigGitHub(){
   );
 
   document.getElementById('github-status').textContent=
-    'Configuración guardada en este navegador.';
+    '✅ Token guardado. Ahora puedes usar "☁️ Actualizar GitHub" con 1 solo clic.';
+  setTimeout(()=>ocultarGitHub(),900);
 
 }
 
@@ -2972,6 +3729,7 @@ async function actualizarGitHub(){
     );
 
     status.textContent='✅ '+cuentaActual.archivo+' actualizado en GitHub.';
+    setTimeout(()=>ocultarGitHub(),1000);
 
   }catch(error){
 
@@ -3454,10 +4212,13 @@ function actualizarBotonCuentas(){
 
   const b=document.getElementById('btn-cuentas');
 
-  b.style.display=cuentas.length>1?'block':'none';
+  b.style.display=cuentas.length>1?'flex':'none';
   b.textContent=cuentaActual
-    ? cuentaActual.avatar+' '+cuentaActual.nombre+' ▾'
-    : '';
+    ? cuentaActual.avatar
+    : '🎮';
+  b.title=cuentaActual
+    ? 'Cuenta actual: '+cuentaActual.nombre+' (clic para cambiar)'
+    : 'Cambiar cuenta';
 
   document.getElementById('admin-cuenta').textContent=
     cuentas.length>1 && cuentaActual ? '· '+cuentaActual.nombre : '';
@@ -3465,6 +4226,156 @@ function actualizarBotonCuentas(){
   document.getElementById('admin-archivo').textContent=
     cuentaActual ? cuentaActual.archivo : 'juegos.json';
 
+}
+
+/* =========================
+   TRAER JUEGOS DE OTRA CUENTA
+========================= */
+
+let juegosOtraCuentaCache=[];
+
+async function mostrarTraerDeCuenta(){
+  const e=document.getElementById('editor');
+  const otras=cuentas.filter(c=>!cuentaActual || c.id!==cuentaActual.id);
+
+  if(!otras.length){
+    e.innerHTML=`
+      <div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px">
+        <h3>🔄 Traer juegos de otra cuenta</h3>
+        <p class="admin-muted">Aún no tienes otra cuenta creada. Crea una en <b>👤 Cuentas</b> para poder pasar juegos entre cuentas.</p>
+        <button onclick="cancelarEditor()">Cerrar</button>
+      </div>`;
+    return;
+  }
+
+  e.innerHTML=`
+    <div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px;border:1px solid #3a7bd5">
+      <h3>🔄 Traer juegos a "${escapeHtml(cuentaActual.nombre)}"</h3>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+        <label style="font-size:13px">
+          Cuenta origen:
+          <select id="selCuentaOrigen" onchange="cargarJuegosCuentaOrigen()" style="padding:8px;border-radius:6px;background:#292929;color:#fff;border:1px solid #555;margin-left:6px">
+            ${otras.map(c=>`<option value="${escapeAttr(c.id)}">${escapeHtml(c.avatar+' '+c.nombre)} (${escapeHtml(c.archivo)})</option>`).join('')}
+          </select>
+        </label>
+        <input id="filtroTraerCuenta" placeholder="🔎 Buscar juego en esa cuenta..." oninput="renderListaTraerCuenta()" style="padding:8px 10px;border-radius:6px;background:#292929;color:#fff;border:1px solid #555;flex:1;min-width:180px">
+        <button type="button" onclick="seleccionarTodosTraer(true)">☑️ Marcar disponibles</button>
+        <button type="button" onclick="seleccionarTodosTraer(false)">⬜ Desmarcar</button>
+      </div>
+
+      <div id="listaTraerCuenta" style="max-height:320px;overflow:auto;display:grid;gap:6px;margin-bottom:12px;padding-right:4px">
+        <p class="admin-muted">Cargando juegos...</p>
+      </div>
+
+      <div class="admin-actions" style="margin-bottom:0">
+        <button onclick="confirmarTraerJuegos()" style="background:#2b6cb0;color:#fff;font-weight:bold">
+          📥 Traer seleccionados a ${escapeHtml(cuentaActual.nombre)}
+        </button>
+        <button onclick="cancelarEditor()">Cancelar</button>
+      </div>
+    </div>
+  `;
+
+  e.scrollIntoView({behavior:'smooth',block:'nearest'});
+  await cargarJuegosCuentaOrigen();
+}
+
+async function cargarJuegosCuentaOrigen(){
+  const sel=document.getElementById('selCuentaOrigen');
+  const cont=document.getElementById('listaTraerCuenta');
+  if(!sel||!cont)return;
+
+  const origen=cuentas.find(c=>c.id===sel.value);
+  if(!origen)return;
+
+  cont.innerHTML='<p class="admin-muted">Cargando catálogo de '+escapeHtml(origen.nombre)+'...</p>';
+  juegosOtraCuentaCache=[];
+
+  try{
+    const r=await fetch(origen.archivo,{cache:'no-store'});
+    if(r.ok){
+      const d=await r.json();
+      if(Array.isArray(d.juegos)){
+        juegosOtraCuentaCache=[...d.juegos].sort((a,b)=>(a.orden||0)-(b.orden||0));
+      }
+    }
+  }catch(e){}
+
+  renderListaTraerCuenta();
+}
+
+function renderListaTraerCuenta(){
+  const cont=document.getElementById('listaTraerCuenta');
+  if(!cont)return;
+
+  if(!juegosOtraCuentaCache.length){
+    cont.innerHTML='<p class="admin-muted">Esa cuenta no tiene juegos guardados todavía.</p>';
+    return;
+  }
+
+  const filtro=(document.getElementById('filtroTraerCuenta')?.value||'').trim().toLowerCase();
+  const urlsActuales=new Set((catalogo.juegos||[]).map(j=>String(j.url||'').trim()));
+
+  cont.innerHTML='';
+
+  juegosOtraCuentaCache
+    .filter(j=>!filtro || String(j.nombre||'').toLowerCase().includes(filtro) || String(j.categoria||'').toLowerCase().includes(filtro))
+    .forEach((j,idx)=>{
+      const yaExiste=urlsActuales.has(String(j.url||'').trim());
+      const row=document.createElement('label');
+      row.className='admin-row';
+      row.style.cursor='pointer';
+      row.style.margin='0';
+      if(yaExiste)row.style.opacity='0.6';
+
+      row.innerHTML=`
+        <input type="checkbox" class="chk-traer-juego" data-idx="${idx}" ${yaExiste?'':'checked'} style="width:18px;height:18px">
+        <img src="${escapeAttr(j.imagen)}" alt="" onerror="this.src='portadas/logo.png'">
+        <div class="grow">
+          <b>${escapeHtml(j.nombre)}</b>
+          ${yaExiste?'<span style="color:#68d391;font-size:12px"> · ✔ Ya está en esta cuenta</span>':''}
+          <div class="admin-muted">${escapeHtml(j.tipo||'iframe')} · ${escapeHtml(j.categoria||'Todos')}</div>
+        </div>
+      `;
+      cont.appendChild(row);
+    });
+}
+
+function seleccionarTodosTraer(marcar){
+  const urlsActuales=new Set((catalogo.juegos||[]).map(j=>String(j.url||'').trim()));
+  document.querySelectorAll('.chk-traer-juego').forEach(chk=>{
+    const j=juegosOtraCuentaCache[Number(chk.dataset.idx)];
+    if(!j)return;
+    const yaExiste=urlsActuales.has(String(j.url||'').trim());
+    chk.checked=marcar ? !yaExiste : false;
+  });
+}
+
+async function confirmarTraerJuegos(){
+  const seleccionados=[...document.querySelectorAll('.chk-traer-juego:checked')];
+  if(!seleccionados.length){
+    alert('Selecciona al menos un juego para traer.');
+    return;
+  }
+
+  let agregados=0;
+  seleccionados.forEach((chk,n)=>{
+    const j=juegosOtraCuentaCache[Number(chk.dataset.idx)];
+    if(!j)return;
+    const copia=JSON.parse(JSON.stringify(j));
+    copia.id='game-'+Date.now()+'-'+n;
+    copia.orden=catalogo.juegos.length+1;
+    catalogo.juegos.push(copia);
+    agregados++;
+  });
+
+  reordenar();
+  renderCategorias();
+  aplicarFiltros();
+  renderAdmin();
+  cancelarEditor();
+
+  await sincronizarGitHubSilencioso(`📥 ${agregados} juego(s) traído(s) a ${cuentaActual.nombre}`);
 }
 
 function mostrarSelector(){
