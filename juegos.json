@@ -69,8 +69,8 @@
       "nombre": "Vortella Dress Up",
       "imagen": "https://gogamego.io/wp-content/uploads/thumbs/custom/V/Vortellas-Dress-Up.webp",
       "url": "https://g.igroutka.ru/games/1051/46EGTi3A0JVKvazt/8a2438a5-3b9a-44ed-994d-e97ce026c7f0/index.html",
-      "tipo": "newtab",
-      "accion": "abrirEnNuevaPestana",
+      "tipo": "ventana",
+      "accion": "abrirEnVentanita",
       "categoria": "",
       "orden": 7,
       "youtubeStart": 0
@@ -358,7 +358,7 @@
       "url": "https://playhop.com/es/dist-app/272485?utm_source=distrib&utm_medium=playgamescom&header=no&skip-guard=1&flags=%7B%22adv_sticky_banner_disabled%22%3Atrue%7D",
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
-      "categoria": "Infantil",
+      "categoria": "Arcade",
       "youtubeStart": 0,
       "orden": 34
     },
