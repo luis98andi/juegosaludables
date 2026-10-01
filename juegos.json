@@ -378,6 +378,17 @@
       "categoria": "Infantil",
       "youtubeStart": 0,
       "orden": 36
+    },
+    {
+      "id": "game-1790819131104",
+      "nombre": "Manjoh classic 2",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6SMGqOyVzS7zhvCgd7bsnW0M9JNl_e0jR7EVqcd1xA&s=10",
+      "url": "https://www.gameboss.com/games/mahjongclassic/index.html?lang=en",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 37
     }
   ]
 }
