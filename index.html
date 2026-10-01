@@ -3412,17 +3412,18 @@ async function iniciarCuentas(){
 
   if(!cuentas.length)cuentas=[cuentaPrincipal()];
 
-  if(cuentas.length===1 && !cuentas[0].claveEntrar){
-    await abrirCuenta(cuentas[0]);
+  /* Siempre se abre la cuenta principal sin elegir (o la del enlace ?cuenta=id) */
+  const pedida=new URLSearchParams(location.search).get('cuenta');
+  const inicial=cuentas.find(c=>c.id===pedida)||cuentas[0];
+
+  if(!inicial.claveEntrar){
+    await abrirCuenta(inicial);
     return;
   }
 
+  /* solo si esa cuenta tiene contraseña para entrar, se pide directamente */
   mostrarSelector();
-
-  const pedida=new URLSearchParams(location.search).get('cuenta');
-
-  if(pedida && cuentas.some(c=>c.id===pedida))
-    elegirCuenta(pedida);
+  elegirCuenta(inicial.id);
 
 }
 
