@@ -40,8 +40,8 @@
       "nombre": "Age Of Ants",
       "imagen": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e9/36/9e/e9369e9b-c5e5-ed1b-1ef9-baa83dfb6105/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
       "url": "https://eeooty.itch.io/age-of-ants",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 4
