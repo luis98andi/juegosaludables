@@ -480,8 +480,8 @@
       "nombre": "Rosie's Viaja",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0xbMqBJuIUBq1DvR32EM3fbUcRyolTVx0pQXSEVCVeg&s",
       "url": "https://springroll-tc.pbskids.org/455cb5f9-a662-41b4-a9c3-0abf94ec1a6c/372960d4549eb0b663737943972bbec6b2a99f35/release/index.html?playOptions=%7B%22language%22%3A%22es%22%7D",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 45
