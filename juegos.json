@@ -530,6 +530,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 49
+    },
+    {
+      "id": "game-1790905542175",
+      "nombre": "David Y Goliat",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFzjOCJVoNbJSbutt1zbp-VxCLFTTarN4a1XD0ID-Brg&s=10",
+      "url": "https://biblegameshub.com/es/david-y-goliat",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 50
     }
   ]
 }
