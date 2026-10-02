@@ -485,6 +485,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 45
+    },
+    {
+      "id": "game-1790902322782",
+      "nombre": "Rosie Games",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwUiqgHQTx1_NTXQ15fEEwkjzNXu46ePBhXiGXJUS7dg&s",
+      "url": "https://pbskids.org/games",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 46
     }
   ]
 }
