@@ -3241,6 +3241,14 @@ function mostrarAgregar(){
 
         <div id="fWebDiag" class="web-diag-box"></div>
 
+        <div id="fLiveTestContainer" style="display:none;grid-column:1/-1;margin-top:10px;padding:12px;background:#000;border:2px dashed #3a7bd5;border-radius:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;color:#cbd5e1">
+            <span>👁️ <b>Probador de enlace en vivo (Modo Editor)</b></span>
+            <button type="button" onclick="cerrarPrevisualizadorEnFormulario('f')" style="padding:4px 10px;border:0;border-radius:6px;background:#e94560;color:#fff;cursor:pointer;font-size:12px;font-weight:bold">✕ Cerrar prueba</button>
+          </div>
+          <iframe id="fLiveTestIframe" style="width:100%;height:320px;border:0;background:#111;border-radius:8px" allow="fullscreen; autoplay; gamepad; pointer-lock"></iframe>
+        </div>
+
         <label>
           Nombre (se autocompleta o puedes editarlo)
           <input
@@ -3390,7 +3398,16 @@ function mostrarAgregar(){
   `;
 
   e.scrollIntoView({behavior:'smooth',block:'nearest'});
-  setTimeout(()=>document.getElementById('fUrl')?.focus(),80);
+  setTimeout(()=>{
+    document.getElementById('fUrl')?.focus();
+    const uVal=document.getElementById('fUrl')?.value.trim()||'';
+    if(uVal && cacheEnlacesExtraidos[uVal]){
+      const cached=cacheEnlacesExtraidos[uVal];
+      ultimosEnlacesModal=cached;
+      const panelHtml=renderPanelEnlacesBookmarklet('f',cached,uVal,uVal,false);
+      mostrarDiagnosticoWeb('f','ok',`🔎 Enlaces recuperados de la caché de sesión:<br>${panelHtml}`);
+    }
+  },80);
 
 }
 
@@ -3846,6 +3863,9 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
               <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(orig)}','${escapeAttr(detectarTipoUrl(orig)||'iframe')}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esOrigActual?'#2f855a':'#d69e2e'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
                 ${esOrigActual?'✓ Dejado intacto (En uso)':'↩️ Elegir mi enlace original'}
               </button>
+              <button type="button" onclick="previsualizarEnlaceEnFormulario('${prefijo}','${escapeAttr(orig)}','${escapeAttr(detectarTipoUrl(orig)||'iframe')}')" style="padding:4px 8px;border:0;border-radius:5px;background:#38a169;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                👁️ Probar
+              </button>
               <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(orig)}');mostrarToastSync('📋 Copiado')" style="padding:4px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
                 📋 Copiar
               </button>
@@ -3871,7 +3891,10 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
               <span style="font-size:11px;color:#94a3b8">${escapeHtml((x.srcs||[]).join(' · '))}</span>
               <div style="display:flex;gap:4px">
                 <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esActual?'#2f855a':'#2b6cb0'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
-                  ${esActual?'✓ En uso':'✅ Elegir este enlace'}
+                  ${esActual?'✓ En uso':'✅ Elegir'}
+                </button>
+                <button type="button" onclick="previsualizarEnlaceEnFormulario('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:4px 8px;border:0;border-radius:5px;background:#38a169;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                  👁️ Probar
                 </button>
                 <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(x.url)}');mostrarToastSync('📋 Copiado')" style="padding:4px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
                   📋 Copiar
@@ -3977,6 +4000,7 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
       });
     }
 
+    cacheEnlacesExtraidos[url]=listaEnlaces;
     ultimosEnlacesModal=listaEnlaces;
     const panelHtml=renderPanelEnlacesBookmarklet(prefijo,listaEnlaces,urlEl.value.trim(),url,false);
 
@@ -4389,6 +4413,32 @@ async function autoMulti(i){
     }catch(e){}
   }
 
+}
+
+let cacheEnlacesExtraidos = {};
+
+function previsualizarEnlaceEnFormulario(prefijo, url, tipo) {
+  const container = document.getElementById(prefijo + 'LiveTestContainer');
+  const iframe = document.getElementById(prefijo + 'LiveTestIframe');
+  if (!container || !iframe) return;
+
+  let finalUrl = normalizarUrlParaPestanaNormal(url);
+  
+  if (!location.hostname.includes('github.io') && (sitioBloqueaIframeDirecto(finalUrl) || finalUrl.includes('minigamesville.com'))) {
+    finalUrl = `/api/proxy-tab?url=${encodeURIComponent(finalUrl)}`;
+  }
+
+  iframe.src = finalUrl;
+  container.style.display = 'block';
+  container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  mostrarToastSync('👁️ Cargando enlace en el previsualizador en vivo...');
+}
+
+function cerrarPrevisualizadorEnFormulario(prefijo) {
+  const container = document.getElementById(prefijo + 'LiveTestContainer');
+  const iframe = document.getElementById(prefijo + 'LiveTestIframe');
+  if (iframe) iframe.src = 'about:blank';
+  if (container) container.style.display = 'none';
 }
 
 function cancelarEditor(){
@@ -4816,6 +4866,14 @@ function editarJuego(id){
 
         <div id="eWebDiag" class="web-diag-box"></div>
 
+        <div id="eLiveTestContainer" style="display:none;grid-column:1/-1;margin-top:10px;padding:12px;background:#000;border:2px dashed #3a7bd5;border-radius:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;color:#cbd5e1">
+            <span>👁️ <b>Probador de enlace en vivo (Modo Editor)</b></span>
+            <button type="button" onclick="cerrarPrevisualizadorEnFormulario('e')" style="padding:4px 10px;border:0;border-radius:6px;background:#e94560;color:#fff;cursor:pointer;font-size:12px;font-weight:bold">✕ Cerrar prueba</button>
+          </div>
+          <iframe id="eLiveTestIframe" style="width:100%;height:320px;border:0;background:#111;border-radius:8px" allow="fullscreen; autoplay; gamepad; pointer-lock"></iframe>
+        </div>
+
         <label>
           Nombre
 
@@ -4980,7 +5038,16 @@ function editarJuego(id){
 
   /* Subir automáticamente al cuadro de edición */
   e.scrollIntoView({behavior:'smooth',block:'start'});
-  setTimeout(()=>document.getElementById('eNombre')?.focus(),150);
+  setTimeout(()=>{
+    document.getElementById('eNombre')?.focus();
+    const uVal=document.getElementById('eUrl')?.value.trim()||'';
+    if(uVal && cacheEnlacesExtraidos[uVal]){
+      const cached=cacheEnlacesExtraidos[uVal];
+      ultimosEnlacesModal=cached;
+      const panelHtml=renderPanelEnlacesBookmarklet('e',cached,uVal,uVal,false);
+      mostrarDiagnosticoWeb('e','ok',`🔎 Enlaces recuperados de la caché de sesión:<br>${panelHtml}`);
+    }
+  },150);
 
 }
 
