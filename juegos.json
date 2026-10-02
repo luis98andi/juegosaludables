@@ -495,7 +495,8 @@
       "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "youtubeStart": 0,
-      "orden": 46
+      "orden": 46,
+      "oculto": true
     },
     {
       "id": "game-1790903381158",
