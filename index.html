@@ -816,6 +816,16 @@ h1{margin:10px 0}
     width:175px
   }
 }
+
+@media(max-width:768px), (hover:none) and (pointer:coarse){
+  .youtube-volume-btn, .volume-btn, .volume-control, .volume-slider,
+  #volume-btn, [data-volume], .ejs-volume, #ejs-volume,
+  [title*="Volumen" i], [title*="Volume" i] {
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+}
 </style>
 </head>
 
@@ -954,6 +964,7 @@ h1{margin:10px 0}
   <button onclick="ordenSubirGitHub()" style="background:#2f855a;color:#fff">☁️ GitHub</button>
   <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">🔍 Verificar GitHub</button>
   <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
+  <button onclick="cerrarSesionAdminYSalir()" style="background:#555;color:#fff" title="Salir del modo administrador y bloquear con contraseña de inmediato">🔒 Salir Admin</button>
   <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
 </div>
 
@@ -2353,9 +2364,73 @@ function cargarHtmlEnVisorSrcdoc(htmlOriginal,urlBase){
   target.appendChild(iframe);
 }
 
-/* =========================
-   YOUTUBE
-========================= */
+function registrarReproduccionCompletaVideo(juegoId) {
+  if (!juegoId) return;
+  try {
+    const key = 'freshmind_video_repros';
+    let data = JSON.parse(localStorage.getItem(key) || '{}');
+    if (!data[juegoId]) {
+      data[juegoId] = { count: 0, ocultoHasta: 0 };
+    }
+    data[juegoId].count = (data[juegoId].count || 0) + 1;
+    
+    if (data[juegoId].count >= 20) {
+      data[juegoId].ocultoHasta = Date.now() + (7 * 24 * 60 * 60 * 1000); // 1 semana
+      data[juegoId].count = 0;
+      mostrarToastSync(`🎬 ¡Video visto 20 veces! Se ocultará por 1 semana y pasaremos al siguiente video.`);
+      setTimeout(() => {
+        reproducirSiguienteVideo(juegoId);
+      }, 1800);
+    } else {
+      mostrarToastSync(`🎬 Video visto completamente (${data[juegoId].count}/20 veces).`);
+    }
+    localStorage.setItem(key, JSON.stringify(data));
+    aplicarFiltros();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function videoOcultoPorSemana(j) {
+  if (!j || j.tipo !== 'youtube') return false;
+  try {
+    const data = JSON.parse(localStorage.getItem('freshmind_video_repros') || '{}');
+    const entry = data[j.id];
+    if (entry && entry.ocultoHasta && entry.ocultoHasta > Date.now()) {
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+function reproducirSiguienteVideo(juegoIdActual) {
+  const todosVideos = (catalogo.juegos || []).filter(j => j.tipo === 'youtube' && !j.oculto && !videoOcultoPorSemana(j));
+  if (!todosVideos.length) {
+    cerrarJuego();
+    return;
+  }
+  const idx = todosVideos.findIndex(j => j.id === juegoIdActual);
+  let siguiente = todosVideos[0];
+  if (idx >= 0 && idx < todosVideos.length - 1) {
+    siguiente = todosVideos[idx + 1];
+  }
+  abrirJuego(siguiente.url, siguiente.tipo, siguiente.accion, siguiente);
+}
+
+function generarEnlacesSugeridosHtml5Abiertos(nombreJuego){
+  if(!nombreJuego)return [];
+  const slug=String(nombreJuego).toLowerCase()
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/(^-|-$)/g,'');
+  if(!slug)return [];
+  return [
+    {url:`https://html5.gamemonetize.co/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameMonetize'],depth:0,score:110},
+    {url:`https://html5.gamedistribution.com/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameDistribution'],depth:0,score:105},
+    {url:`https://www.crazygames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · CrazyGames Embed'],depth:0,score:100},
+    {url:`https://www.y8.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · Y8 Embed'],depth:0,score:95}
+  ];
+}
+
 
 function abrirYouTube(url,start=0){
 
@@ -2565,11 +2640,10 @@ function protegerFinalYouTube(){
     return;
   }
 
-  /*
-    Tres segundos antes del final:
-    pausamos el video y ponemos pantalla negra.
-    Esto impide que aparezca la pantalla final
-    con "Más videos", miniaturas o enlaces.
+  /* Tres segundos antes del final:
+     pausamos el video y ponemos pantalla negra.
+     Esto impide que aparezca la pantalla final
+     con "Más videos", miniaturas o enlaces.
   */
   if(
     restantes<=3 &&
@@ -2584,6 +2658,10 @@ function protegerFinalYouTube(){
     }
 
     shield.style.display='block';
+
+    if(ultimoJuegoAbierto && ultimoJuegoAbierto.juego){
+      registrarReproduccionCompletaVideo(ultimoJuegoAbierto.juego.id);
+    }
 
     return;
   }
@@ -3021,6 +3099,7 @@ async function validarPin(){
   if(ok){
 
     document.getElementById('pin-error').textContent='';
+    ultimoPinValidoTimestamp = Date.now();
     /* Al validar el PIN, lleva directo a la página principal en modo ordenar/distribuir tarjetas */
     entrarModoOrden();
 
@@ -3032,6 +3111,12 @@ async function validarPin(){
 
   }
 
+}
+
+function cerrarSesionAdminYSalir(){
+  ultimoPinValidoTimestamp = 0;
+  salirModoOrden();
+  mostrarToastSync('🔒 Sesión cerrada y modo administración bloqueado.');
 }
 
 function renderAdmin(){
@@ -3878,9 +3963,18 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
     }
     actualizarVistaPrevia(prefijo);
 
-    const listaEnlaces=Array.isArray(info.enlaces) ? info.enlaces : [];
+    const listaEnlaces=Array.isArray(info.enlaces) ? [...info.enlaces] : [];
     if(info.embedUrl && info.embedUrl!==url && !listaEnlaces.some(x=>x.url===info.embedUrl)){
       listaEnlaces.unshift({url:info.embedUrl,cat:'iframe',tipo:info.tipoSugerido||'iframe',srcs:['Embed detectado'],score:200});
+    }
+
+    /* SUGERENCIA AUTOMÁTICA DE ALTERNATIVAS HTML5 ABIERTAS SI EL ENLACE ES BLOQUEADO (COMO POKI) */
+    if(sitioBloqueaIframeDirecto(url)){
+      const nomJuego=nomEl?.value.trim() || extraerTituloDesdeUrl(url);
+      const sug=generarEnlacesSugeridosHtml5Abiertos(nomJuego);
+      sug.forEach(s=>{
+        if(!listaEnlaces.some(x=>x.url===s.url))listaEnlaces.push(s);
+      });
     }
 
     ultimosEnlacesModal=listaEnlaces;
@@ -4124,20 +4218,10 @@ async function buscarPortadasAutomaticas(prefijo,forzar=false){
 
   const queryNombre=(nomInput.value.trim() || nombre).replace(/\b(snes|nes|genesis|online|swf)\b/gi,'').trim();
 
-  /* 3. Buscar carátulas oficiales por nombre en Wikipedia (EN y ES) + iTunes App Store */
+  /* 3. Buscar carátulas oficiales por nombre en iTunes App Store de alta precisión */
   if(queryNombre){
     try{
-      const wikiProm=fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&generator=search&gsrsearch=${encodeURIComponent(queryNombre+' video game')}&gsrlimit=4&prop=pageimages&piprop=thumbnail&pithumbsize=600&format=json`)
-        .then(r=>r.ok?r.json():null)
-        .then(d=>{
-          if(d?.query?.pages){
-            Object.values(d.query.pages).forEach(p=>{
-              if(p?.thumbnail?.source)portadas.push(p.thumbnail.source);
-            });
-          }
-        }).catch(()=>{});
-
-      const itunesProm=fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(queryNombre)}&entity=software&limit=4`)
+      const itunesProm=fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(queryNombre)}&entity=software&limit=5`)
         .then(r=>r.ok?r.json():null)
         .then(d=>{
           if(Array.isArray(d?.results)){
@@ -4148,7 +4232,7 @@ async function buscarPortadasAutomaticas(prefijo,forzar=false){
           }
         }).catch(()=>{});
 
-      await Promise.all([wikiProm,itunesProm]);
+      await itunesProm;
     }catch(e){}
   }
 
@@ -4223,8 +4307,24 @@ function autoDesdeUrl(urlEl,tipoEl,imgEl,extraId,startEl,nomEl=null,prefijo=null
     if(timerAutoUrl)clearTimeout(timerAutoUrl);
     timerAutoUrl=setTimeout(()=>buscarPortadasAutomaticas(prefijo,false),280);
 
-    if(timerExtraerWeb)clearTimeout(timerExtraerWeb);
-    timerExtraerWeb=setTimeout(()=>analizarYExtraerJuegoDeWeb(prefijo,false),350);
+    /* DETECCIÓN EN TIEMPO REAL SI EL SITIO PEGA BLOQUEARÁ IFRAMES */
+    if(sitioBloqueaIframeDirecto(url)){
+      tipoEl.value='ventana'; // Configurar automáticamente a "Nueva ventanita"
+      if(extraId) actualizarCamposYouTube(tipoEl.id,extraId);
+      mostrarDiagnosticoWeb(
+        prefijo,
+        'warn',
+        `🛡️ <b>Detección de Bloqueo:</b> Este sitio web bloquea conexiones en iframe. Hemos configurado el Tipo automáticamente a <b>🪟 Nueva ventanita</b> para que cargue sin problemas.`
+      );
+    } else {
+      mostrarDiagnosticoWeb(prefijo,'','');
+    }
+
+    /* ELIMINADO EL TIMER DE EXTRAER WEB AUTOMÁTICO AL PEGAR EL ENLACE PARA EVITAR EJECUCIONES EN SEGUNDO PLANO Y CONFUSIONES DE PORTADAS/LINKS */
+    if(timerExtraerWeb) {
+      clearTimeout(timerExtraerWeb);
+      timerExtraerWeb=null;
+    }
   }
 
 }
@@ -5172,6 +5272,8 @@ async function verificarEstadoGitHub(){
 
     const juegosLocal=catalogo.juegos||[];
     const juegosRemoto=jsonRemoto.juegos||[];
+    const categoriasLocal=listaCategoriasDisponibles();
+    const categoriasRemoto=Array.isArray(jsonRemoto.categorias) ? jsonRemoto.categorias : [];
 
     const firma=lista=>JSON.stringify(
       lista.map(j=>({
@@ -5186,21 +5288,28 @@ async function verificarEstadoGitHub(){
       }))
     );
 
-    const coincide=firma(juegosLocal)===firma(juegosRemoto) && !cuentasSucias && !cambiosPendientesSync;
+    const coincidenJuegos=firma(juegosLocal)===firma(juegosRemoto);
+    const coincidenCategorias=JSON.stringify(categoriasLocal.sort())===JSON.stringify(categoriasRemoto.sort());
+    const coincide=!cuentasSucias && !cambiosPendientesSync && coincidenJuegos && coincidenCategorias;
 
     if(coincide){
-      const msgOk=`✅ ¡Verificado! GitHub está 100% actualizado (${juegosRemoto.length} juegos en "${cuentaActual?.nombre||'Principal'}").`;
+      const msgOk=`✅ ¡Verificado! GitHub está 100% actualizado: ${juegosRemoto.length} juegos y ${categoriasRemoto.length} categorías en "${cuentaActual?.nombre||'Principal'}" están sincronizados con la nube.`;
       mostrarToastSync(msgOk);
       if(modoOrden && ordenMsg)ordenMsg.textContent=msgOk;
       if(quick)quick.textContent=msgOk;
     }else{
-      const difMsg=`⚠️ Hay cambios pendientes: en pantalla tienes ${juegosLocal.length} juego(s) y en GitHub hay ${juegosRemoto.length}.`;
+      let detalles = [];
+      if(!coincidenJuegos) detalles.push(`${juegosLocal.length} juegos locales vs ${juegosRemoto.length} en GitHub`);
+      if(!coincidenCategorias) detalles.push('Diferencia de categorías');
+      if(cuentasSucias) detalles.push('Perfiles/Cuentas modificadas');
+
+      const difMsg=`⚠️ Diferencias encontradas: (${detalles.join(', ')}).`;
       if(cfg.token){
-        mostrarToastSync(difMsg+' Subiendo automáticamente ahora...');
+        mostrarToastSync(difMsg+' Sincronizando todo automáticamente ahora...');
         await sincronizarGitHubSilencioso('Sincronización tras verificar');
-        if(quick)quick.textContent=`✅ Se detectaron diferencias y ya quedaron 100% subidas a GitHub (${juegosLocal.length} juegos).`;
+        if(quick)quick.textContent=`✅ Cambios sincronizados con éxito: ${juegosLocal.length} juegos y ${categoriasLocal.length} categorías actualizadas en GitHub.`;
       }else{
-        mostrarToastSync(difMsg+' Configura tu token en 🔑 para subirlos.');
+        mostrarToastSync(difMsg+' Configura tu token en 🔑 para subir los cambios.');
         if(quick)quick.textContent=difMsg+' Configura tu token en 🔑 Token para subirlos.';
       }
     }
@@ -5710,10 +5819,11 @@ async function ordenSubirGitHub(){
     catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
 
     document.getElementById('orden-msg').textContent=
-      '✔ Orden actualizado · ☁️ Sincronizando con GitHub...';
+      '✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
 
     aplicarFiltros();
-    programarAutoSyncGitHub('🔀 Nuevo orden de juegos', 1800);
+    cambiosPendientesSync=true;
+    huboCambiosSesionOrden=true;
 
   }
 
