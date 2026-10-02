@@ -552,6 +552,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 51
+    },
+    {
+      "id": "game-1790907844176",
+      "nombre": "Goodgame Empire",
+      "imagen": "https://media.goodgamestudios.com/sns/_img/game12/fb_logo.jpg",
+      "url": "https://empire.goodgamestudios.com/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 52
     }
   ]
 }
