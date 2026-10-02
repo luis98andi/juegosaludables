@@ -547,8 +547,8 @@
       "nombre": "Rosie Care",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNsWK1RqDTava55slrTT0PnYx7V0npTgTP-UBGDEm_Qg&s",
       "url": "https://springroll-tc.pbskids.org/645bd19f-9e0a-409b-96cb-ab9e1930e08e/cafd046d03f7feac1cdde594a6245d8dc1236ca0/release/index.html?playOptions=%7B%22language%22%3A%22en%22%7D",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 51
