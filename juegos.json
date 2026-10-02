@@ -507,6 +507,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 47
+    },
+    {
+      "id": "game-1790904851431",
+      "nombre": "Buscaminas",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9KBXYS_wRndlc-Qux3ByijlqghyLI4FGtSIxryt_Q3w&s=10",
+      "url": "https://buscaminas.com/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 48
     }
   ]
 }
