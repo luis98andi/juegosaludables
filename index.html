@@ -2423,11 +2423,38 @@ function generarEnlacesSugeridosHtml5Abiertos(nombreJuego){
     .replace(/[^a-z0-9]+/g,'-')
     .replace(/(^-|-$)/g,'');
   if(!slug)return [];
+  const slugUnd = slug.replace(/-/g, '_');
   return [
-    {url:`https://html5.gamemonetize.co/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameMonetize'],depth:0,score:110},
-    {url:`https://html5.gamedistribution.com/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameDistribution'],depth:0,score:105},
-    {url:`https://www.crazygames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · CrazyGames Embed'],depth:0,score:100},
-    {url:`https://www.y8.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · Y8 Embed'],depth:0,score:95}
+    {url:`https://html5.gamemonetize.co/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameMonetize'],depth:0,score:120},
+    {url:`https://html5.gamedistribution.com/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameDistribution'],depth:0,score:115},
+    {url:`https://www.crazygames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · CrazyGames Embed'],depth:0,score:110},
+    {url:`https://www.y8.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · Y8 Embed'],depth:0,score:105},
+    {url:`https://www.minijuegos.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Minijuegos.com'],depth:0,score:100},
+    {url:`https://www.miniplay.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Miniplay.com'],depth:0,score:98},
+    {url:`https://play.gamepix.com/${slug}/embed`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GamePix Embed'],depth:0,score:95},
+    {url:`https://www.pacogames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · PacoGames Embed'],depth:0,score:94},
+    {url:`https://www.jeux.fr/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Jeux.fr Embed'],depth:0,score:92},
+    {url:`https://www.juegos.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Juegos.com Embed'],depth:0,score:90},
+    {url:`https://silvergames.com/en/iframe/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · SilverGames Embed'],depth:0,score:88},
+    {url:`https://kizi.com/games/${slug}/embed`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Kizi Embed'],depth:0,score:85},
+    {url:`https://armorgames.com/play/${slug}/embed`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Armor Games Embed'],depth:0,score:82},
+    {url:`https://www.kongregate.com/games/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Kongregate Embed'],depth:0,score:80},
+    {url:`https://poki.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Poki Embed (Iframe Bloqueado)'],depth:0,score:78},
+    {url:`https://poki.es/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Poki España Embed'],depth:0,score:76},
+    {url:`https://www.friv.com/z/games/${slug}/index.html`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Friv Embed'],depth:0,score:75},
+    {url:`https://igroutka.ru/g/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Igroutka.ru'],depth:0,score:74},
+    {url:`https://game-game.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Game-Game.ru'],depth:0,score:72},
+    {url:`https://game-game.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia global · Game-Game.com'],depth:0,score:70},
+    {url:`https://gameria.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Gameria.ru Embed'],depth:0,score:68},
+    {url:`https://onlineigry.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Onlineigry.ru Embed'],depth:0,score:66},
+    {url:`https://igroflot.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Igroflot.ru Embed'],depth:0,score:64},
+    {url:`https://gvgame.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Gvgame.ru Embed'],depth:0,score:62},
+    {url:`https://multoigri.ru/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Multoigri.ru Embed'],depth:0,score:60},
+    {url:`https://yandex.com/games/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia rusa · Yandex Games Embed'],depth:0,score:58},
+    {url:`https://cooljuegos.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · CoolJuegos Embed'],depth:0,score:56},
+    {url:`https://toongames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · ToonGames Embed'],depth:0,score:54},
+    {url:`https://html5games.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Html5Games Embed'],depth:0,score:52},
+    {url:`https://minijuegos.org/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia general · Minijuegos.org Embed'],depth:0,score:50}
   ];
 }
 
@@ -3230,6 +3257,24 @@ function mostrarAgregar(){
             <button
               type="button"
               class="image-search-button"
+              style="margin-top:0;background:#319795;color:#fff;font-weight:bold"
+              onclick="buscarMasSitiosSugerenciasHtml5('f')"
+              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
+            >
+              🌐 Buscar más enlaces
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#4a5568;color:#fff;font-weight:bold"
+              onclick="mostrarHistorialBusquedas('f')"
+              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
+            >
+              📜 Historial
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
               style="margin-top:0;background:#805ad5;color:#fff;font-weight:bold"
               onclick="abrirBuscadorEnlacesPrimerPlano(document.getElementById('fUrl')?.value,'f')"
               title="Abrir la ventana del Buscador JS en primer plano"
@@ -4002,6 +4047,7 @@ async function analizarYExtraerJuegoDeWeb(prefijo,forzarMensaje=false){
 
     cacheEnlacesExtraidos[url]=listaEnlaces;
     ultimosEnlacesModal=listaEnlaces;
+    registrarEnHistorial(nomEl?.value.trim() || info.titulo || extraerTituloDesdeUrl(url), url, listaEnlaces);
     const panelHtml=renderPanelEnlacesBookmarklet(prefijo,listaEnlaces,urlEl.value.trim(),url,false);
 
     if(listaEnlaces.length){
@@ -4416,6 +4462,140 @@ async function autoMulti(i){
 }
 
 let cacheEnlacesExtraidos = {};
+let historialBusquedas = [];
+
+function registrarEnHistorial(nombre, url, enlaces) {
+  if (!url) return;
+  historialBusquedas = historialBusquedas.filter(h => h.url !== url);
+  historialBusquedas.unshift({
+    nombre: nombre || extraerTituloDesdeUrl(url) || 'Juego',
+    url: url,
+    timestamp: Date.now(),
+    enlaces: [...enlaces]
+  });
+  if (historialBusquedas.length > 30) {
+    historialBusquedas.pop();
+  }
+}
+
+function buscarMasSitiosSugerenciasHtml5(prefijo) {
+  const nomEl = document.getElementById(prefijo + 'Nombre');
+  const urlEl = document.getElementById(prefijo + 'Url');
+  if (!urlEl) return;
+  const url = urlEl.value.trim() || 'sugerencias-manuales';
+  const nomJuego = nomEl?.value.trim() || extraerTituloDesdeUrl(url) || 'Juego';
+  
+  if (!nomJuego || nomJuego === 'Juego') {
+    mostrarToastSync('⚠️ Escribe el nombre del juego primero para buscar en más sitios.');
+    return;
+  }
+  
+  const sugerencias = generarEnlacesSugeridosHtml5Abiertos(nomJuego);
+  
+  let listaActual = cacheEnlacesExtraidos[url] || [];
+  sugerencias.forEach(s => {
+    if (!listaActual.some(x => x.url === s.url)) {
+      listaActual.push(s);
+    }
+  });
+  
+  cacheEnlacesExtraidos[url] = listaActual;
+  ultimosEnlacesModal = listaActual;
+  
+  const panelHtml = renderPanelEnlacesBookmarklet(prefijo, listaActual, urlEl.value.trim(), url, false);
+  mostrarDiagnosticoWeb(
+    prefijo,
+    'ok',
+    `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">`+
+      `<span>🔎 <b>Enlaces alternativos generados para "${escapeHtml(nomJuego)}":</b> Encontré <b>${listaActual.length}</b> opción(es) en total:</span>`+
+      `<button type="button" onclick="togglePausaBuscadorHtml('${prefijo}')" style="padding:3px 8px;border:0;border-radius:5px;background:#d69e2e;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">⏸️ Pausar buscador</button>`+
+    `</div>`+
+    panelHtml
+  );
+  
+  registrarEnHistorial(nomJuego, url, listaActual);
+  mostrarToastSync(`🌐 ¡Generados ${sugerencias.length} sitios de juegos adicionales!`);
+}
+
+function mostrarHistorialBusquedas(prefijo) {
+  if (!historialBusquedas.length) {
+    mostrarDiagnosticoWeb(
+      prefijo,
+      'info',
+      `<div style="padding:10px;text-align:center;color:#94a3b8">📜 El historial de búsquedas de esta sesión está vacío. Realiza búsquedas de enlaces primero.</div>`
+    );
+    mostrarToastSync('📜 El historial está vacío');
+    return;
+  }
+
+  let html = `
+    <div style="background:#1a202c;padding:12px;border-radius:10px;border:1px solid #4a5568">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-weight:bold;color:#fff;font-size:14px">📜 Historial de Búsquedas (${historialBusquedas.length})</span>
+        <button type="button" onclick="limpiarHistorialBusquedas('${prefijo}')" style="background:#e53e3e;color:#fff;border:0;padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer">🗑️ Limpiar historial</button>
+      </div>
+  `;
+
+  historialBusquedas.forEach((item, idx) => {
+    const tiempo = new Date(item.timestamp).toLocaleTimeString();
+    html += `
+      <div style="background:#2d3748;padding:8px;border-radius:8px;margin-bottom:8px;border:1px solid #4a5568">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="font-weight:bold;color:#fbd38d">${idx + 1}. ${escapeHtml(item.nombre)}</span>
+          <span style="color:#a0aec0">${tiempo}</span>
+        </div>
+        <div style="font-size:11px;color:#cbd5e1;word-break:break-all;margin-bottom:6px;background:#1a202c;padding:4px 6px;border-radius:4px">
+          ${escapeHtml(item.url)}
+        </div>
+        
+        <div style="margin-top:6px">
+          <div style="font-size:11px;font-weight:bold;color:#90cdf4;margin-bottom:4px">Enlaces encontrados (${item.enlaces.length}):</div>
+    `;
+
+    if (item.enlaces.length === 0) {
+      html += `<div style="font-size:11px;color:#a0aec0;padding:2px 0">No se guardaron enlaces para esta búsqueda.</div>`;
+    } else {
+      item.enlaces.forEach(x => {
+        const tipo = x.tipo || 'iframe';
+        html += `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:#1a202c;padding:4px 6px;border-radius:4px;margin-bottom:4px;font-size:11px">
+            <span style="color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;text-align:left;max-width:320px" title="${escapeAttr(x.url)}">
+              ${escapeHtml(x.url)}
+            </span>
+            <div style="display:flex;gap:3px;flex-shrink:0">
+              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:2px 6px;border:0;border-radius:4px;background:#2b6cb0;color:#fff;font-size:10px;cursor:pointer">
+                Elegir
+              </button>
+              <button type="button" onclick="previsualizarEnlaceEnFormulario('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:2px 6px;border:0;border-radius:4px;background:#38a169;color:#fff;font-size:10px;cursor:pointer">
+                👁️ Probar
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    html += `
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+      <div style="text-align:right;margin-top:8px">
+        <button type="button" onclick="mostrarDiagnosticoWeb('${prefijo}','','')" style="background:#718096;color:#fff;border:0;padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer">✕ Cerrar Historial</button>
+      </div>
+    </div>
+  `;
+
+  mostrarDiagnosticoWeb(prefijo, 'ok', html);
+  mostrarToastSync('📜 Historial de búsquedas cargado.');
+}
+
+function limpiarHistorialBusquedas(prefijo) {
+  historialBusquedas = [];
+  mostrarHistorialBusquedas(prefijo);
+}
 
 function previsualizarEnlaceEnFormulario(prefijo, url, tipo) {
   const container = document.getElementById(prefijo + 'LiveTestContainer');
@@ -4852,6 +5032,24 @@ function editarJuego(id){
               onclick="togglePausaBuscadorHtml('e')"
             >
               ${buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML'}
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#319795;color:#fff;font-weight:bold"
+              onclick="buscarMasSitiosSugerenciasHtml5('e')"
+              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
+            >
+              🌐 Buscar más enlaces
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#4a5568;color:#fff;font-weight:bold"
+              onclick="mostrarHistorialBusquedas('e')"
+              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
+            >
+              📜 Historial
             </button>
             <button
               type="button"
