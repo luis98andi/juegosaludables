@@ -569,8 +569,8 @@
       "nombre": "Nails DIY: Manicure Master",
       "imagen": "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/eb87ef83d9d965af7542bc47f54b38bb/nails-diy-manicure-master-logo.png",
       "url": "https://poki.com/es/g/nails-diy-manicure-master",
-      "tipo": "ventana",
-      "accion": "abrirEnVentanita",
+      "tipo": "ventana2",
+      "accion": "abrirEnVentana2",
       "categoria": "",
       "youtubeStart": 0,
       "orden": 53
