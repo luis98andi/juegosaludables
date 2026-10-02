@@ -496,6 +496,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 46
+    },
+    {
+      "id": "game-1790903381158",
+      "nombre": "Mundo Primaria",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS72yMAaEzM7NdLFGIQ2zU2ublJ5Gp-BTLQG95GsPxMsw&s=10",
+      "url": "https://www.mundoprimaria.com/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 47
     }
   ]
 }
