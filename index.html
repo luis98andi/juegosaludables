@@ -104,37 +104,142 @@ h1{margin:10px 0}
   color:#ddd;
 }
 
-/* CATEGORÍAS */
-.categories{
-  max-width:1400px;
-  width:95%;
-  margin:10px auto 18px;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:5px 2px 9px;
-  scrollbar-width:thin;
+/* DISEÑO DE SIDEBAR IZQUIERDA PARA CATEGORÍAS EN ESCRITORIO */
+.main-layout-wrap {
+  max-width: 1400px;
+  width: 95%;
+  margin: 10px auto 18px;
+  position: relative;
 }
 
-.category-btn{
-  flex:0 0 auto;
-  border:0;
-  border-radius:20px;
-  padding:8px 15px;
-  background:rgba(0,0,0,.60);
-  color:white;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:.2s;
+/* BOTÓN FLOTANTE DE CATEGORÍAS CUANDO ESTÁ COLAPSADO (PEGADO A LA IZQUIERDA) */
+.categories-floating-btn {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 149;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
 }
 
-.category-btn:hover{
-  background:rgba(58,123,213,.8);
-  transform:scale(1.03);
+.categories-floating-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
 }
 
-.category-btn.active{
-  background:#3a7bd5;
+/* MENÚ DE CATEGORÍAS FLOTANTE PEGADO A LA IZQUIERDA */
+.categories {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  max-height: calc(100vh - 100px);
+  gap: 8px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* ESTADO COLAPSADO / TOTALMENTE OCULTO FUERA DE LA PANTALLA A LA IZQUIERDA */
+.categories.collapsed {
+  transform: translateX(-130%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.category-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  text-align: left;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.category-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #111111;
+  font-weight: 600;
+  text-shadow: none;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+}
+
+/* HEADER DEL MENÚ DE CATEGORÍAS */
+.sidebar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-title {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
 }
 
 /* JUEGOS - MÁS ICONOS EN HORIZONTAL */
@@ -142,9 +247,7 @@ h1{margin:10px 0}
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
   gap:14px;
-  max-width:1400px;
-  width:95%;
-  margin:20px auto
+  width:100%;
 }
 
 .card{
@@ -511,10 +614,22 @@ h1{margin:10px 0}
 .form-grid input,
 .form-grid select{
   padding:9px;
-  border-radius:6px;
-  border:1px solid #555;
-  background:#292929;
-  color:#fff
+  border-radius:8px;
+  border:1px solid rgba(255, 255, 255, 0.25);
+  background:rgba(255, 255, 255, 0.15);
+  color:#fff;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.form-grid input:focus,
+.form-grid select:focus{
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.form-grid input::placeholder{
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .preview-grid{
@@ -574,12 +689,44 @@ h1{margin:10px 0}
 .modo-orden .card img{outline:2px dashed rgba(255,255,255,.55);outline-offset:-2px}
 .modo-orden .handle{
   display:flex;align-items:center;justify-content:center;
-  position:absolute;top:14px;left:14px;width:40px;height:40px;
-  border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:22px;
-  cursor:grab;touch-action:none;z-index:3
+  position:absolute;top:14px;left:14px;width:34px;height:34px;
+  border-radius:50%;background:rgba(58,123,213,0.95);color:#fff;font-size:18px;
+  cursor:grab;touch-action:none;z-index:3;
+  box-shadow:0 2px 5px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
 }
-.modo-orden .card-tools{display:flex;gap:6px;position:absolute;top:14px;right:14px;z-index:3}
-.card-tools button{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);cursor:pointer}
+.modo-orden .handle:hover{
+  transform:scale(1.1);
+  background:#4a90e2;
+}
+.modo-orden .card-tools{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:3;
+}
+.card-tools button{
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:50%;
+  background:rgba(15,23,42,0.9);
+  color:#fff;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow:0 2px 4px rgba(0,0,0,0.3);
+}
+.card-tools button:hover{
+  background:#3a7bd5;
+  transform:scale(1.1);
+}
 .modo-orden .card-cat-wrap{
   display:block;
   margin-top:2px;
@@ -857,10 +1004,18 @@ h1{margin:10px 0}
   </div>
 </div>
 
-<!-- CATEGORÍAS -->
-<div id="categories" class="categories"></div>
+<!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y JUEGOS -->
+<div class="main-layout-wrap">
+  <!-- BOTÓN FLOTANTE CUANDO ESTÁ COLAPSADO (PEGADO A LA IZQUIERDA) -->
+  <button id="categoriesToggleBtn" class="categories-floating-btn" type="button" onclick="toggleSidebarCollapse()" title="Abrir Categorías">
+    ☰ <span id="catFloatingLabel">Categorías</span>
+  </button>
 
-<div id="grid" class="grid"></div>
+  <!-- CATEGORÍAS -->
+  <div id="categories" class="categories collapsed"></div>
+
+  <div id="grid" class="grid"></div>
+</div>
 
 <!-- REPRODUCTOR -->
 <div id="player-container">
@@ -1668,9 +1823,66 @@ async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
    CATEGORIAS
 ========================= */
 
+function obtenerIconoCategoria(nombre) {
+  const norm = String(nombre).toLowerCase().trim();
+  if (norm === 'todos' || norm === 'all' || norm === '') return '🏠';
+  if (norm === 'acción' || norm === 'accion' || norm === 'action') return '💥';
+  if (norm === 'aventura' || norm === 'adventure') return '🗺️';
+  if (norm === 'deportes' || norm === 'sports' || norm === 'deporte' || norm === 'sport') return '⚽';
+  if (norm === 'carreras' || norm === 'racing' || norm === 'autos' || norm === 'coches') return '🏎️';
+  if (norm === 'estrategia' || norm === 'strategy') return '🧠';
+  if (norm === 'rompecabezas' || norm === 'puzzles' || norm === 'puzzle' || norm === 'rompecabezas-puzzle') return '🧩';
+  if (norm === 'retro' || norm === 'clásicos' || norm === 'clasicos' || norm === 'arcade' || norm === 'emuladores' || norm === 'snes' || norm === 'nes') return '🕹️';
+  if (norm === 'peleas' || norm === 'fighting' || norm === 'lucha') return '🥊';
+  if (norm === 'disparos' || norm === 'shooter' || norm === 'shooting' || norm === 'armas') return '🔫';
+  if (norm === 'música' || norm === 'musica' || norm === 'music' || norm === 'ritmo') return '🎵';
+  if (norm === 'educación' || norm === 'educacion' || norm === 'educativo' || norm === 'education') return '🎓';
+  if (norm === 'simulación' || norm === 'simulacion' || norm === 'simulation') return '🚜';
+  if (norm === 'plataformas' || norm === 'platformer') return '🏃';
+  if (norm === 'multijugador' || norm === 'multiplayer') return '👥';
+  if (norm === 'mesa' || norm === 'board' || norm === 'cartas' || norm === 'cards') return '🃏';
+  
+  return '🎮';
+}
+
+function toggleSidebarCollapse(forzarColapso = null) {
+  const cont = document.getElementById('categories');
+  if (!cont) return;
+  
+  if (forzarColapso === true) {
+    cont.classList.add('collapsed');
+    localStorage.setItem('sidebar_collapsed', '1');
+    return;
+  }
+  if (forzarColapso === false) {
+    cont.classList.remove('collapsed');
+    localStorage.setItem('sidebar_collapsed', '0');
+    return;
+  }
+  
+  const nuevoEstado = !cont.classList.contains('collapsed');
+  cont.classList.toggle('collapsed');
+  localStorage.setItem('sidebar_collapsed', nuevoEstado ? '1' : '0');
+}
+
+// Cerrar el panel flotante de categorías si se hace clic fuera
+document.addEventListener('pointerdown', (e) => {
+  const cont = document.getElementById('categories');
+  const floatBtn = document.getElementById('categoriesToggleBtn');
+  if (!cont || cont.classList.contains('collapsed')) return;
+  if (!cont.contains(e.target) && (!floatBtn || !floatBtn.contains(e.target))) {
+    toggleSidebarCollapse(true);
+  }
+});
+
 function renderCategorias(){
 
   const cont=document.getElementById('categories');
+  const floatLabel = document.getElementById('catFloatingLabel');
+  if (floatLabel) {
+    const icon = obtenerIconoCategoria(categoriaActual);
+    floatLabel.textContent = `${icon} ${categoriaActual}`;
+  }
 
   const categorias=new Set();
 
@@ -1690,6 +1902,36 @@ function renderCategorias(){
 
   cont.innerHTML='';
 
+  // Por defecto COLAPSADO / OCULTO a menos que explícitamente se haya guardado '0'
+  const isCollapsed = localStorage.getItem('sidebar_collapsed') !== '0';
+  if (isCollapsed) {
+    cont.classList.add('collapsed');
+  } else {
+    cont.classList.remove('collapsed');
+  }
+
+  // Create Sidebar Header with Collapse Button
+  const header = document.createElement('div');
+  header.className = 'sidebar-header-row';
+  
+  const title = document.createElement('span');
+  title.className = 'sidebar-title';
+  title.textContent = 'Categorías';
+  
+  const toggleBtn = document.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.className = 'sidebar-toggle-btn';
+  toggleBtn.innerHTML = '✕';
+  toggleBtn.title = 'Cerrar / Ocultar Categorías';
+  toggleBtn.onclick = (e) => {
+    e.stopPropagation();
+    toggleSidebarCollapse(true);
+  };
+  
+  header.appendChild(title);
+  header.appendChild(toggleBtn);
+  cont.appendChild(header);
+
   const todas=["Todos",...Array.from(categorias)];
 
   todas.forEach(cat=>{
@@ -1700,7 +1942,9 @@ function renderCategorias(){
       'category-btn '+
       (categoriaActual===cat?'active':'');
 
-    btn.textContent=cat;
+    // Add coherent beautiful emoji icon next to category name
+    const icon = obtenerIconoCategoria(cat);
+    btn.innerHTML = `<span style="margin-right:8px;font-size:16px">${icon}</span> <span>${escapeHtml(cat)}</span>`;
 
     btn.onclick=()=>{
 
@@ -1708,6 +1952,9 @@ function renderCategorias(){
 
       renderCategorias();
       aplicarFiltros();
+      
+      // Al seleccionar una categoría, cerrar suavemente el menú flotante para dejar ver los juegos
+      toggleSidebarCollapse(true);
 
     };
 
@@ -3213,10 +3460,14 @@ function mostrarAgregar(){
   e.innerHTML=`
 
     <div style="
-      background:#222;
+      background:rgba(255, 255, 255, 0.12);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border:1px solid rgba(255, 255, 255, 0.18);
       padding:14px;
-      border-radius:10px;
-      margin-bottom:15px
+      border-radius:12px;
+      margin-bottom:15px;
+      box-shadow:0 8px 32px 0 rgba(31, 38, 135, 0.15);
     ">
 
       <h3>➕ Nuevo juego</h3>
@@ -3271,6 +3522,15 @@ function mostrarAgregar(){
               title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
             >
               📜 Historial
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              onclick="previsualizarEnlaceEnFormulario('f', document.getElementById('fUrl')?.value || '', 'iframe')"
+              title="Probar/Previsualizar el enlace actual ingresado arriba"
+            >
+              👁️ Probar enlace
             </button>
             <button
               type="button"
@@ -4996,11 +5256,14 @@ function editarJuego(id){
   e.innerHTML=`
 
     <div style="
-      background:#222;
+      background:rgba(255, 255, 255, 0.12);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border:1px solid rgba(255, 255, 255, 0.18);
       padding:14px;
-      border-radius:10px;
+      border-radius:12px;
       margin-bottom:15px;
-      border:1px solid #3a7bd5
+      box-shadow:0 8px 32px 0 rgba(31, 38, 135, 0.15);
     ">
 
       <h3>✏️ Editar juego</h3>
@@ -5050,6 +5313,15 @@ function editarJuego(id){
               title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
             >
               📜 Historial
+            </button>
+            <button
+              type="button"
+              class="image-search-button"
+              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              onclick="previsualizarEnlaceEnFormulario('e', document.getElementById('eUrl')?.value || '', 'iframe')"
+              title="Probar/Previsualizar el enlace actual ingresado arriba"
+            >
+              👁️ Probar enlace
             </button>
             <button
               type="button"
