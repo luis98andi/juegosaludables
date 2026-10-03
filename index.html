@@ -9,9 +9,12 @@
 <meta property="og:description" content="Plataforma y catálogo interactivo de juegos saludables en línea con reproductor integrado y panel de administración.">
 <meta property="og:type" content="website">
 
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" href="portadas/logo.png">
 <link rel="manifest" href="site.webmanifest">
 
 <!-- Ruffle fijado a una versión estable: no se actualiza solo y no rompe los juegos Flash -->
@@ -786,13 +789,36 @@ body.en-juego #btn-ocultos {
   color:#e2e8f0;
   word-break:break-all;
 }
-.card.arrastrando{transition:none!important;z-index:60;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.6);border-radius:16px}
+.card.arrastrando{
+  transition:none!important;
+  z-index:60;
+  opacity:.92;
+  box-shadow:0 14px 34px rgba(0,0,0,.65);
+  border-radius:16px;
+  will-change:transform;
+  touch-action:none;
+}
+body.modo-orden{
+  padding-bottom:230px !important;
+}
+.modo-orden #grid{
+  padding-bottom:190px !important;
+}
 #orden-bar{
   display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:70px;z-index:998;
   gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:94vw;
-  background:rgba(0,0,0,.88);padding:10px 14px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:14px
+  background:rgba(0,0,0,.88);padding:10px 14px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:14px;
+  transition:padding .2s, bottom .2s;
 }
 #orden-bar button{padding:8px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
+#orden-bar.orden-bar-minimizado > *:not(#btn-min-orden-bar):not(#orden-msg){
+  display:none !important;
+}
+#orden-bar.orden-bar-minimizado{
+  padding:6px 12px;
+  bottom:15px;
+  background:rgba(0,0,0,.94);
+}
 
 /* CUENTAS */
 #cuentas-screen{
@@ -1151,10 +1177,12 @@ body.en-juego #btn-ocultos {
   <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
   <button id="btn-orden-ocultos" onclick="toggleFiltroOcultosAdmin()" style="background:#333;color:#fff" title="Ver todos o filtrar solo los juegos ocultos">🙈 Ocultos</button>
   <button onclick="abrirHerramientaAdmin('cuentas')" style="background:#333;color:#fff">👤 Cuentas</button>
+  <button onclick="abrirHerramientaAdmin('clave')" style="background:#d69e2e;color:#fff;font-weight:bold" title="Cambiar contraseña de administración">🔒 Contraseña</button>
   <button onclick="ordenSubirGitHub()" style="background:#2f855a;color:#fff">☁️ GitHub</button>
   <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">🔍 Verificar GitHub</button>
   <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
   <button onclick="cerrarSesionAdminYSalir()" style="background:#555;color:#fff" title="Salir del modo administrador y bloquear con contraseña de inmediato">🔒 Salir Admin</button>
+  <button type="button" id="btn-min-orden-bar" onclick="toggleMinimizarOrdenBar()" style="background:#4a5568;color:#fff" title="Minimizar u ocultar barra para ver todos los juegos sin que tape nada">🔽 Minimizar</button>
   <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
 </div>
 
@@ -1255,6 +1283,10 @@ body.en-juego #btn-ocultos {
 
         <button onclick="mostrarCuentas()">
           👤 Cuentas
+        </button>
+
+        <button onclick="mostrarCambiarClave()" style="background:#d69e2e;color:#fff;font-weight:bold" title="Cambiar contraseña de administración">
+          🔒 Cambiar contraseña
         </button>
 
         <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold">
@@ -3378,10 +3410,21 @@ function abrirHerramientaAdmin(herramienta){
     mostrarTraerDeCuenta();
   }else if(herramienta==='cuentas'){
     mostrarCuentas();
+  }else if(herramienta==='clave'){
+    mostrarCambiarClave();
   }else if(herramienta==='token'){
     cancelarEditor();
     mostrarGitHub(true);
   }
+}
+
+function toggleMinimizarOrdenBar(){
+  const bar=document.getElementById('orden-bar');
+  const btn=document.getElementById('btn-min-orden-bar');
+  if(!bar || !btn)return;
+  const minimizado=bar.classList.toggle('orden-bar-minimizado');
+  btn.textContent=minimizado?'🔼 Mostrar barra':'🔽 Minimizar';
+  btn.title=minimizado?'Restaurar todas las opciones de la barra de administración':'Minimizar barra para no tapar los juegos';
 }
 
 function cerrarAdmin(){
@@ -6320,29 +6363,32 @@ async function ordenSubirGitHub(){
 (function(){
 
   const grid=document.getElementById('grid');
-  let drag=null,timer=null;
+  let drag=null, timer=null;
+  let rafPending=false;
 
-  function posicionar(){
+  function actualizarTransform(){
+    if(!drag)return;
+    const dx=drag.x - drag.gx - drag.baseLeft;
+    const dy=drag.y - drag.gy - drag.baseTop;
+    drag.card.style.transform=`translate3d(${dx}px,${dy}px,0)`;
+  }
 
+  function recalcularBase(){
+    if(!drag)return;
     const c=drag.card;
-
+    const prevTransform=c.style.transform;
     c.style.transform='none';
-
     const r=c.getBoundingClientRect();
-
-    c.style.transform=
-      'translate('+
-      (drag.x-drag.gx-r.left)+'px,'+
-      (drag.y-drag.gy-r.top)+'px)';
-
+    drag.baseLeft=r.left;
+    drag.baseTop=r.top;
+    c.style.transform=prevTransform;
   }
 
   function mover(){
+    if(!drag)return;
+    actualizarTransform();
 
     const c=drag.card;
-
-    posicionar();
-
     c.style.pointerEvents='none';
     const el=document.elementFromPoint(drag.x,drag.y);
     c.style.pointerEvents='';
@@ -6350,14 +6396,10 @@ async function ordenSubirGitHub(){
     const t=el&&el.closest?el.closest('.card'):null;
 
     if(t&&t!==c&&t.parentNode===grid){
-
-      const tr=t.getBoundingClientRect();
-
       const despues=
         (c.compareDocumentPosition(t)&
          Node.DOCUMENT_POSITION_FOLLOWING)!==0;
 
-      /* si el objetivo está adelante, la tarjeta se coloca después; si está atrás, antes */
       if(despues)
         grid.insertBefore(c,t.nextSibling);
       else
@@ -6365,10 +6407,18 @@ async function ordenSubirGitHub(){
 
       try{drag.h.setPointerCapture(drag.id);}catch(e){}
 
-      posicionar();
-
+      recalcularBase();
+      actualizarTransform();
     }
+  }
 
+  function scheduleMover(){
+    if(rafPending)return;
+    rafPending=true;
+    requestAnimationFrame(()=>{
+      rafPending=false;
+      if(drag)mover();
+    });
   }
 
   grid.addEventListener('pointerdown',e=>{
@@ -6376,7 +6426,6 @@ async function ordenSubirGitHub(){
     if(!modoOrden)return;
 
     const h=e.target.closest('.handle');
-
     if(!h)return;
 
     const card=h.closest('.card');
@@ -6387,50 +6436,46 @@ async function ordenSubirGitHub(){
       id:e.pointerId,
       gx:e.clientX-r.left,
       gy:e.clientY-r.top,
+      baseLeft:r.left,
+      baseTop:r.top,
       x:e.clientX,
       y:e.clientY
     };
 
     card.classList.add('arrastrando');
+    actualizarTransform();
 
     try{h.setPointerCapture(e.pointerId);}catch(err){}
 
     e.preventDefault();
 
-    /* desplazamiento automático al acercarse a los bordes */
+    /* desplazamiento suave y optimizado al acercarse a los bordes */
     timer=setInterval(()=>{
-
       if(!drag)return;
+      let scrollDelta=0;
+      if(drag.y<90) scrollDelta = -12;
+      else if(drag.y>window.innerHeight-90) scrollDelta = 12;
 
-      if(drag.y<90)
-        window.scrollBy(0,-14);
-      else if(drag.y>window.innerHeight-90)
-        window.scrollBy(0,14);
-      else
-        return;
-
-      mover();
-
-    },16);
+      if(scrollDelta!==0){
+        window.scrollBy(0,scrollDelta);
+        scheduleMover();
+      }
+    },20);
 
   });
 
   document.addEventListener('pointermove',e=>{
-
     if(!drag||e.pointerId!==drag.id)return;
-
     drag.x=e.clientX;
     drag.y=e.clientY;
-
-    mover();
-
+    scheduleMover();
   });
 
   function soltar(e){
-
     if(!drag||e.pointerId!==drag.id)return;
 
     clearInterval(timer);
+    timer=null;
 
     drag.card.classList.remove('arrastrando');
     drag.card.style.transform='';
@@ -6438,11 +6483,8 @@ async function ordenSubirGitHub(){
     drag=null;
 
     [...grid.querySelectorAll('.card')].forEach((c,i)=>{
-
       const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
-
       if(j)j.orden=i+1;
-
     });
 
     catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
@@ -6453,7 +6495,6 @@ async function ordenSubirGitHub(){
     aplicarFiltros();
     cambiosPendientesSync=true;
     huboCambiosSesionOrden=true;
-
   }
 
   document.addEventListener('pointerup',soltar);
@@ -7311,6 +7352,143 @@ async function subirCuentasGitHub(){
 
   }
 
+}
+
+function mostrarCambiarClave(){
+  const e=document.getElementById('editor');
+  if(!e)return;
+  const nombreCuenta=cuentaActual?.nombre || 'esta cuenta';
+  const tieneClavePropia=!!(cuentaActual && cuentaActual.claveAdmin);
+
+  e.innerHTML=`
+    <div style="background:#222;border:1px solid #444;padding:16px;border-radius:12px;margin-bottom:15px;max-width:480px">
+      <h3 style="margin:0 0 8px;font-size:17px;color:#fff">🔒 Cambiar contraseña de administración</h3>
+      <p class="admin-muted" style="margin:0 0 14px;font-size:13px;line-height:1.4">
+        Cambia la contraseña para administrar el catálogo (${escapeHtml(nombreCuenta)}). Al guardar, se sincronizará automáticamente en tu repositorio de GitHub para que sirva en todos tus dispositivos.
+      </p>
+
+      <div style="display:grid;gap:12px">
+        <label style="font-size:13px;color:#cbd5e1;display:block">
+          Contraseña antigua
+          <input type="password" id="passAntigua" maxlength="40" placeholder="${tieneClavePropia?'Escribe tu contraseña actual':'Contraseña por defecto (1234)'}" style="width:100%;margin-top:5px;padding:9px 12px;border-radius:8px;border:1px solid #555;background:#181818;color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')document.getElementById('passNueva').focus()">
+        </label>
+
+        <label style="font-size:13px;color:#cbd5e1;display:block">
+          Nueva contraseña
+          <input type="password" id="passNueva" maxlength="40" placeholder="Nueva contraseña (mínimo 4 caracteres)" style="width:100%;margin-top:5px;padding:9px 12px;border-radius:8px;border:1px solid #555;background:#181818;color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')document.getElementById('passRepite').focus()">
+        </label>
+
+        <label style="font-size:13px;color:#cbd5e1;display:block">
+          Repita la contraseña
+          <input type="password" id="passRepite" maxlength="40" placeholder="Repite la nueva contraseña" style="width:100%;margin-top:5px;padding:9px 12px;border-radius:8px;border:1px solid #555;background:#181818;color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')ejecutarCambioPassword()">
+        </label>
+      </div>
+
+      <p id="passError" style="font-size:13px;color:#ff8b8b;margin:12px 0 0;min-height:18px"></p>
+
+      <div class="admin-actions" style="margin-top:14px;margin-bottom:0">
+        <button type="button" id="btnGuardarPass" onclick="ejecutarCambioPassword()" style="background:#2f855a;color:#fff;font-weight:bold;padding:10px 16px">
+          💾 Guardar y sincronizar en GitHub
+        </button>
+        <button type="button" onclick="cancelarEditor()" style="padding:10px 16px">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    const el=document.getElementById('passAntigua');
+    if(el)el.focus();
+  },50);
+}
+
+async function ejecutarCambioPassword(){
+  const errEl=document.getElementById('passError');
+  const btn=document.getElementById('btnGuardarPass');
+  const antigua=document.getElementById('passAntigua')?.value || '';
+  const nueva=document.getElementById('passNueva')?.value || '';
+  const repite=document.getElementById('passRepite')?.value || '';
+
+  if(!antigua){
+    errEl.style.color='#ff8b8b';
+    errEl.textContent='❌ Debes ingresar tu contraseña antigua.';
+    return;
+  }
+
+  let antiguaValida=false;
+  if(cuentaActual && cuentaActual.claveAdmin){
+    antiguaValida = (await hashClave(antigua, cuentaActual.sal)) === cuentaActual.claveAdmin;
+  }else{
+    antiguaValida = (antigua === PIN);
+  }
+
+  if(!antiguaValida){
+    errEl.style.color='#ff8b8b';
+    errEl.textContent='❌ La contraseña antigua es incorrecta.';
+    return;
+  }
+
+  if(!nueva || nueva.length < 4){
+    errEl.style.color='#ff8b8b';
+    errEl.textContent='❌ La nueva contraseña debe tener al menos 4 caracteres.';
+    return;
+  }
+
+  if(nueva !== repite){
+    errEl.style.color='#ff8b8b';
+    errEl.textContent='❌ Las contraseñas no coinciden. Escríbelas exactamente iguales.';
+    return;
+  }
+
+  if(btn){
+    btn.disabled=true;
+    btn.textContent='⏳ Guardando...';
+  }
+  errEl.style.color='#90cdf4';
+  errEl.textContent='⏳ Hasheando y guardando nueva contraseña...';
+
+  if(!cuentaActual.sal)cuentaActual.sal=nuevaSal();
+  cuentaActual.claveAdmin=await hashClave(nueva, cuentaActual.sal);
+  cuentaActual.adminLibre=false;
+  cuentasSucias=true;
+
+  try{
+    localStorage.setItem('freshmind_cuentas_cache', JSON.stringify(datosCuentas()));
+  }catch(e){}
+
+  const cfg=obtenerConfigGitHub();
+  if(cfg && cfg.token){
+    errEl.textContent='⏳ Sincronizando cuentas.json con GitHub...';
+    try{
+      await subirArchivoGitHub(
+        {
+          owner:cfg.owner||'luis98andi',
+          repo:cfg.repo||'juegosaludables',
+          branch:cfg.branch||'main',
+          token:cfg.token
+        },
+        'cuentas.json',
+        JSON.stringify(datosCuentas(),null,2),
+        'Actualizar contraseña de administración en cuentas.json'
+      );
+      cuentasSucias=false;
+      mostrarToastSync('✅ Contraseña guardada y sincronizada en GitHub ✓');
+      alert('✅ ¡Contraseña cambiada con éxito!\n\nSe ha actualizado en tu repositorio de GitHub y ya rige para todos tus dispositivos.');
+      cancelarEditor();
+    }catch(err){
+      errEl.style.color='#ff8b8b';
+      errEl.textContent='⚠️ Contraseña guardada en esta sesión, pero falló GitHub: '+err.message;
+      if(btn){
+        btn.disabled=false;
+        btn.textContent='💾 Guardar y sincronizar en GitHub';
+      }
+    }
+  }else{
+    mostrarToastSync('💾 Contraseña guardada localmente');
+    alert('✅ Contraseña cambiada localmente en este navegador.\n\n⚠️ Para que se aplique automáticamente a todos tus demás dispositivos, recuerda ingresar tu token de GitHub en la opción 🔑 Token.');
+    cancelarEditor();
+  }
 }
 
 iniciarCuentas();
