@@ -51,6 +51,18 @@ h1{margin:10px 0}
   align-items:center;
   justify-content:flex-end;
   z-index:200;
+  transition:opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* OCULTAR ELEMENTOS FLOTANTES (LUPA, 3 RAYAS Y MENÚS) CUANDO HAY UN JUEGO ABIERTO */
+body.en-juego .top-tools,
+body.en-juego .categories-floating-btn,
+body.en-juego .categories,
+body.en-juego #btn-ocultos {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .search-wrap{
@@ -2428,7 +2440,7 @@ async function abrirEnVentana2(ruta,juego=null){
   const urlLimpia=normalizarUrlParaPestanaNormal(ruta);
   const target=document.getElementById('ruffle-target');
 
-  document.getElementById('player-container').style.display='block';
+  mostrarPlayer();
   target.scrollIntoView({behavior:'instant',block:'center'});
 
   /* 1. Abrir inmediatamente la ventanita acoplada justo en las coordenadas exactas del cuadrado #ruffle-target */
@@ -3157,6 +3169,14 @@ function abrirEmuladorSNES(url){
 
 function mostrarPlayer(){
 
+  document.body.classList.add('en-juego');
+
+  const searchWrap=document.getElementById('searchWrap');
+  if(searchWrap)searchWrap.classList.remove('open');
+
+  const catCont=document.getElementById('categories');
+  if(catCont)catCont.classList.add('collapsed');
+
   document.getElementById(
     'player-container'
   ).style.display='block';
@@ -3234,6 +3254,8 @@ document.addEventListener(
 );
 
 function cerrarJuego(){
+
+  document.body.classList.remove('en-juego');
 
   try{
     if(ventanaJuegoActual && !ventanaJuegoActual.closed){
