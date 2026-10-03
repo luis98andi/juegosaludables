@@ -36,17 +36,6 @@
       "orden": 3
     },
     {
-      "id": "game-018",
-      "nombre": "Mario All Star",
-      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 4,
-      "youtubeStart": 0
-    },
-    {
       "id": "game-003",
       "nombre": "Cut the Rope",
       "imagen": "https://cdn.blipzi.com/cu/tt/cut-the-rope-d.jpg",
@@ -54,7 +43,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 5,
+      "orden": 4,
       "youtubeStart": 0
     },
     {
@@ -65,7 +54,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 6,
+      "orden": 5,
       "youtubeStart": 0
     },
     {
@@ -76,7 +65,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 7,
+      "orden": 6,
       "youtubeStart": 0
     },
     {
@@ -87,7 +76,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 8,
+      "orden": 7,
       "youtubeStart": 0
     },
     {
@@ -98,7 +87,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 9
+      "orden": 8
     },
     {
       "id": "game-015",
@@ -108,7 +97,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 10,
+      "orden": 9,
       "youtubeStart": 0
     },
     {
@@ -120,7 +109,18 @@
       "accion": "abrirEmuladorSNES",
       "categoria": "",
       "youtubeStart": 0,
-      "orden": 11
+      "orden": 10
+    },
+    {
+      "id": "game-018",
+      "nombre": "Mario All Star",
+      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
+      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 11,
+      "youtubeStart": 0
     },
     {
       "id": "game-1790818044094",
