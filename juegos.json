@@ -36,6 +36,17 @@
       "orden": 3
     },
     {
+      "id": "game-018",
+      "nombre": "Mario All Star",
+      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
+      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "orden": 4,
+      "youtubeStart": 0
+    },
+    {
       "id": "game-003",
       "nombre": "Cut the Rope",
       "imagen": "https://cdn.blipzi.com/cu/tt/cut-the-rope-d.jpg",
@@ -43,7 +54,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 4,
+      "orden": 5,
       "youtubeStart": 0
     },
     {
@@ -54,7 +65,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 5,
+      "orden": 6,
       "youtubeStart": 0
     },
     {
@@ -65,7 +76,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 6,
+      "orden": 7,
       "youtubeStart": 0
     },
     {
@@ -76,7 +87,7 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "Educativos",
-      "orden": 7,
+      "orden": 8,
       "youtubeStart": 0
     },
     {
@@ -87,7 +98,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 8
+      "orden": 9
     },
     {
       "id": "game-015",
@@ -97,7 +108,7 @@
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
-      "orden": 9,
+      "orden": 10,
       "youtubeStart": 0
     },
     {
@@ -109,18 +120,7 @@
       "accion": "abrirEmuladorSNES",
       "categoria": "",
       "youtubeStart": 0,
-      "orden": 10
-    },
-    {
-      "id": "game-018",
-      "nombre": "Mario All Star",
-      "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "orden": 11,
-      "youtubeStart": 0
+      "orden": 11
     },
     {
       "id": "game-1790818044094",
@@ -546,7 +546,7 @@
       "id": "game-1790905831007",
       "nombre": "Rosie Care",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNsWK1RqDTava55slrTT0PnYx7V0npTgTP-UBGDEm_Qg&s",
-      "url": "https://springroll-tc.pbskids.org/645bd19f-9e0a-409b-96cb-ab9e1930e08e/cafd046d03f7feac1cdde594a6245d8dc1236ca0/release/index.html?playOptions=%7B%22language%22%3A%22en%22%7D",
+      "url": "https://springroll-tc.pbskids.org/455cb5f9-a662-41b4-a9c3-0abf94ec1a6c/372960d4549eb0b663737943972bbec6b2a99f35/release/index.html?playOptions=%7B%22language%22%3A%22es%22%7D",
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
       "categoria": "",
@@ -574,17 +574,6 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 53
-    },
-    {
-      "id": "game-1790990870061",
-      "nombre": "Cooking Rage",
-      "imagen": "https://www5.minijuegosgratis.com/v3/games/thumbnails/257549_1.jpg",
-      "url": "https://www.miniplay.com/embed/cooking-rage",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "youtubeStart": 0,
-      "orden": 54
     }
   ]
 }
