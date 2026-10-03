@@ -4202,15 +4202,16 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
   let filaOriginal='';
   if(orig){
     const esOrigActual=(urlSeleccionada===orig);
+    const origBloqueado = sitioBloqueaIframeDirecto(orig);
     filaOriginal=`
       <div style="margin-bottom:8px">
         <div style="font-weight:bold;font-size:12px;color:#fbd38d;margin-bottom:3px">📌 Enlace original que pegaste (Intacto)</div>
         <div class="bm-link-row" style="border:1px solid ${esOrigActual?'#48bb78':'#d69e2e'}">
           <div class="bm-link-url">${escapeHtml(orig)}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
-            <span style="font-size:11px;color:#cbd5e1">Tu enlace original sin modificar</span>
+            <span style="font-size:11px;color:${origBloqueado?'#f6ad55':'#cbd5e1'}">${origBloqueado?'⚠️ Bloquea Iframe (Recomendado como Pestaña Nueva)':'Tu enlace original sin modificar'}</span>
             <div style="display:flex;gap:4px">
-              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(orig)}','${escapeAttr(detectarTipoUrl(orig)||'iframe')}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esOrigActual?'#2f855a':'#d69e2e'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(orig)}','${escapeAttr(origBloqueado?'ventana':(detectarTipoUrl(orig)||'iframe'))}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esOrigActual?'#2f855a':'#d69e2e'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
                 ${esOrigActual?'✓ Dejado intacto (En uso)':'↩️ Elegir mi enlace original'}
               </button>
               <button type="button" onclick="previsualizarEnlaceEnFormulario('${prefijo}','${escapeAttr(orig)}','${escapeAttr(detectarTipoUrl(orig)||'iframe')}')" style="padding:4px 8px;border:0;border-radius:5px;background:#38a169;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
@@ -4226,10 +4227,14 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
     `;
   }
 
+  const enlacesValidos = (Array.isArray(enlaces) ? enlaces : []).filter(x=>x.url!==orig);
+  const embebibles = enlacesValidos.filter(x => !sitioBloqueaIframeDirecto(x.url));
+  const bloqueadosIframe = enlacesValidos.filter(x => sitioBloqueaIframeDirecto(x.url));
+
   let bloquesHtml='';
-  if(Array.isArray(enlaces) && enlaces.length){
+  if(embebibles.length){
     BM_ORDER.forEach(cat=>{
-      const grupo=enlaces.filter(x=>x.cat===cat && x.url!==orig);
+      const grupo=embebibles.filter(x=>x.cat===cat);
       if(!grupo.length)return;
       const filas=grupo.map(x=>{
         const esActual=x.url===urlSeleccionada;
@@ -4238,7 +4243,7 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
           <div class="bm-link-row" style="${esActual?'border:1px solid #48bb78':''}">
             <div class="bm-link-url">${escapeHtml(x.url)}</div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
-              <span style="font-size:11px;color:#94a3b8">${escapeHtml((x.srcs||[]).join(' · '))}</span>
+              <span style="font-size:11px;color:#94a3b8">🟢 Embebible · ${escapeHtml((x.srcs||[]).join(' · '))}</span>
               <div style="display:flex;gap:4px">
                 <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','${escapeAttr(tipo)}')" style="padding:4px 9px;border:0;border-radius:5px;background:${esActual?'#2f855a':'#2b6cb0'};color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
                   ${esActual?'✓ En uso':'✅ Elegir'}
@@ -4263,14 +4268,56 @@ function renderPanelEnlacesBookmarklet(prefijo,enlaces,urlSeleccionada,urlOrigin
     });
   }
 
-  if(!bloquesHtml && !esModal){
+  let bloquesBloqueadosHtml='';
+  if(bloqueadosIframe.length){
+    const filasB = bloqueadosIframe.map(x=>{
+      const esActual=x.url===urlSeleccionada;
+      return `
+        <div class="bm-link-row" style="border:1px dashed #d69e2e; ${esActual?'border:1px solid #48bb78':''}">
+          <div class="bm-link-url">${escapeHtml(x.url)}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;color:#fbd38d">⚠️ Bloquea Iframe · ${escapeHtml((x.srcs||[]).join(' · '))}</span>
+            <div style="display:flex;gap:4px">
+              <button type="button" onclick="seleccionarEnlaceDelBuscador('${prefijo}','${escapeAttr(x.url)}','ventana')" style="padding:4px 9px;border:0;border-radius:5px;background:#d69e2e;color:#111;font-size:11px;font-weight:bold;cursor:pointer" title="Configura automáticamente como Nueva Pestaña / Ventana">
+                ➕ Usar como Pestaña Nueva
+              </button>
+              <button type="button" onclick="previsualizarEnlaceEnFormulario('${prefijo}','${escapeAttr(x.url)}','ventana')" style="padding:4px 8px;border:0;border-radius:5px;background:#38a169;color:#fff;font-size:11px;font-weight:bold;cursor:pointer">
+                👁️ Probar
+              </button>
+              <button type="button" onclick="navigator.clipboard?.writeText('${escapeAttr(x.url)}');mostrarToastSync('📋 Copiado')" style="padding:4px 7px;border:0;border-radius:5px;background:#334155;color:#fff;font-size:11px;cursor:pointer">
+                📋 Copiar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    bloquesBloqueadosHtml=`
+      <div style="margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15)">
+        <details>
+          <summary style="font-size:12px;font-weight:bold;color:#fbd38d;cursor:pointer;outline:none;user-select:none">
+            🔗 Ver ${bloqueadosIframe.length} sitio(s) alternativo(s) (Solo para Pestaña Nueva ↗)
+          </summary>
+          <div style="font-size:11px;color:#cbd5e1;margin:4px 0 8px">Estos portales tienen el juego pero bloquean la vista previa en Iframe. Puedes usarlos abriéndolos en pestaña nueva:</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${filasB}
+          </div>
+        </details>
+      </div>
+    `;
+  }
+
+  if(!bloquesHtml && !bloquesBloqueadosHtml && !esModal){
     return filaOriginal;
   }
 
   return `
     <div class="bm-links-box" style="margin-top:6px">
       ${filaOriginal}
-      ${bloquesHtml || '<div style="font-size:12px;color:#94a3b8;padding:4px 0">No se detectaron otros enlaces internos distintos al original.</div>'}
+      ${bloquesHtml || ''}
+      ${bloquesBloqueadosHtml}
+      ${(!bloquesHtml && !bloquesBloqueadosHtml)?'<div style="font-size:12px;color:#94a3b8;padding:4px 0">No se detectaron otros enlaces distintos al original.</div>':''}
     </div>
   `;
 }
