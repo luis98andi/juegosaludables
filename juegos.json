@@ -574,6 +574,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 53
+    },
+    {
+      "id": "game-1791067446207",
+      "nombre": "KidLauncher Seguro",
+      "imagen": "https://media.istockphoto.com/id/1160360932/es/vector/hermosa-corona-de-princesa-dorada.jpg?s=612x612&w=0&k=20&c=CnLvp351LqDMfUTTfkhzMmurpd3--RhMAfUvDhCYPQ8=",
+      "url": "https://luis98andi.github.io/kidLauncher-Seguro/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 54
     }
   ]
 }
