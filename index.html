@@ -17,6 +17,10 @@
 <link rel="icon" type="image/png" href="portadas/logo.png">
 <link rel="manifest" href="site.webmanifest">
 
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8026306095938145"
+     crossorigin="anonymous"></script>
+
 <!-- Ruffle fijado a una versión estable: no se actualiza solo y no rompe los juegos Flash -->
 <script src="https://unpkg.com/@ruffle-rs/ruffle@0.6.0/ruffle.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -31,6 +35,22 @@ body{
   color:white;
   margin:0;
   padding:20px
+}
+
+/* CUENTA PRIVILEGIADA SIN ANUNCIOS (HIJA / VIP) */
+body.sin-anuncios ins.adsbygoogle,
+body.sin-anuncios .adsbygoogle,
+body.sin-anuncios [id*="google_ads"],
+body.sin-anuncios [id*="aswift"],
+body.sin-anuncios iframe[id*="google_ads"],
+body.sin-anuncios iframe[id*="aswift"],
+body.sin-anuncios .google-auto-placed {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
 }
 
 h1{text-align:center}
@@ -1346,6 +1366,7 @@ body.modo-orden{
         <div class="admin-actions" style="margin-top:10px">
           <button onclick="guardarConfigGitHub()">💾 Guardar token</button>
           <button onclick="actualizarGitHub()">☁️ Guardar y subir ahora</button>
+          <button onclick="subirArchivosRaizGitHub()" style="background:#805ad5;color:#fff;font-weight:bold" title="Sube index.html y ads.txt a tu repositorio para activar AdSense">🚀 Subir index.html y ads.txt</button>
           <button onclick="ocultarGitHub()">Cerrar</button>
         </div>
         <p id="github-status" class="admin-muted" style="margin:8px 0 0"></p>
@@ -6180,6 +6201,36 @@ async function actualizarGitHub(){
 
 }
 
+async function subirArchivosRaizGitHub(){
+  const cfg=obtenerConfigGitHub();
+  const status=document.getElementById('github-status');
+  if(!cfg.owner || !cfg.repo || !cfg.token){
+    if(status) status.textContent='Falta usuario, repositorio o token.';
+    alert('⚠️ Primero completa tu Usuario, Repositorio y Token de GitHub, y presiona "💾 Guardar token".');
+    return;
+  }
+  if(status) status.textContent='⏳ Leyendo index.html para subir a GitHub...';
+  try{
+    const rIndex=await fetch('index.html', {cache:'no-store'});
+    if(!rIndex.ok) throw new Error('No se pudo leer index.html');
+    const txtIndex=await rIndex.text();
+    
+    if(status) status.textContent='⏳ Subiendo index.html a GitHub...';
+    await subirArchivoGitHub(cfg, 'index.html', txtIndex, 'Actualizar index.html con AdSense y modo sin anuncios');
+    
+    if(status) status.textContent='⏳ Subiendo ads.txt a GitHub...';
+    const adsContent='google.com, pub-8026306095938145, DIRECT, f08c47fec0942fa0\n';
+    await subirArchivoGitHub(cfg, 'ads.txt', adsContent, 'Agregar ads.txt para verificación AdSense');
+
+    if(status) status.textContent='✅ ¡index.html y ads.txt subidos con éxito a GitHub!';
+    mostrarToastSync('✅ index.html y ads.txt subidos a GitHub ✓');
+    alert('✅ ¡Archivos publicados con éxito en tu GitHub!\n\nGitHub Pages tardará de 1 a 2 minutos en actualizarse. Ahora ve a Google AdSense y haz clic en "Verificar" o "Solicitar revisión".');
+  }catch(err){
+    if(status) status.textContent='❌ Error al subir a GitHub: '+err.message;
+    alert('❌ Error al subir a GitHub: '+err.message+'\n\nSi prefieres subirlo directamente por GitHub web, puedes copiar index.html y crear ads.txt en tu repositorio.');
+  }
+}
+
 /* =========================
    IMPORTAR / EXPORTAR
 ========================= */
@@ -6614,7 +6665,8 @@ function normalizarCuenta(c,i){
     sal:c.sal||'',
     claveEntrar:c.claveEntrar||null,
     claveAdmin:c.claveAdmin||null,
-    adminLibre:!!c.adminLibre
+    adminLibre:!!c.adminLibre,
+    sinAnuncios:!!c.sinAnuncios
   };
 
 }
@@ -6637,10 +6689,23 @@ function datosCuentas(){
     cuentas:cuentas.map(c=>({
       id:c.id,nombre:c.nombre,avatar:c.avatar,archivo:c.archivo,
       sal:c.sal,claveEntrar:c.claveEntrar,claveAdmin:c.claveAdmin,
-      adminLibre:c.adminLibre
+      adminLibre:c.adminLibre,
+      sinAnuncios:!!c.sinAnuncios
     }))
   };
 
+}
+
+function aplicarConfigAnuncios(){
+  const sinAds = !!(cuentaActual && cuentaActual.sinAnuncios);
+  document.body.classList.toggle('sin-anuncios', sinAds);
+  if(sinAds){
+    try{
+      document.querySelectorAll('ins.adsbygoogle, .adsbygoogle, iframe[id^="aswift_"], iframe[id^="google_ads_"], .google-auto-placed').forEach(el=>{
+        el.style.display='none';
+      });
+    }catch(e){}
+  }
 }
 
 function nuevaSal(){
@@ -6739,6 +6804,7 @@ async function abrirCuenta(c,inicial){
   if(modoOrden)salirModoOrden();
 
   cuentaActual=c;
+  aplicarConfigAnuncios();
   categoriaActual='Todos';
   document.getElementById('searchInput').value='';
 
@@ -7087,16 +7153,18 @@ function mostrarCuentas(){
   cuentas.forEach((c,i)=>{
 
     filas+=`
-      <div class="cuenta-fila">
+      <div class="cuenta-fila" style="align-items:center">
         <button type="button" onclick="abrirSelectorEmojiCuenta('${escapeAttr(c.id)}')" title="Cambiar emoji de ${escapeAttr(c.nombre)}" style="font-size:26px;background:#1f1f1f;border:1px solid #444;border-radius:10px;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center">${escapeHtml(c.avatar)}</button>
         <div class="grow">
           <b>${escapeHtml(c.nombre)}</b>${c.id===cuentaActual.id?' (abierta)':''}
+          ${c.sinAnuncios ? '<span style="display:inline-block;background:#b7791f;color:#fff;font-size:11px;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:bold">⭐ SIN ANUNCIOS (VIP)</span>' : ''}
           <div class="admin-muted">
             ${escapeHtml(c.archivo)}
             ${c.claveEntrar?' · 🔒 entrar':''}
             ${(c.claveAdmin||!c.adminLibre)?' · 🛠️ admin':''}
           </div>
         </div>
+        <button onclick="toggleSinAnuncios('${escapeAttr(c.id)}')" style="${c.sinAnuncios?'background:#d69e2e;color:#fff;font-weight:bold':'background:#333;color:#bbb'}" title="Activar/desactivar privilegio sin anuncios">${c.sinAnuncios?'⭐ Sin Anuncios':'📢 Con Anuncios'}</button>
         <button onclick="abrirSelectorEmojiCuenta('${escapeAttr(c.id)}')">🎨 Emoji</button>
         <button onclick="cerrarAdmin();elegirCuenta('${escapeAttr(c.id)}')">Abrir</button>
         ${i>0?`<button onclick="eliminarCuenta('${escapeAttr(c.id)}')">🗑️</button>`:''}
@@ -7106,7 +7174,8 @@ function mostrarCuentas(){
 
   e.innerHTML=`
     <div style="background:#222;padding:14px;border-radius:10px;margin-bottom:15px">
-      <h3>👤 Cuentas</h3>
+      <h3>👤 Cuentas y Privilegios</h3>
+      <p class="admin-muted" style="margin-top:-6px;margin-bottom:12px">Puedes marcar una cuenta con <b>⭐ Sin Anuncios</b> (ideal para tu hija) para que no vea publicidad.</p>
       ${filas}
       <br>
       <button onclick="mostrarNuevaCuenta()">➕ Nueva cuenta</button>
@@ -7115,6 +7184,20 @@ function mostrarCuentas(){
       <button onclick="cancelarEditor()">Cerrar</button>
     </div>`;
 
+}
+
+async function toggleSinAnuncios(id){
+  const c=cuentas.find(x=>x.id===id);
+  if(!c)return;
+  c.sinAnuncios=!c.sinAnuncios;
+  cuentasSucias=true;
+  if(cuentaActual&&cuentaActual.id===id){
+    aplicarConfigAnuncios();
+  }
+  mostrarCuentas();
+  guardarCuentasLocal();
+  mostrarToastSync(c.sinAnuncios?`⭐ "${c.nombre}" es ahora cuenta PRIVILEGIADA (SIN ANUNCIOS)`:`📢 "${c.nombre}" mostrará anuncios normalmente`);
+  programarAutoSyncGitHub(`⭐ Privilegio sin anuncios de "${c.nombre}"`, 1000);
 }
 
 function mostrarNuevaCuenta(){
@@ -7130,7 +7213,7 @@ function mostrarNuevaCuenta(){
 
         <label>
           Nombre
-          <input id="nNombre" maxlength="24" placeholder="Ej. María">
+          <input id="nNombre" maxlength="24" placeholder="Ej. Hija, Valentina, María">
         </label>
 
         <label>
@@ -7148,6 +7231,13 @@ function mostrarNuevaCuenta(){
           </select>
         </label>
 
+      </div>
+
+      <div style="margin:12px 0;background:#2a2a2a;padding:10px 14px;border-radius:8px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="nSinAnuncios" style="width:18px;height:18px">
+          <span>⭐ <b>Cuenta privilegiada sin anuncios</b> (marcar para tu hija)</span>
+        </label>
       </div>
 
       <br>
@@ -7205,7 +7295,8 @@ async function crearCuenta(){
     sal,
     claveEntrar:usaE?await hashClave(cE,sal):null,
     claveAdmin:usaA?await hashClave(cA,sal):null,
-    adminLibre:!usaA
+    adminLibre:!usaA,
+    sinAnuncios:!!document.getElementById('nSinAnuncios')?.checked
   };
 
   const copiar=document.getElementById('nCopiar').value==='copiar';
