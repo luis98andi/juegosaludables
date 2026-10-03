@@ -574,6 +574,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 53
+    },
+    {
+      "id": "game-1790990870061",
+      "nombre": "Cooking Rage",
+      "imagen": "https://www5.minijuegosgratis.com/v3/games/thumbnails/257549_1.jpg",
+      "url": "https://www.minijuegos.com/juego/cooking-rage",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 54
     }
   ]
 }
