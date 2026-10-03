@@ -1244,6 +1244,7 @@ body.modo-orden{
 <div id="orden-bar">
   <span id="orden-msg">Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
   <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
+  <button onclick="abrirHerramientaAdmin('historial')" style="background:#2c5282;color:#fff;font-weight:bold" title="Ver historial de partidas jugadas en todas las cuentas">📜 Historial</button>
   <button onclick="abrirBuscadorEnlacesPrimerPlano()" style="background:#805ad5;color:#fff" title="Abrir el Buscador JS de enlaces en primer plano">🔎 Buscador JS</button>
   <button onclick="abrirHerramientaAdmin('categorias')" style="background:#333;color:#fff" title="Crear o gestionar categorías con el teclado">🏷️ Categorías</button>
   <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
@@ -1332,6 +1333,10 @@ body.modo-orden{
 
         <button onclick="mostrarAgregar()">
           ➕ Agregar juego
+        </button>
+
+        <button onclick="mostrarHistorialJuegosAdmin()" style="background:#2c5282;color:#fff;font-weight:bold" title="Ver el historial de juegos jugados por los usuarios">
+          📜 Historial de juegos
         </button>
 
         <button onclick="abrirBuscadorEnlacesPrimerPlano()" style="background:#805ad5;color:#fff;font-weight:bold">
@@ -2316,6 +2321,9 @@ function normalizarUrlParaPestanaNormal(url){
 function abrirJuego(ruta,tipo,accion,juego=null){
 
   ultimoJuegoAbierto={ruta,tipo,accion,juego};
+  if (typeof registrarHistorialJuego === 'function') {
+    registrarHistorialJuego(juego || ruta, ruta, tipo);
+  }
 
   if(
     accion==='abrirEmuladorSNES' ||
@@ -3476,6 +3484,8 @@ function abrirHerramientaAdmin(herramienta){
 
   if(herramienta==='agregar'){
     mostrarAgregar();
+  }else if(herramienta==='historial'){
+    mostrarHistorialJuegosAdmin();
   }else if(herramienta==='categorias'){
     mostrarCategoriasAdmin();
   }else if(herramienta==='multiples'){
@@ -5096,6 +5106,234 @@ function cancelarEditor(){
     'editor'
   ).innerHTML='';
 
+}
+
+/* ============================================================
+   HISTORIAL DE JUEGOS PARA MODO ADMINISTRADOR (ENGRANAJE)
+   ============================================================ */
+
+function registrarHistorialJuego(juegoOrInfo, ruta, tipo) {
+  try {
+    let nombre = 'Juego';
+    let imagen = '';
+    let categoria = '';
+
+    let jObj = null;
+    if (typeof juegoOrInfo === 'object' && juegoOrInfo !== null) {
+      jObj = juegoOrInfo;
+    } else {
+      const targetUrl = ruta || juegoOrInfo;
+      jObj = (window.juegos || []).find(x => x.url === targetUrl || x.nombre === juegoOrInfo) ||
+             (window.todosLosJuegos || []).find(x => x.url === targetUrl || x.nombre === juegoOrInfo);
+    }
+
+    if (jObj) {
+      nombre = jObj.nombre || nombre;
+      imagen = jObj.imagen || '';
+      categoria = jObj.categoria || '';
+    } else if (typeof juegoOrInfo === 'string') {
+      nombre = juegoOrInfo;
+    }
+
+    const cuentaNombre = (window.cuentaActual && window.cuentaActual.nombre)
+      ? ((window.cuentaActual.avatar ? window.cuentaActual.avatar + ' ' : '') + window.cuentaActual.nombre)
+      : 'Invitado';
+
+    const fecha = new Date();
+    const fechaTexto = fecha.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' +
+                       fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    let historial = [];
+    try {
+      historial = JSON.parse(localStorage.getItem('historial_juegos_jugados') || '[]');
+    } catch(e) { historial = []; }
+
+    // Evitar registrar duplicados consecutivos inmediatos (en menos de 3 segundos)
+    if (historial.length > 0 && historial[0].nombre === nombre && historial[0].cuenta === cuentaNombre && (fecha.getTime() - (historial[0].timestamp || 0) < 3000)) {
+      return;
+    }
+
+    historial.unshift({
+      id: 'hist_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+      nombre: nombre,
+      imagen: imagen,
+      categoria: categoria,
+      cuenta: cuentaNombre,
+      tipo: tipo || 'iframe',
+      ruta: ruta || (jObj ? jObj.url : ''),
+      fecha: fechaTexto,
+      timestamp: fecha.getTime()
+    });
+
+    if (historial.length > 300) historial.pop();
+
+    localStorage.setItem('historial_juegos_jugados', JSON.stringify(historial));
+  } catch(err) {
+    console.error('Error al registrar historial de juegos:', err);
+  }
+}
+
+function mostrarHistorialJuegosAdmin(filtroCuenta = '', filtroTexto = '') {
+  const e = document.getElementById('editor');
+  if (!e) return;
+
+  document.getElementById('admin-panel').style.display = 'block';
+  document.getElementById('pin-screen').style.display = 'none';
+  document.getElementById('admin-content').style.display = 'block';
+
+  let historial = [];
+  try {
+    historial = JSON.parse(localStorage.getItem('historial_juegos_jugados') || '[]');
+  } catch(err) { historial = []; }
+
+  const cuentasUnicas = Array.from(new Set(historial.map(h => h.cuenta).filter(Boolean)));
+
+  let historialFiltrado = historial;
+  if (filtroCuenta) {
+    historialFiltrado = historialFiltrado.filter(h => h.cuenta === filtroCuenta);
+  }
+  if (filtroTexto && filtroTexto.trim()) {
+    const term = filtroTexto.trim().toLowerCase();
+    historialFiltrado = historialFiltrado.filter(h =>
+      (h.nombre && h.nombre.toLowerCase().includes(term)) ||
+      (h.categoria && h.categoria.toLowerCase().includes(term)) ||
+      (h.ruta && h.ruta.toLowerCase().includes(term)) ||
+      (h.cuenta && h.cuenta.toLowerCase().includes(term))
+    );
+  }
+
+  const totalPartidas = historial.length;
+  const partidasMostradas = historialFiltrado.length;
+  const juegosDiferentes = new Set(historial.map(h => h.nombre)).size;
+
+  const conteoJuegos = {};
+  historial.forEach(h => {
+    if (h.nombre) conteoJuegos[h.nombre] = (conteoJuegos[h.nombre] || 0) + 1;
+  });
+  let masJugado = '-';
+  let masJugadoCant = 0;
+  Object.keys(conteoJuegos).forEach(nom => {
+    if (conteoJuegos[nom] > masJugadoCant) {
+      masJugadoCant = conteoJuegos[nom];
+      masJugado = nom;
+    }
+  });
+
+  const selectCuentasOptions = `<option value="">👥 Todas las cuentas (${totalPartidas})</option>` +
+    cuentasUnicas.map(c => `<option value="${escapeAttr(c)}" ${filtroCuenta === c ? 'selected' : ''}>👤 ${escapeHtml(c)}</option>`).join('');
+
+  const itemsHtml = historialFiltrado.length === 0 ? `
+    <div style="text-align:center;padding:30px;color:#94a3b8;background:#1a1a1a;border-radius:12px;border:1px dashed #444;margin-top:12px">
+      <div style="font-size:32px;margin-bottom:8px">📜</div>
+      <b>No hay partidas registradas ${filtroCuenta || filtroTexto ? 'con los filtros aplicados' : 'aún'}.</b>
+      <p style="font-size:13px;margin-top:4px;color:#718096">Cuando los usuarios jueguen en cualquier cuenta, sus partidas aparecerán aquí en tiempo real.</p>
+    </div>
+  ` : historialFiltrado.map(item => {
+    const thumb = item.imagen ? `<img src="${escapeAttr(item.imagen)}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #444" onerror="this.src='portadas/logo.png'">` : `<div style="width:48px;height:48px;border-radius:8px;background:#333;display:flex;align-items:center;justify-content:center;font-size:22px">🎮</div>`;
+    const juegoEsc = escapeAttr(item.nombre || 'Juego');
+    const rutaEsc = escapeAttr(item.ruta || '');
+    const tipoEsc = escapeAttr(item.tipo || 'iframe');
+
+    return `
+      <div style="display:flex;align-items:center;gap:12px;background:#222;border:1px solid #333;padding:10px 14px;border-radius:12px;margin-bottom:8px">
+        ${thumb}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <b style="color:#fff;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px">${escapeHtml(item.nombre || 'Juego')}</b>
+            <span style="background:#2b6cb0;color:#fff;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:bold">${escapeHtml(item.cuenta || 'Invitado')}</span>
+            ${item.categoria ? `<span style="background:#4a5568;color:#ddd;padding:2px 7px;border-radius:10px;font-size:11px">🏷️ ${escapeHtml(item.categoria)}</span>` : ''}
+            <span style="background:#333;color:#a0aec0;padding:2px 6px;border-radius:6px;font-size:10px;text-transform:uppercase">${escapeHtml(item.tipo || 'iframe')}</span>
+          </div>
+          <div style="font-size:12px;color:#a0aec0;margin-top:4px">
+            🕒 <b>${escapeHtml(item.fecha)}</b>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${item.ruta ? `<button type="button" onclick="cerrarAdmin();abrirJuego('${rutaEsc}','${tipoEsc}','abrirJuego')" style="background:#2f855a;color:#fff;border:0;padding:6px 10px;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer" title="Probar/Jugar este juego ahora">▶️ Jugar</button>` : ''}
+          <button type="button" onclick="eliminarItemHistorialJuego('${escapeAttr(item.id)}')" style="background:#e53e3e;color:#fff;border:0;padding:6px 9px;border-radius:8px;font-size:12px;cursor:pointer" title="Eliminar de esta lista">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  e.innerHTML = `
+    <div style="background:#1e1e1e;padding:16px;border-radius:14px;border:1px solid #3a7bd5;box-shadow:0 8px 30px rgba(0,0,0,.5);margin-bottom:15px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;border-bottom:1px solid #333;padding-bottom:10px">
+        <h3 style="margin:0;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px">
+          📜 Historial de Juegos Jugados <span style="font-size:12px;background:#2b6cb0;padding:3px 8px;border-radius:12px;color:#fff">${totalPartidas} partidas</span>
+        </h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button type="button" onclick="exportarHistorialJuegosAdmin()" style="background:#2b6cb0;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer" title="Descargar historial completo en JSON">📥 Exportar JSON</button>
+          <button type="button" onclick="limpiarHistorialJuegosAdmin()" style="background:#e53e3e;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer" title="Borrar todo el historial">🗑️ Limpiar todo</button>
+          <button type="button" onclick="cancelarEditor()" style="background:#4a5568;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer">✕ Cerrar</button>
+        </div>
+      </div>
+
+      <!-- Resumen Estadístico -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:14px">
+        <div style="background:#282828;padding:10px;border-radius:10px;text-align:center;border:1px solid #3a3a3a">
+          <div style="font-size:11px;color:#a0aec0">🎮 Juegos distintos</div>
+          <div style="font-size:18px;font-weight:bold;color:#63b3ed;margin-top:2px">${juegosDiferentes}</div>
+        </div>
+        <div style="background:#282828;padding:10px;border-radius:10px;text-align:center;border:1px solid #3a3a3a">
+          <div style="font-size:11px;color:#a0aec0">🔥 Más jugado</div>
+          <div style="font-size:13px;font-weight:bold;color:#f6ad55;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(masJugado)} ${masJugadoCant > 0 ? '('+masJugadoCant+')' : ''}</div>
+        </div>
+        <div style="background:#282828;padding:10px;border-radius:10px;text-align:center;border:1px solid #3a3a3a">
+          <div style="font-size:11px;color:#a0aec0">📊 Mostrando</div>
+          <div style="font-size:18px;font-weight:bold;color:#68d391;margin-top:2px">${partidasMostradas} de ${totalPartidas}</div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;background:#252525;padding:10px;border-radius:10px;border:1px solid #3a3a3a">
+        <select id="historialFiltroCuenta" onchange="actualizarFiltrosHistorialAdmin()" style="padding:8px 10px;border-radius:8px;background:#1a1a1a;color:#fff;border:1px solid #555;font-size:13px;min-width:170px">
+          ${selectCuentasOptions}
+        </select>
+        <input id="historialFiltroTexto" type="text" value="${escapeAttr(filtroTexto)}" placeholder="🔍 Buscar por juego, categoría o URL..." oninput="actualizarFiltrosHistorialAdmin()" style="flex:1;min-width:200px;padding:8px 10px;border-radius:8px;background:#1a1a1a;color:#fff;border:1px solid #555;font-size:13px">
+        ${filtroCuenta || filtroTexto ? `<button type="button" onclick="mostrarHistorialJuegosAdmin('','')" style="background:#4a5568;color:#fff;border:0;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer">Limpiar filtros</button>` : ''}
+      </div>
+
+      <!-- Lista de partidas -->
+      <div style="max-height:420px;overflow-y:auto;padding-right:4px">
+        ${itemsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function actualizarFiltrosHistorialAdmin() {
+  const c = document.getElementById('historialFiltroCuenta')?.value || '';
+  const t = document.getElementById('historialFiltroTexto')?.value || '';
+  mostrarHistorialJuegosAdmin(c, t);
+}
+
+function eliminarItemHistorialJuego(id) {
+  try {
+    let historial = JSON.parse(localStorage.getItem('historial_juegos_jugados') || '[]');
+    historial = historial.filter(h => h.id !== id);
+    localStorage.setItem('historial_juegos_jugados', JSON.stringify(historial));
+    actualizarFiltrosHistorialAdmin();
+    mostrarToastSync('🗑️ Registro eliminado del historial');
+  } catch(e){}
+}
+
+function limpiarHistorialJuegosAdmin() {
+  if (confirm('¿Seguro que deseas borrar TODO el historial de juegos jugados? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('historial_juegos_jugados');
+    mostrarHistorialJuegosAdmin();
+    mostrarToastSync('🗑️ Historial de juegos borrado completamente');
+  }
+}
+
+function exportarHistorialJuegosAdmin() {
+  const historial = localStorage.getItem('historial_juegos_jugados') || '[]';
+  const blob = new Blob([historial], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'historial_juegos_' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  mostrarToastSync('📥 Historial exportado exitosamente');
 }
 
 function accionPorTipo(tipo){
