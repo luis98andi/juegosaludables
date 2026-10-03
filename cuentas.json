@@ -2,14 +2,15 @@
   "version": 1,
   "cuentas": [
     {
-      "id": "principal",
-      "nombre": "Principal",
+      "id": "hija",
+      "nombre": "Hija",
       "avatar": "👸",
       "archivo": "juegos.json",
       "sal": "50b45610420ae42d",
-      "claveEntrar": null,
+      "claveEntrar": "aa2e7bfe3fec31b7389765d4fe8f0082d65319b4446f32cd351354203613cae2",
       "claveAdmin": "1f3cb54ba5be19df4607623ba0370ecddbe9386098cbb53053f59fbb8ee9619f",
-      "adminLibre": false
+      "adminLibre": false,
+      "sinAnuncios": true
     },
     {
       "id": "luis",
@@ -19,7 +20,8 @@
       "sal": "3d79c6b951837aea",
       "claveEntrar": "fef552ed9afc6d2ae5da23cf09680936efb1f990511f11e67dc9aa2808cb5ac4",
       "claveAdmin": "c61544e341874fc3023847e2267c1fc6c78f1999c9ba8ce10e436fbd144a5177",
-      "adminLibre": false
+      "adminLibre": false,
+      "sinAnuncios": true
     }
   ]
 }

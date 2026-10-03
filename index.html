@@ -846,6 +846,24 @@ body.modo-orden{
   background:rgba(8,8,20,.94);padding:20px;text-align:center
 }
 .cuentas-box{max-width:760px;margin:0 auto}
+
+/* PANTALLA DE BIENVENIDA Y PERFIL VISITANTE */
+#bienvenida-screen{
+  display:none;position:fixed;inset:0;z-index:2000;overflow:auto;
+  background:rgba(8,8,20,.94);backdrop-filter:blur(10px);
+  padding:20px;text-align:center;box-sizing:border-box
+}
+.bienvenida-box{
+  max-width:500px;margin:30px auto;background:linear-gradient(145deg,#1f2438,#16192b);
+  border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:26px 22px;
+  box-shadow:0 15px 45px rgba(0,0,0,.65);box-sizing:border-box;text-align:center
+}
+.emoji-bienvenida-btn{
+  font-size:26px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);border:2px solid transparent;border-radius:12px;cursor:pointer;transition:.18s
+}
+.emoji-bienvenida-btn:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.emoji-bienvenida-btn.seleccionado{border-color:#38bdf8;background:rgba(56,189,248,.3);transform:scale(1.12);box-shadow:0 0 12px rgba(56,189,248,.4)}
 #cuentas-lista{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:20px 0}
 .cuenta-card{
   width:140px;padding:18px 8px;border:0;border-radius:18px;
@@ -1159,14 +1177,49 @@ body.modo-orden{
       <p id="cuentas-clave-titulo"></p>
       <input id="cuentas-clave-input" type="password" maxlength="40" placeholder="Contraseña"
              onkeydown="if(event.key==='Enter')confirmarClaveCuenta()">
-      <br><br>
-      <button class="btn" onclick="confirmarClaveCuenta()">Entrar</button>
+      <div style="margin:12px 0 16px;display:flex;align-items:center;justify-content:center">
+        <label style="cursor:pointer;font-size:14px;color:#e2e8f0;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.15)">
+          <input type="checkbox" id="cuentas-clave-recordar" checked style="width:16px;height:16px;cursor:pointer">
+          💾 Recordar contraseña en este dispositivo
+        </label>
+      </div>
+      <button class="btn" style="background:#2b6cb0;color:#fff;font-weight:bold" onclick="confirmarClaveCuenta()">Entrar</button>
       <button class="btn" onclick="cancelarClaveCuenta()">Atrás</button>
-      <p id="cuentas-clave-error" style="color:#ff8b8b"></p>
+      <p id="cuentas-clave-error" style="color:#ff8b8b;margin-top:10px;font-weight:bold"></p>
     </div>
 
     <button id="cuentas-cambiar-emoji" class="btn" style="background:#3a7bd5;color:#fff;font-weight:bold" onclick="abrirSelectorEmojiCuenta(cuentaActual ? cuentaActual.id : (cuentas[0]&&cuentas[0].id))">🎨 Cambiar mi emoji</button>
     <button id="cuentas-cerrar" class="btn" style="display:none" onclick="ocultarSelector()">Volver</button>
+  </div>
+</div>
+
+<!-- PANTALLA DE BIENVENIDA Y CREAR USUARIO (PRIMERA VEZ) -->
+<div id="bienvenida-screen">
+  <div class="bienvenida-box">
+    <div style="font-size:46px;margin-bottom:8px">🎮✨</div>
+    <h2 style="margin:0 0 6px;font-size:24px;color:#fff">¡Bienvenido a Juegos Saludables!</h2>
+    <p style="margin:0 0 18px;color:#cbd5e0;font-size:14px">Tu portal seguro de juegos gratis y entretenidos.</p>
+
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px 14px;margin-bottom:16px;text-align:left">
+      <label style="display:block;font-size:13px;font-weight:bold;color:#93c5fd;margin-bottom:8px">1. Elige tu avatar de jugador:</label>
+      <div id="bienvenida-emojis" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px"></div>
+
+      <label for="bienvenida-nombre" style="display:block;font-size:13px;font-weight:bold;color:#93c5fd;margin-bottom:6px">2. ¿Cómo te llamas?:</label>
+      <input id="bienvenida-nombre" type="text" maxlength="20" placeholder="Escribe tu apodo o nombre..." style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:10px;border:1px solid #4a5568;background:#1a202c;color:#fff;font-size:16px" onkeydown="if(event.key==='Enter')crearPerfilVisitante()">
+    </div>
+
+    <button onclick="crearPerfilVisitante()" style="width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(59,130,246,.4);transition:.2s">
+      ✨ ¡Comenzar a Jugar!
+    </button>
+
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <button type="button" onclick="entrarInvitadoDirecto()" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:#cbd5e0;padding:7px 12px;border-radius:10px;cursor:pointer;font-size:13px">
+        🕹️ Jugar como Invitado
+      </button>
+      <button type="button" onclick="abrirLoginDesdeBienvenida()" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:#93c5fd;padding:7px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:bold">
+        🔑 Ya tengo cuenta (Iniciar sesión)
+      </button>
+    </div>
   </div>
 </div>
 
@@ -6674,10 +6727,11 @@ function normalizarCuenta(c,i){
 function cuentaPrincipal(){
 
   return normalizarCuenta({
-    id:'principal',
-    nombre:'Principal',
-    avatar:'🎮',
-    archivo:'juegos.json'
+    id:'hija',
+    nombre:'Hija',
+    avatar:'👸',
+    archivo:'juegos.json',
+    sinAnuncios:true
   },0);
 
 }
@@ -6784,18 +6838,80 @@ async function iniciarCuentas(){
     });
   }
 
-  /* Siempre se abre la cuenta principal sin elegir (o la del enlace ?cuenta=id) */
+  /* 1. Si la URL solicita una cuenta específica (?cuenta=id) */
   const pedida=new URLSearchParams(location.search).get('cuenta');
-  const inicial=cuentas.find(c=>c.id===pedida)||cuentas[0];
+  if(pedida){
+    const solicitada=cuentas.find(c=>c.id===pedida || (pedida==='principal'&&c.id==='hija'));
+    if(solicitada){
+      if(solicitada.claveEntrar){
+        const passGuardado=localStorage.getItem('freshmind_saved_pass_'+solicitada.id);
+        if(passGuardado && passGuardado===solicitada.claveEntrar){
+          await abrirCuenta(solicitada);
+          return;
+        }
+        mostrarSelector();
+        elegirCuenta(solicitada.id);
+        return;
+      }
+      await abrirCuenta(solicitada);
+      return;
+    }
+  }
 
-  if(!inicial.claveEntrar){
-    await abrirCuenta(inicial);
+  /* 2. Si este dispositivo (laptop o celular) ya tiene una sesión guardada (ej: Hija o Luis) */
+  const guardadaId=localStorage.getItem('freshmind_ultima_cuenta');
+  if(guardadaId){
+    if(guardadaId==='visitante'){
+      const visGuardado=localStorage.getItem('freshmind_visitante');
+      let visData={nombre:'Jugador',avatar:'🚀'};
+      try{ if(visGuardado) visData=JSON.parse(visGuardado); }catch(e){}
+      await abrirCuenta({
+        id:'visitante',
+        nombre:visData.nombre||'Jugador',
+        avatar:visData.avatar||'🚀',
+        archivo:'juegos.json',
+        sal:'',claveEntrar:null,claveAdmin:null,adminLibre:false,
+        sinAnuncios:false
+      });
+      return;
+    }
+
+    const cGuardada=cuentas.find(c=>c.id===guardadaId || (guardadaId==='principal'&&c.id==='hija'));
+    if(cGuardada){
+      if(cGuardada.claveEntrar){
+        const passGuardado=localStorage.getItem('freshmind_saved_pass_'+cGuardada.id);
+        if(passGuardado && passGuardado===cGuardada.claveEntrar){
+          /* ¡Contraseña guardada en este dispositivo! Ingresa directo sin pedir clave */
+          await abrirCuenta(cGuardada);
+          return;
+        }
+      }else{
+        await abrirCuenta(cGuardada);
+        return;
+      }
+    }
+  }
+
+  /* 3. Si hay un visitante previo guardado en este navegador */
+  const visGuardado=localStorage.getItem('freshmind_visitante');
+  if(visGuardado){
+    let visData={nombre:'Jugador',avatar:'🚀'};
+    try{ visData=JSON.parse(visGuardado); }catch(e){}
+    await abrirCuenta({
+      id:'visitante',
+      nombre:visData.nombre||'Jugador',
+      avatar:visData.avatar||'🚀',
+      archivo:'juegos.json',
+      sal:'',claveEntrar:null,claveAdmin:null,adminLibre:false,
+      sinAnuncios:false
+    });
     return;
   }
 
-  /* solo si esa cuenta tiene contraseña para entrar, se pide directamente */
-  mostrarSelector();
-  elegirCuenta(inicial.id);
+  /* 4. PRIMERA VEZ QUE VISITA: Cargar catálogo de la hija de fondo y mostrar pantalla de bienvenida */
+  const cuentaBase=cuentas.find(c=>c.id==='hija'||c.id==='principal')||cuentas[0];
+  await abrirCuenta(cuentaBase);
+  mostrarPantallaBienvenida();
 
 }
 
@@ -7008,12 +7124,14 @@ function mostrarSelector(){
     wrap.style.alignItems='center';
     wrap.style.gap='6px';
 
+    const passGuardado=!!(c.claveEntrar && localStorage.getItem('freshmind_saved_pass_'+c.id)===c.claveEntrar);
+
     const b=document.createElement('button');
     b.className='cuenta-card';
     b.innerHTML=
       '<span class="av">'+escapeHtml(c.avatar)+'</span>'+
       '<b>'+escapeHtml(c.nombre)+'</b>'+
-      (c.claveEntrar?' 🔒':'');
+      (c.claveEntrar ? (passGuardado ? ' <span style="font-size:11px;color:#68d391;display:block;margin-top:2px">💾 Sesión guardada</span>' : ' 🔒') : '');
     b.onclick=()=>elegirCuenta(c.id);
 
     const btnEmoji=document.createElement('button');
@@ -7028,6 +7146,21 @@ function mostrarSelector(){
 
     wrap.appendChild(b);
     wrap.appendChild(btnEmoji);
+
+    if(passGuardado){
+      const btnOlvidar=document.createElement('button');
+      btnOlvidar.type='button';
+      btnOlvidar.style.cssText='background:transparent;border:none;color:#fc8181;font-size:11px;cursor:pointer;padding:2px 6px;text-decoration:underline';
+      btnOlvidar.textContent='Cerrar sesión (olvidar clave)';
+      btnOlvidar.onclick=(ev)=>{
+        ev.stopPropagation();
+        try{ localStorage.removeItem('freshmind_saved_pass_'+c.id); }catch(e){}
+        mostrarToastSync('🔒 Contraseña olvidada en este dispositivo.');
+        mostrarSelector();
+      };
+      wrap.appendChild(btnOlvidar);
+    }
+
     l.appendChild(wrap);
 
   });
@@ -7049,11 +7182,23 @@ function ocultarSelector(){
 
 function elegirCuenta(id){
 
-  const c=cuentas.find(x=>x.id===id);
+  const c=cuentas.find(x=>x.id===id || (id==='principal'&&x.id==='hija'));
 
   if(!c)return;
 
   if(c.claveEntrar){
+
+    /* Verificar si la contraseña ya fue guardada en este dispositivo (Laptop o Celular) */
+    try{
+      const passGuardado=localStorage.getItem('freshmind_saved_pass_'+c.id);
+      if(passGuardado && passGuardado===c.claveEntrar){
+        localStorage.setItem('freshmind_ultima_cuenta', c.id);
+        ocultarSelector();
+        abrirCuenta(c);
+        mostrarToastSync('✨ Sesión iniciada: '+c.nombre);
+        return;
+      }
+    }catch(e){}
 
     cuentaPendiente=c;
 
@@ -7065,6 +7210,9 @@ function elegirCuenta(id){
       c.avatar+' Contraseña de '+c.nombre;
     document.getElementById('cuentas-clave-error').textContent='';
 
+    const chkRecordar=document.getElementById('cuentas-clave-recordar');
+    if(chkRecordar) chkRecordar.checked=true;
+
     const i=document.getElementById('cuentas-clave-input');
     i.value='';
     i.focus();
@@ -7072,6 +7220,10 @@ function elegirCuenta(id){
     return;
 
   }
+
+  try{
+    localStorage.setItem('freshmind_ultima_cuenta', c.id);
+  }catch(e){}
 
   ocultarSelector();
   abrirCuenta(c);
@@ -7085,12 +7237,32 @@ async function confirmarClaveCuenta(){
   if(!c)return;
 
   const v=document.getElementById('cuentas-clave-input').value;
+  const hash=await hashClave(v,c.sal);
 
-  if((await hashClave(v,c.sal))===c.claveEntrar){
+  if(hash===c.claveEntrar){
+
+    const recordar=document.getElementById('cuentas-clave-recordar')?.checked;
+    if(recordar){
+      try{
+        localStorage.setItem('freshmind_saved_pass_'+c.id, hash);
+      }catch(e){}
+    }else{
+      try{
+        localStorage.removeItem('freshmind_saved_pass_'+c.id);
+      }catch(e){}
+    }
+
+    try{
+      localStorage.setItem('freshmind_ultima_cuenta', c.id);
+    }catch(e){}
 
     cuentaPendiente=null;
     ocultarSelector();
-    abrirCuenta(c);
+    await abrirCuenta(c);
+
+    if(recordar){
+      mostrarToastSync('💾 Contraseña guardada en este dispositivo.');
+    }
 
   }else{
 
@@ -7110,6 +7282,93 @@ function cancelarClaveCuenta(){
   document.getElementById('cuentas-cerrar').style.display=
     cuentaActual?'inline-block':'none';
 
+}
+
+/* ===================================================
+   PANTALLA DE BIENVENIDA Y PERFIL VISITANTE
+=================================================== */
+
+let avatarBienvenidaSeleccionado='🚀';
+const EMOJIS_BIENVENIDA=['🚀','🦄','🐱','🦊','🐼','🦁','🐯','👾','🤖','⚽','🎮','👑','🌟','⚡','🍕','🎨'];
+
+function mostrarPantallaBienvenida(){
+  const cont=document.getElementById('bienvenida-emojis');
+  if(cont){
+    cont.innerHTML=EMOJIS_BIENVENIDA.map(em=>`
+      <button type="button" class="emoji-bienvenida-btn ${em===avatarBienvenidaSeleccionado?'seleccionado':''}" onclick="seleccionarEmojiBienvenida('${em}')">${em}</button>
+    `).join('');
+  }
+  const modal=document.getElementById('bienvenida-screen');
+  if(modal) modal.style.display='block';
+  const inp=document.getElementById('bienvenida-nombre');
+  if(inp) setTimeout(()=>inp.focus(), 250);
+}
+
+function cerrarPantallaBienvenida(){
+  const modal=document.getElementById('bienvenida-screen');
+  if(modal) modal.style.display='none';
+}
+
+function seleccionarEmojiBienvenida(emoji){
+  avatarBienvenidaSeleccionado=emoji;
+  document.querySelectorAll('.emoji-bienvenida-btn').forEach(btn=>{
+    btn.classList.toggle('seleccionado', btn.textContent.trim()===emoji);
+  });
+}
+
+async function crearPerfilVisitante(){
+  const inp=document.getElementById('bienvenida-nombre');
+  let nombre=(inp?.value||'').trim();
+  if(!nombre) nombre='Jugador';
+  const avatar=avatarBienvenidaSeleccionado||'🚀';
+
+  const cuentaVisitante={
+    id:'visitante',
+    nombre:nombre,
+    avatar:avatar,
+    archivo:'juegos.json',
+    sal:'',
+    claveEntrar:null,
+    claveAdmin:null,
+    adminLibre:false,
+    sinAnuncios:false /* Anuncios activos para visitantes */
+  };
+
+  try{
+    localStorage.setItem('freshmind_visitante', JSON.stringify({ nombre, avatar }));
+    localStorage.setItem('freshmind_ultima_cuenta', 'visitante');
+  }catch(e){}
+
+  cerrarPantallaBienvenida();
+  await abrirCuenta(cuentaVisitante);
+  mostrarToastSync(`🎉 ¡Bienvenido, ${escapeHtml(nombre)}! Disfruta los juegos.`);
+}
+
+async function entrarInvitadoDirecto(){
+  const cuentaInvitado={
+    id:'visitante',
+    nombre:'Invitado',
+    avatar:'🎮',
+    archivo:'juegos.json',
+    sal:'',
+    claveEntrar:null,
+    claveAdmin:null,
+    adminLibre:false,
+    sinAnuncios:false
+  };
+
+  try{
+    localStorage.setItem('freshmind_visitante', JSON.stringify({ nombre:'Invitado', avatar:'🎮' }));
+    localStorage.setItem('freshmind_ultima_cuenta', 'visitante');
+  }catch(e){}
+
+  cerrarPantallaBienvenida();
+  await abrirCuenta(cuentaInvitado);
+}
+
+function abrirLoginDesdeBienvenida(){
+  cerrarPantallaBienvenida();
+  mostrarSelector();
 }
 
 /* ----- administración de cuentas ----- */
