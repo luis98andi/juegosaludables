@@ -1,0 +1,6 @@
+{
+  "name": "FreshMind Games",
+  "description": "Plataforma y catálogo interactivo de juegos saludables en línea con reproductor integrado y panel de administración.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
