@@ -574,29 +574,88 @@ body.en-juego #btn-ocultos {
 }
 
 .admin-box{
-  max-width:900px;
-  margin:20px auto;
-  background:#171717;
-  border-radius:14px;
-  padding:20px;
-  box-shadow:0 10px 40px rgba(0,0,0,.5)
+  max-width:940px;
+  margin:24px auto;
+  background:linear-gradient(180deg, #182238 0%, #0f172a 100%);
+  border:1px solid rgba(255, 255, 255, 0.16);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 .admin-box h2{margin-top:0}
 
 .admin-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:16px
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(185px, 1fr));
+  gap:10px;
+  margin-bottom:18px;
 }
 
-.admin-actions button,
-.admin-box button{
-  padding:9px 12px;
+.admin-actions button{
+  padding:11px 14px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  color:#f1f5f9;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  justify-content:flex-start;
+  transition:all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+.admin-actions button:hover{
+  background:rgba(255,255,255,0.14);
+  border-color:rgba(59,130,246,0.5);
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(0,0,0,0.35);
+}
+
+.admin-box button:not(.admin-actions button):not(.dock-btn):not(.card-bar-btn):not(.url-tool-btn){
+  padding:9px 14px;
   border:0;
-  border-radius:7px;
-  cursor:pointer
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.18s ease;
+}
+
+/* BARRA DE HERRAMIENTAS DE EDICIÓN ELEGANTE */
+.url-tools-toolbar{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:8px;
+  padding:8px;
+  border-radius:12px;
+  background:rgba(15,23,42,0.6);
+  border:1px solid rgba(255,255,255,0.1);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.url-tool-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  border:0!important;
+  cursor:pointer;
+  transition:all 0.18s ease;
+  white-space:nowrap;
+}
+.url-tool-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.35);
+}
+.url-tool-btn:active{
+  transform:translateY(0);
 }
 
 .admin-list{
@@ -725,70 +784,120 @@ body.en-juego #btn-ocultos {
   text-overflow:ellipsis;
   pointer-events:none;
 }
-.modo-orden .card img{outline:2px dashed rgba(255,255,255,.55);outline-offset:-2px}
-.modo-orden .handle{
-  display:flex;align-items:center;justify-content:center;
-  position:absolute;top:14px;left:14px;width:34px;height:34px;
-  border-radius:50%;background:rgba(58,123,213,0.95);color:#fff;font-size:18px;
-  cursor:grab;touch-action:none;z-index:3;
-  box-shadow:0 2px 5px rgba(0,0,0,0.4);
-  transition: transform 0.2s;
-}
-.modo-orden .handle:hover{
-  transform:scale(1.1);
-  background:#4a90e2;
-}
-.modo-orden .card-tools{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
+.modo-orden .card img{outline:2px dashed rgba(255,255,255,.4);outline-offset:-2px}
+
+/* MINI-BARRA ELEGANTE FLOTANTE EN CADA TARJETA */
+.card-admin-bar{
   position:absolute;
-  top:14px;
-  right:14px;
-  z-index:3;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 6px;
+  border-radius:30px;
+  background:rgba(15,23,42,0.88);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow:0 6px 20px rgba(0,0,0,0.55);
+  z-index:10;
+  transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.card-tools button{
-  width:32px;
-  height:32px;
-  border:0;
+.card-admin-bar:hover{
+  background:rgba(15,23,42,0.98);
+  border-color:rgba(59,130,246,0.6);
+  box-shadow:0 8px 24px rgba(0,0,0,0.7), 0 0 14px rgba(59,130,246,0.3);
+}
+.card-bar-btn{
+  width:30px;
+  height:30px;
   border-radius:50%;
-  background:rgba(15,23,42,0.9);
-  color:#fff;
-  font-size:14px;
-  display:flex;
+  border:0;
+  display:inline-flex;
   align-items:center;
   justify-content:center;
+  font-size:14px;
   cursor:pointer;
-  transition: background 0.2s, transform 0.1s;
-  box-shadow:0 2px 4px rgba(0,0,0,0.3);
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  transition:all 0.18s ease;
+  user-select:none;
 }
-.card-tools button:hover{
-  background:#3a7bd5;
-  transform:scale(1.1);
+.card-bar-btn:hover{
+  transform:scale(1.15);
+  background:rgba(255,255,255,0.24);
 }
+.card-bar-btn.handle{
+  cursor:grab;
+  background:rgba(59,130,246,0.35);
+  color:#93c5fd;
+  font-size:16px;
+  touch-action:none;
+}
+.card-bar-btn.handle:hover{
+  background:#3b82f6;
+  color:#fff;
+}
+.card-bar-btn.btn-edit:hover{
+  background:rgba(99,102,241,0.5);
+}
+.card-bar-btn.btn-hide.active{
+  background:rgba(234,179,8,0.3);
+  color:#fef08a;
+}
+.card-bar-btn.btn-del:hover{
+  background:rgba(239,68,68,0.6);
+  color:#fff;
+}
+
+/* Fallback de compatibilidad */
+.modo-orden .handle:not(.card-bar-btn){
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:12px;left:12px;width:32px;height:32px;
+  border-radius:50%;background:rgba(58,123,213,0.95);color:#fff;font-size:16px;
+  cursor:grab;touch-action:none;z-index:3;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+.modo-orden .card-tools{
+  display:flex;flex-direction:row;gap:4px;position:absolute;top:12px;right:12px;z-index:3;
+}
+.card-tools button{
+  width:30px;height:30px;border:0;border-radius:50%;background:rgba(15,23,42,0.9);
+  color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background 0.2s, transform 0.15s;
+}
+
+/* ETIQUETA SELECTORA DE CATEGORÍA ELEGANTE */
 .modo-orden .card-cat-wrap{
   display:block;
-  margin-top:2px;
+  margin-top:6px;
   padding:0;
   position:relative;
   z-index:4;
 }
 .card-cat-select{
   width:100%;
-  padding:5px 8px;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,.28);
-  background:rgba(15,23,42,.92);
-  color:#fff;
-  font-size:12px;
-  font-weight:bold;
+  padding:5px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(30,41,59,0.85);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  color:#93c5fd;
+  font-size:11px;
+  font-weight:600;
   cursor:pointer;
   text-align:center;
+  transition:all 0.2s ease;
+  outline:none;
 }
 .card-cat-select:hover,.card-cat-select:focus{
-  border-color:#3a7bd5;
-  background:#1e293b;
-  outline:none;
+  border-color:#38bdf8;
+  background:rgba(30,41,59,0.98);
+  color:#fff;
+  box-shadow:0 0 10px rgba(56,189,248,0.25);
 }
 .bm-links-box{
   margin-top:8px;
@@ -834,25 +943,247 @@ body.is-dragging-card .card:not(.arrastrando){
   pointer-events:none!important;
 }
 body.modo-orden{
-  padding-bottom:230px !important;
+  padding-bottom:170px !important;
 }
 .modo-orden #grid{
-  padding-bottom:190px !important;
+  padding-bottom:150px !important;
 }
+
+/* ============================================================
+   ADMIN DOCK FLOTANTE (REDISEÑO VISUAL DE LA BARRA INFERIOR)
+   ============================================================ */
 #orden-bar{
-  display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:70px;z-index:998;
-  gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:94vw;
-  background:rgba(0,0,0,.88);padding:10px 14px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:14px;
-  transition:padding .2s, bottom .2s;
+  display:none;
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:22px;
+  z-index:1100;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  width:auto;
+  max-width:min(96vw, 1080px);
+  background:rgba(15, 23, 42, 0.86);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255, 255, 255, 0.15);
+  border-radius:24px;
+  padding:10px 16px;
+  box-shadow:0 24px 50px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition:all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  animation:dockFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-#orden-bar button{padding:8px 12px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
-#orden-bar.orden-bar-minimizado > *:not(#btn-min-orden-bar):not(#orden-msg){
-  display:none !important;
+@keyframes dockFadeIn{
+  from{opacity:0;transform:translate(-50%, 20px) scale(0.97);}
+  to{opacity:1;transform:translate(-50%, 0) scale(1);}
 }
+
+.dock-header{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 4px 6px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.dock-status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
+  padding:3px 10px;
+}
+.dock-status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#10b981;
+  box-shadow:0 0 8px #10b981;
+  animation:pulseGreen 2s infinite;
+}
+@keyframes pulseGreen{
+  0%, 100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.4;transform:scale(0.85);}
+}
+.dock-status-title{
+  font-size:12px;
+  font-weight:700;
+  color:#f1f5f9;
+  letter-spacing:0.3px;
+}
+#orden-msg, .dock-hint{
+  flex:1;
+  text-align:center;
+  font-size:12px;
+  color:#94a3b8;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  margin:0 8px;
+}
+.dock-btn-min{
+  background:rgba(255,255,255,0.08)!important;
+  color:#cbd5e1!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  padding:4px 10px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(255,255,255,0.12)!important;
+  cursor:pointer;
+  transition:all 0.18s ease;
+}
+.dock-btn-min:hover{
+  background:rgba(255,255,255,0.18)!important;
+  color:#fff!important;
+}
+
+.dock-main-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.dock-group{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.dock-divider{
+  width:1px;
+  height:24px;
+  background:rgba(255,255,255,0.14);
+  margin:0 4px;
+}
+
+.dock-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 13px!important;
+  border:0!important;
+  border-radius:12px!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  cursor:pointer;
+  background:rgba(255,255,255,0.08);
+  color:#f1f5f9;
+  transition:all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  white-space:nowrap;
+}
+.dock-btn:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.16);
+  box-shadow:0 6px 16px rgba(0,0,0,0.35);
+}
+.dock-btn:active{
+  transform:translateY(0);
+}
+.dock-btn-copilot{
+  background:linear-gradient(135deg, #6366f1, #8b5cf6)!important;
+  color:#fff!important;
+  box-shadow:0 4px 14px rgba(99,102,241,0.35)!important;
+}
+.dock-btn-copilot:hover{
+  box-shadow:0 6px 20px rgba(139,92,246,0.55)!important;
+}
+.dock-btn-add{
+  background:linear-gradient(135deg, #2563eb, #3b82f6)!important;
+  color:#fff!important;
+  box-shadow:0 4px 14px rgba(37,99,235,0.35)!important;
+}
+.dock-btn-add:hover{
+  box-shadow:0 6px 20px rgba(59,130,246,0.55)!important;
+}
+.dock-btn-github{
+  background:linear-gradient(135deg, #059669, #10b981)!important;
+  color:#fff!important;
+}
+.dock-btn-done{
+  background:linear-gradient(135deg, #10b981, #059669)!important;
+  color:#fff!important;
+  font-weight:700!important;
+  box-shadow:0 4px 14px rgba(16,185,129,0.4)!important;
+}
+.dock-btn-done:hover{
+  box-shadow:0 6px 20px rgba(16,185,129,0.6)!important;
+}
+.dock-btn-lock{
+  background:rgba(255,255,255,0.06)!important;
+  color:#94a3b8!important;
+}
+.dock-btn-lock:hover{
+  background:rgba(239,68,68,0.25)!important;
+  color:#fca5a5!important;
+}
+.dock-btn-more{
+  background:rgba(255,255,255,0.08)!important;
+  color:#cbd5e1!important;
+}
+.dock-btn-more.active{
+  background:rgba(59,130,246,0.35)!important;
+  color:#93c5fd!important;
+  border:1px solid rgba(59,130,246,0.5)!important;
+}
+
+.dock-extra-drawer{
+  width:100%;
+  margin-top:4px;
+  padding-top:8px;
+  border-top:1px dashed rgba(255,255,255,0.12);
+  animation:drawerSlideDown 0.2s ease-out;
+}
+@keyframes drawerSlideDown{
+  from{opacity:0;transform:translateY(-8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.dock-extra-inner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.dock-btn-sub{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 11px!important;
+  border:1px solid rgba(255,255,255,0.1)!important;
+  border-radius:10px!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  cursor:pointer;
+  background:rgba(30,41,59,0.85)!important;
+  color:#cbd5e1!important;
+  transition:all 0.18s ease;
+}
+.dock-btn-sub:hover{
+  background:rgba(51,65,85,0.95)!important;
+  color:#fff!important;
+  transform:translateY(-1px);
+}
+
+/* MINIMIZADO ELEGANTE */
 #orden-bar.orden-bar-minimizado{
-  padding:6px 12px;
-  bottom:15px;
-  background:rgba(0,0,0,.94);
+  bottom:16px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(15,23,42,0.92);
+}
+#orden-bar.orden-bar-minimizado .dock-main-row,
+#orden-bar.orden-bar-minimizado #dock-extra-tools,
+#orden-bar.orden-bar-minimizado #orden-msg{
+  display:none!important;
+}
+#orden-bar.orden-bar-minimizado .dock-header{
+  padding:0;
+  border-bottom:none;
 }
 
 /* CUENTAS */
@@ -1570,24 +1901,89 @@ body.modo-orden{
 
 <button id="btn-cuentas" onclick="mostrarSelector()"></button>
 
-<div id="orden-bar">
-  <span id="orden-msg">Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
-  <button onclick="abrirHerramientaAdmin('copiloto')" style="background:linear-gradient(135deg, #6366f1, #9333ea);color:#fff;font-weight:bold;box-shadow:0 0 10px rgba(147,51,234,0.4)" title="Abrir Copiloto IA Gemini para buscar y agregar juegos automáticamente">🤖 Copiloto IA</button>
-  <button onclick="abrirHerramientaAdmin('agregar')" style="background:#2b6cb0;color:#fff">➕ Agregar</button>
-  <button onclick="abrirHerramientaAdmin('historial')" style="background:#2c5282;color:#fff;font-weight:bold" title="Ver historial de partidas jugadas en todas las cuentas">📜 Historial</button>
-  <button onclick="abrirBuscadorEnlacesPrimerPlano()" style="background:#805ad5;color:#fff" title="Abrir el Buscador JS de enlaces en primer plano">🔎 Buscador JS</button>
-  <button onclick="abrirHerramientaAdmin('categorias')" style="background:#333;color:#fff" title="Crear o gestionar categorías con el teclado">🏷️ Categorías</button>
-  <button onclick="abrirHerramientaAdmin('multiples')" style="background:#333;color:#fff">⚙️ +20</button>
-  <button onclick="abrirHerramientaAdmin('traer')" style="background:#333;color:#fff">🔄 Traer</button>
-  <button id="btn-orden-ocultos" onclick="toggleFiltroOcultosAdmin()" style="background:#333;color:#fff" title="Ver todos o filtrar solo los juegos ocultos">🙈 Ocultos</button>
-  <button onclick="abrirHerramientaAdmin('cuentas')" style="background:#333;color:#fff">👤 Cuentas</button>
-  <button onclick="abrirHerramientaAdmin('clave')" style="background:#d69e2e;color:#fff;font-weight:bold" title="Cambiar contraseña de administración">🔒 Contraseña</button>
-  <button onclick="ordenSubirGitHub()" style="background:#2f855a;color:#fff">☁️ GitHub</button>
-  <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">🔍 Verificar GitHub</button>
-  <button onclick="abrirHerramientaAdmin('token')" style="background:#333;color:#fff" title="Configurar token GitHub">🔑</button>
-  <button onclick="cerrarSesionAdminYSalir()" style="background:#555;color:#fff" title="Salir del modo administrador y bloquear con contraseña de inmediato">🔒 Salir Admin</button>
-  <button type="button" id="btn-min-orden-bar" onclick="toggleMinimizarOrdenBar()" style="background:#4a5568;color:#fff" title="Minimizar u ocultar barra para ver todos los juegos sin que tape nada">🔽 Minimizar</button>
-  <button onclick="salirModoOrden()" style="background:#e94560;color:#fff">✅ Listo</button>
+<div id="orden-bar" class="admin-dock">
+  <!-- Cabecera de estado superior del dock -->
+  <div class="dock-header">
+    <div class="dock-status-badge">
+      <span class="dock-status-dot"></span>
+      <span class="dock-status-title">Panel de Administración</span>
+    </div>
+    <span id="orden-msg" class="dock-hint">Arrastra ⠿ para ordenar · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
+    <button type="button" id="btn-min-orden-bar" class="dock-btn-min" onclick="toggleMinimizarOrdenBar()" title="Minimizar barra para ver todos los juegos">🔽 Minimizar</button>
+  </div>
+
+  <!-- Fila principal de controles -->
+  <div class="dock-main-row">
+    <!-- Grupo 1: Acciones Principales -->
+    <div class="dock-group dock-group-primary">
+      <button type="button" class="dock-btn dock-btn-copilot" onclick="abrirHerramientaAdmin('copiloto')" title="Abrir Copiloto IA Gemini para buscar y agregar juegos automáticamente">
+        <span class="dock-icon">🤖</span> <span class="dock-txt">Copiloto IA</span>
+      </button>
+      <button type="button" class="dock-btn dock-btn-add" onclick="abrirHerramientaAdmin('agregar')" title="Añadir nuevo juego manualmente o por enlace">
+        <span class="dock-icon">➕</span> <span class="dock-txt">Agregar</span>
+      </button>
+      <button type="button" class="dock-btn" onclick="abrirHerramientaAdmin('categorias')" title="Crear o gestionar categorías con el teclado">
+        <span class="dock-icon">🏷️</span> <span class="dock-txt">Categorías</span>
+      </button>
+      <button type="button" class="dock-btn" onclick="abrirHerramientaAdmin('historial')" title="Ver historial de partidas jugadas en todas las cuentas">
+        <span class="dock-icon">📜</span> <span class="dock-txt">Historial</span>
+      </button>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <!-- Grupo 2: Herramientas Frecuentes y Sincronización -->
+    <div class="dock-group dock-group-tools">
+      <button type="button" id="btn-orden-ocultos" class="dock-btn" onclick="toggleFiltroOcultosAdmin()" title="Ver todos o filtrar solo los juegos ocultos">
+        <span class="dock-icon">🙈</span> <span class="dock-txt">Ocultos</span>
+      </button>
+      <button type="button" class="dock-btn dock-btn-github" onclick="ordenSubirGitHub()" title="Sincronizar cambios directamente en GitHub">
+        <span class="dock-icon">☁️</span> <span class="dock-txt">GitHub</span>
+      </button>
+      <button type="button" id="btn-dock-mas" class="dock-btn dock-btn-more" onclick="toggleDockHerramientasExtra()" title="Abrir más herramientas (Buscador JS, Cuentas, Contraseña, etc.)">
+        <span class="dock-icon">⚙️</span> <span class="dock-txt">Herramientas</span> <span id="dock-more-arrow" style="font-size:10px;margin-left:2px">▼</span>
+      </button>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <!-- Grupo 3: Salida & Confirmación -->
+    <div class="dock-group dock-group-exit">
+      <button type="button" class="dock-btn dock-btn-lock" onclick="cerrarSesionAdminYSalir()" title="Salir del modo administrador y bloquear con contraseña de inmediato">
+        <span class="dock-icon">🔒</span> <span class="dock-txt">Bloquear</span>
+      </button>
+      <button type="button" class="dock-btn dock-btn-done" onclick="salirModoOrden()" title="Guardar cambios y volver a jugar">
+        <span class="dock-icon">✅</span> <span class="dock-txt">Listo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub-barra desplegable de herramientas avanzadas -->
+  <div id="dock-extra-tools" class="dock-extra-drawer" style="display:none">
+    <div class="dock-extra-inner">
+      <button type="button" class="dock-btn-sub" onclick="abrirBuscadorEnlacesPrimerPlano()" title="Abrir el Buscador JS de enlaces en primer plano">
+        <span>🔎 Buscador JS</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="abrirHerramientaAdmin('multiples')" title="Agregar hasta 20 juegos a la vez">
+        <span>⚙️ +20 Múltiples</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="abrirHerramientaAdmin('traer')" title="Copiar catálogo de otra cuenta">
+        <span>🔄 Traer cuenta</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="abrirHerramientaAdmin('cuentas')" title="Gestionar perfiles de usuario">
+        <span>👤 Cuentas</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="abrirHerramientaAdmin('clave')" title="Cambiar contraseña de administración">
+        <span>🔒 Contraseña</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="verificarEstadoGitHub()" title="Comprobar en vivo si GitHub tiene exactamente tus últimos cambios">
+        <span>🔍 Verificar GitHub</span>
+      </button>
+      <button type="button" class="dock-btn-sub" onclick="abrirHerramientaAdmin('token')" title="Configurar token GitHub">
+        <span>🔑 Token GitHub</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- VENTANA EN PRIMER PLANO DEL BUSCADOR DE ENLACES JS (BOOKMARKLET INTEGRADO) -->
@@ -2048,10 +2444,18 @@ function actualizarBotonOcultos(){
   const cantOcultos=(catalogo.juegos||[]).filter(j=>j.oculto).length;
   const bOrden=document.getElementById('btn-orden-ocultos');
   if(bOrden){
-    bOrden.textContent=filtroSoloOcultosAdmin
-      ? `👁️ Viendo ocultos (${cantOcultos}) · Ver todos`
-      : `🙈 Ocultos (${cantOcultos})`;
-    bOrden.style.background=filtroSoloOcultosAdmin ? '#e94560' : '#333';
+    const txtEl=bOrden.querySelector('.dock-txt');
+    const iconEl=bOrden.querySelector('.dock-icon');
+    if(txtEl && iconEl){
+      iconEl.textContent=filtroSoloOcultosAdmin ? '👁️' : '🙈';
+      txtEl.textContent=filtroSoloOcultosAdmin ? `Viendo ocultos (${cantOcultos})` : `Ocultos (${cantOcultos})`;
+      bOrden.style.background=filtroSoloOcultosAdmin ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '';
+    }else{
+      bOrden.textContent=filtroSoloOcultosAdmin
+        ? `👁️ Viendo ocultos (${cantOcultos}) · Ver todos`
+        : `🙈 Ocultos (${cantOcultos})`;
+      bOrden.style.background=filtroSoloOcultosAdmin ? '#e94560' : '#333';
+    }
   }
   const bAdmin=document.getElementById('btn-admin-ocultos');
   if(bAdmin){
@@ -2646,22 +3050,38 @@ function renderJuegos(lista=null){
       catWrap.appendChild(sel);
       card.appendChild(catWrap);
 
+      const adminBar=document.createElement('div');
+      adminBar.className='card-admin-bar';
+      adminBar.onclick=e=>e.stopPropagation();
+
       const h=document.createElement('div');
-      h.className='handle';
+      h.className='handle card-bar-btn';
       h.textContent='⠿';
-      h.title='Arrastra para mover';
+      h.title='Arrastra para mover de posición';
 
-      const tools=document.createElement('div');
-      tools.className='card-tools';
-      tools.innerHTML=
-        `<button title="${j.oculto?'Desocultar':'Ocultar'}">${j.oculto?'👁️':'🙈'}</button>`+
-        '<button title="Editar">✏️</button>'+
-        '<button title="Eliminar">🗑️</button>';
-      tools.children[0].onclick=e=>alternarOcultoJuego(j.id,e);
-      tools.children[1].onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
-      tools.children[2].onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
+      const btnEdit=document.createElement('button');
+      btnEdit.type='button';
+      btnEdit.className='card-bar-btn btn-edit';
+      btnEdit.textContent='✏️';
+      btnEdit.title='Editar juego, enlaces y portadas';
+      btnEdit.onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
 
-      card.append(h,tools);
+      const btnOcultar=document.createElement('button');
+      btnOcultar.type='button';
+      btnOcultar.className='card-bar-btn btn-hide'+(j.oculto?' active':'');
+      btnOcultar.textContent=j.oculto?'👁️':'🙈';
+      btnOcultar.title=j.oculto?'Desocultar juego':'Ocultar juego';
+      btnOcultar.onclick=e=>alternarOcultoJuego(j.id,e);
+
+      const btnDel=document.createElement('button');
+      btnDel.type='button';
+      btnDel.className='card-bar-btn btn-del';
+      btnDel.textContent='🗑️';
+      btnDel.title='Eliminar juego del catálogo';
+      btnDel.onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
+
+      adminBar.append(h,btnEdit,btnOcultar,btnDel);
+      card.appendChild(adminBar);
 
     }
 
@@ -3924,6 +4344,17 @@ function toggleMinimizarOrdenBar(){
   btn.title=minimizado?'Restaurar todas las opciones de la barra de administración':'Minimizar barra para no tapar los juegos';
 }
 
+function toggleDockHerramientasExtra(){
+  const drawer=document.getElementById('dock-extra-tools');
+  const arrow=document.getElementById('dock-more-arrow');
+  const btn=document.getElementById('btn-dock-mas');
+  if(!drawer)return;
+  const isHidden=drawer.style.display==='none'||!drawer.style.display;
+  drawer.style.display=isHidden?'block':'none';
+  if(arrow)arrow.textContent=isHidden?'▲':'▼';
+  if(btn)btn.classList.toggle('active',isHidden);
+}
+
 function cerrarAdmin(){
 
   document.getElementById(
@@ -4063,55 +4494,27 @@ function mostrarAgregar(){
       <div class="form-grid">
 
         <label style="grid-column:1/-1">
-          🔗 Enlace (tu enlace original se respeta intacto; abajo puedes elegir si quieres otro enlace detectado o pausar la búsqueda)
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <input
-              id="fUrl"
-              style="flex:1;min-width:220px"
-              placeholder="https://... pega el enlace de tu juego o página"
-              oninput="autoAgregar()"
-            >
+          <span>🔗 Enlace de la página o juego (tu enlace original se respeta intacto)</span>
+          <input
+            id="fUrl"
+            style="width:100%;box-sizing:border-box;margin-top:5px"
+            placeholder="https://... pega aquí el enlace de tu juego o página"
+            oninput="autoAgregar()"
+          >
+          <div class="url-tools-toolbar">
             <button
               type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#2563eb;color:#fff;font-weight:bold"
               onclick="analizarYExtraerJuegoDeWeb('f',true)"
               title="Buscar enlaces ocultos (SWF, Emuladores, HTML5, iframes) sin borrar tu enlace original"
             >
-              🔎 Buscar enlaces en web
+              🔎 Escanear web
             </button>
             <button
               type="button"
-              id="fBtnPausaHtml"
-              class="image-search-button"
-              style="margin-top:0;background:${buscadorHtmlPausado?'#38a169':'#d69e2e'};color:#fff;font-weight:bold"
-              onclick="togglePausaBuscadorHtml('f')"
-              title="Pausar o detener la búsqueda de HTML embebido para editar el enlace libremente y dejarlo intacto"
-            >
-              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML'}
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#319795;color:#fff;font-weight:bold"
-              onclick="buscarMasSitiosSugerenciasHtml5('f')"
-              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
-            >
-              🌐 Buscar más enlaces
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#4a5568;color:#fff;font-weight:bold"
-              onclick="mostrarHistorialBusquedas('f')"
-              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
-            >
-              📜 Historial
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#0284c7;color:#fff;font-weight:bold"
               onclick="previsualizarEnlaceEnFormulario('f', document.getElementById('fUrl')?.value || '', 'iframe')"
               title="Probar/Previsualizar el enlace actual ingresado arriba"
             >
@@ -4119,12 +4522,40 @@ function mostrarAgregar(){
             </button>
             <button
               type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#805ad5;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#7c3aed;color:#fff;font-weight:bold"
               onclick="abrirBuscadorEnlacesPrimerPlano(document.getElementById('fUrl')?.value,'f')"
               title="Abrir la ventana del Buscador JS en primer plano"
             >
               🪟 Ventana JS
+            </button>
+            <button
+              type="button"
+              class="url-tool-btn"
+              style="background:#0d9488;color:#fff;font-weight:bold"
+              onclick="buscarMasSitiosSugerenciasHtml5('f')"
+              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
+            >
+              🌐 Más sitios
+            </button>
+            <button
+              type="button"
+              class="url-tool-btn"
+              style="background:#475569;color:#fff;font-weight:bold"
+              onclick="mostrarHistorialBusquedas('f')"
+              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
+            >
+              📜 Historial
+            </button>
+            <button
+              type="button"
+              id="fBtnPausaHtml"
+              class="url-tool-btn"
+              style="background:${buscadorHtmlPausado?'#16a34a':'#d97706'};color:#fff;font-weight:bold"
+              onclick="togglePausaBuscadorHtml('f')"
+              title="Pausar o detener la búsqueda de HTML embebido para editar el enlace libremente y dejarlo intacto"
+            >
+              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda':'⏸️ Pausar búsqueda'}
             </button>
           </div>
         </label>
@@ -6131,53 +6562,27 @@ function editarJuego(id){
       <div class="form-grid">
 
         <label style="grid-column:1/-1">
-          🔗 URL (tu enlace se mantiene intacto; abajo puedes ver otros enlaces de la web o pausar el buscador)
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <input
-              id="eUrl"
-              style="flex:1;min-width:220px"
-              value="${escapeAttr(j.url)}"
-              oninput="autoEditar()"
-            >
+          <span>🔗 URL del juego o video (tu enlace se mantiene 100% intacto)</span>
+          <input
+            id="eUrl"
+            style="width:100%;box-sizing:border-box;margin-top:5px"
+            value="${escapeAttr(j.url)}"
+            oninput="autoEditar()"
+          >
+          <div class="url-tools-toolbar">
             <button
               type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#2563eb;color:#fff;font-weight:bold"
               onclick="analizarYExtraerJuegoDeWeb('e',true)"
+              title="Buscar enlaces ocultos (SWF, Emuladores, HTML5, iframes) sin borrar tu enlace original"
             >
-              🔎 Buscar enlaces en web
+              🔎 Escanear web
             </button>
             <button
               type="button"
-              id="eBtnPausaHtml"
-              class="image-search-button"
-              style="margin-top:0;background:${buscadorHtmlPausado?'#38a169':'#d69e2e'};color:#fff;font-weight:bold"
-              onclick="togglePausaBuscadorHtml('e')"
-            >
-              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda HTML':'⏸️ Pausar búsqueda HTML'}
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#319795;color:#fff;font-weight:bold"
-              onclick="buscarMasSitiosSugerenciasHtml5('e')"
-              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
-            >
-              🌐 Buscar más enlaces
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#4a5568;color:#fff;font-weight:bold"
-              onclick="mostrarHistorialBusquedas('e')"
-              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
-            >
-              📜 Historial
-            </button>
-            <button
-              type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#2b6cb0;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#0284c7;color:#fff;font-weight:bold"
               onclick="previsualizarEnlaceEnFormulario('e', document.getElementById('eUrl')?.value || '', 'iframe')"
               title="Probar/Previsualizar el enlace actual ingresado arriba"
             >
@@ -6185,11 +6590,40 @@ function editarJuego(id){
             </button>
             <button
               type="button"
-              class="image-search-button"
-              style="margin-top:0;background:#805ad5;color:#fff;font-weight:bold"
+              class="url-tool-btn"
+              style="background:#7c3aed;color:#fff;font-weight:bold"
               onclick="abrirBuscadorEnlacesPrimerPlano(document.getElementById('eUrl')?.value,'e')"
+              title="Abrir la ventana del Buscador JS en primer plano"
             >
               🪟 Ventana JS
+            </button>
+            <button
+              type="button"
+              class="url-tool-btn"
+              style="background:#0d9488;color:#fff;font-weight:bold"
+              onclick="buscarMasSitiosSugerenciasHtml5('e')"
+              title="Generar y buscar en más de 20 sitios de juegos alternativos generales y rusos"
+            >
+              🌐 Más sitios
+            </button>
+            <button
+              type="button"
+              class="url-tool-btn"
+              style="background:#475569;color:#fff;font-weight:bold"
+              onclick="mostrarHistorialBusquedas('e')"
+              title="Ver el historial de búsquedas de enlaces realizadas en esta sesión"
+            >
+              📜 Historial
+            </button>
+            <button
+              type="button"
+              id="eBtnPausaHtml"
+              class="url-tool-btn"
+              style="background:${buscadorHtmlPausado?'#16a34a':'#d97706'};color:#fff;font-weight:bold"
+              onclick="togglePausaBuscadorHtml('e')"
+              title="Pausar o detener la búsqueda de HTML embebido para editar el enlace libremente y dejarlo intacto"
+            >
+              ${buscadorHtmlPausado?'▶️ Reanudar búsqueda':'⏸️ Pausar búsqueda'}
             </button>
           </div>
         </label>
@@ -7944,9 +8378,15 @@ function entrarModoOrden(){
   filtroSoloOcultosAdmin=false;
   huboCambiosSesionOrden=false;
   document.body.classList.add('modo-orden');
-  document.getElementById('orden-bar').style.display='flex';
+  const bar=document.getElementById('orden-bar');
+  if(bar){
+    bar.classList.remove('orden-bar-minimizado');
+    bar.style.display='flex';
+    const btnMin=document.getElementById('btn-min-orden-bar');
+    if(btnMin)btnMin.textContent='🔽 Minimizar';
+  }
   document.getElementById('orden-msg').textContent=
-    'Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🙈 ocultar · 🗑️ borrar';
+    'Arrastra ⠿ para ordenar · 🏷️ categoría · ✏️ editar · 🙈 ocultar';
 
   renderCategorias();
   aplicarFiltros();
@@ -7964,6 +8404,12 @@ async function salirModoOrden(){
   filtroSoloOcultosAdmin=false;
   document.body.classList.remove('modo-orden');
   document.getElementById('orden-bar').style.display='none';
+  const drawer=document.getElementById('dock-extra-tools');
+  if(drawer)drawer.style.display='none';
+  const arrow=document.getElementById('dock-more-arrow');
+  if(arrow)arrow.textContent='▼';
+  const btnMore=document.getElementById('btn-dock-mas');
+  if(btnMore)btnMore.classList.remove('active');
   renderCategorias();
   aplicarFiltros();
 
