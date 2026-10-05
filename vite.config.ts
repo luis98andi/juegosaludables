@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
+import { GoogleGenAI } from '@google/genai';
 
 const SPOOF_NORMAL_TAB_SCRIPT = (fakeOrigin: string, fakeHref: string) => `<script>
 (function(){
@@ -419,6 +420,104 @@ export default defineConfig(() => {
       {
         name: 'normal-tab-game-proxy',
         configureServer(server) {
+          server.middlewares.use('/api/gemini/status', (req, res) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              hasServerKey: !!process.env.GEMINI_API_KEY
+            }));
+          });
+
+          server.middlewares.use('/api/gemini/chat', async (req, res) => {
+            if (req.method !== 'POST') {
+              res.statusCode = 405;
+              res.end(JSON.stringify({ error: 'Method not allowed' }));
+              return;
+            }
+            try {
+              let body = '';
+              for await (const chunk of req) {
+                body += chunk;
+              }
+              const data = JSON.parse(body || '{}');
+              const { contents, systemInstruction, useGoogleSearch, apiKey: clientApiKey } = data;
+              const apiKey = clientApiKey || process.env.GEMINI_API_KEY;
+              if (!apiKey) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ ok: false, error: 'No se encontró clave de Gemini API configurada' }));
+                return;
+              }
+
+              const ai = new GoogleGenAI({
+                apiKey: apiKey,
+                httpOptions: {
+                  headers: { 'User-Agent': 'aistudio-build' }
+                }
+              });
+
+              const modelsToTry = ['gemini-3.8-flash', 'gemini-flash-latest'];
+              let result = null;
+              let lastErr: any = null;
+
+              for (const model of modelsToTry) {
+                try {
+                  const config: any = {
+                    temperature: 0.2
+                  };
+                  if (systemInstruction) {
+                    config.systemInstruction = systemInstruction;
+                  }
+                  if (useGoogleSearch) {
+                    config.tools = [{ googleSearch: {} }];
+                  }
+
+                  let response;
+                  try {
+                    response = await ai.models.generateContent({
+                      model,
+                      contents,
+                      config
+                    });
+                  } catch (e: any) {
+                    // Si falló por cuota de búsqueda (429) o incompatibilidad de tools, reintentar sin tools
+                    if (useGoogleSearch) {
+                      const configSinTools = { ...config };
+                      delete configSinTools.tools;
+                      response = await ai.models.generateContent({
+                        model,
+                        contents,
+                        config: configSinTools
+                      });
+                    } else {
+                      throw e;
+                    }
+                  }
+
+                  result = {
+                    text: response.text || '',
+                    searchQueries: response.candidates?.[0]?.groundingMetadata?.webSearchQueries || [],
+                    modelUsed: model
+                  };
+                  break;
+                } catch (err: any) {
+                  lastErr = err;
+                  console.warn(`[Gemini Server API] Modelo ${model} falló: ${err?.message}`);
+                }
+              }
+
+              if (!result) {
+                throw lastErr || new Error('No se pudo generar respuesta con Gemini');
+              }
+
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: true, ...result }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: false, error: err?.message || 'Error en Gemini API' }));
+            }
+          });
+
           server.middlewares.use('/api/extract-embed', async (req, res) => {
             try {
               const reqUrl = new URL(req.url || '', 'http://localhost');

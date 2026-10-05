@@ -1453,6 +1453,7 @@ body.modo-orden{
 
 #copiloto-gemini-modal.copiloto-minimizado #copiloto-chat-logs,
 #copiloto-gemini-modal.copiloto-minimizado .copiloto-chips-bar,
+#copiloto-gemini-modal.copiloto-minimizado .copiloto-toolbar-bar,
 #copiloto-gemini-modal.copiloto-minimizado .copiloto-input-wrap {
   display: none !important;
 }
@@ -1639,6 +1640,78 @@ body.modo-orden{
 .copiloto-btn-editar {
   background: #4b5563;
   color: #fff;
+}
+
+.copiloto-toolbar-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  background: #111119;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.copiloto-btn-search-toggle {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(5, 150, 105, 0.18));
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.copiloto-btn-search-toggle.disabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+.copiloto-btn-search-toggle:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+
+.copiloto-memoria-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.copiloto-btn-limpiar {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copiloto-btn-limpiar:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .copiloto-chips-bar {
@@ -2014,16 +2087,15 @@ body.modo-orden{
 <div id="copiloto-gemini-modal">
   <div class="copiloto-header">
     <div style="display:flex;align-items:center;gap:8px">
-      <span style="font-size:18px">🤖</span>
+      <span style="font-size:20px">🤖</span>
       <div>
         <b style="font-size:14px;display:block;line-height:1.2">Copiloto IA Gemini</b>
-        <span id="copiloto-status-pill" class="copiloto-badge-status">● Conectado</span>
+        <span id="copiloto-status-pill" class="copiloto-badge-status" style="margin-top:2px">● Conectado</span>
       </div>
     </div>
     <div style="display:flex;gap:5px;align-items:center">
       <button type="button" id="copiloto-btn-min" class="copiloto-btn-icon" onclick="toggleMinimizarCopiloto()" title="Minimizar o expandir ventana de chat">🔽</button>
       <button type="button" class="copiloto-btn-icon" onclick="mostrarConfigGemini(true)" title="Configurar clave Gemini API">⚙️ Clave</button>
-      <button type="button" class="copiloto-btn-icon" onclick="limpiarChatCopiloto()" title="Limpiar conversación">🗑️</button>
       <button type="button" class="copiloto-btn-icon" onclick="cerrarCopilotoGemini()" style="background:#e11d48;font-weight:bold" title="Cerrar copiloto">✕</button>
     </div>
   </div>
@@ -2042,6 +2114,23 @@ body.modo-orden{
       ¡Hola <b>Luis</b>! 👋 Soy tu copiloto inteligente de administración para <b>Juegos Saludables</b>.<br><br>
       Pídeme cualquier juego retro o web (ej: <i>"Agrega Chrono Trigger de SNES"</i>, <i>"Busca Mario Kart"</i>) o pégame un enlace directo. Yo me encargaré de conseguir la portada, el tipo correcto y la categoría con botones para probarlo y agregarlo en 1 clic. 🚀
     </div>
+  </div>
+
+  <!-- Barra de control de búsqueda y memoria -->
+  <div class="copiloto-toolbar-bar">
+    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+      <button type="button" id="copiloto-btn-search-toggle" class="copiloto-btn-search-toggle" onclick="toggleGoogleSearchCopiloto()" title="Toca para activar o desactivar la búsqueda web en Google">
+        <span id="copiloto-search-icon">🔍</span>
+        <span>Búsqueda Google:</span>
+        <b id="copiloto-search-status-txt">ACTIVADA</b>
+      </button>
+      <span class="copiloto-memoria-badge" title="El Copiloto recuerda los últimos 6 mensajes para mantener el hilo de la conversación">
+        🧠 Memoria: 6 msgs
+      </span>
+    </div>
+    <button type="button" class="copiloto-btn-limpiar" onclick="limpiarChatCopiloto()" title="Limpiar la conversación y reiniciar la memoria de 6 mensajes">
+      🗑️ Reiniciar
+    </button>
   </div>
 
   <div class="copiloto-input-wrap">
@@ -7209,6 +7298,52 @@ function guardarConfigGitHub(){
 
 let copilotoJuegosPendientes = {};
 let copilotoCargando = false;
+let copilotoHistorial = [];
+let copilotoUsarGoogleSearch = localStorage.getItem('copiloto_google_search') !== '0';
+let servidorGeminiDisponible = false;
+
+async function verificarServidorGemini(){
+  try{
+    const res = await fetch('/api/gemini/status', { cache: 'no-store' });
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.hasServerKey){
+        servidorGeminiDisponible = true;
+        actualizarEstadoCopilotoBadge();
+      }
+    }
+  }catch(e){}
+}
+
+function actualizarBotonGoogleSearch(){
+  const btn = document.getElementById('copiloto-btn-search-toggle');
+  const txt = document.getElementById('copiloto-search-status-txt');
+  const icon = document.getElementById('copiloto-search-icon');
+  if(!btn) return;
+
+  if(copilotoUsarGoogleSearch){
+    btn.className = 'copiloto-btn-search-toggle';
+    if(icon) icon.textContent = '🔍';
+    if(txt) txt.textContent = 'ACTIVADA';
+    btn.title = 'Búsqueda web en Google activa: Copiloto investigará enlaces reales en la web. Toca para desactivar.';
+  } else {
+    btn.className = 'copiloto-btn-search-toggle disabled';
+    if(icon) icon.textContent = '⚡';
+    if(txt) txt.textContent = 'DESACTIVADA (Rápido)';
+    btn.title = 'Búsqueda en Google apagada: respuestas ultra rápidas basadas en el catálogo y memoria interna. Toca para activar.';
+  }
+}
+
+function toggleGoogleSearchCopiloto(){
+  copilotoUsarGoogleSearch = !copilotoUsarGoogleSearch;
+  try{
+    localStorage.setItem('copiloto_google_search', copilotoUsarGoogleSearch ? '1' : '0');
+  }catch(e){}
+  actualizarBotonGoogleSearch();
+  mostrarToastSync(copilotoUsarGoogleSearch 
+    ? '🔍 Búsqueda en Google ACTIVADA en Copiloto' 
+    : '⚡ Búsqueda en Google DESACTIVADA (Modo Rápido)');
+}
 
 function obtenerConfigGemini(){
   try{
@@ -7283,19 +7418,21 @@ function ocultarConfigGemini(){
 
 function actualizarEstadoCopilotoBadge(){
   const pill = document.getElementById('copiloto-status-pill');
-  if(!pill) return;
-  const cfg = obtenerConfigGemini();
-  if(cfg.apiKey){
-    pill.className = 'copiloto-badge-status';
-    pill.innerHTML = '● Conectado (Gemini)';
-  }else{
-    pill.className = 'copiloto-badge-status sin-clave';
-    pill.innerHTML = '⚠️ Requiere API Key';
+  if(pill){
+    const cfg = obtenerConfigGemini();
+    if(servidorGeminiDisponible || cfg.apiKey){
+      pill.className = 'copiloto-badge-status';
+      pill.innerHTML = servidorGeminiDisponible ? '● Conectado (Servidor AI)' : '● Conectado (Gemini)';
+    }else{
+      pill.className = 'copiloto-badge-status sin-clave';
+      pill.innerHTML = '⚠️ Requiere API Key';
+    }
   }
+  actualizarBotonGoogleSearch();
 }
 
 async function ejecutarLlamadaGemini(apiKey, payload){
-  const modelos = ['gemini-3.8-flash', 'gemini-3.1-pro-preview', 'gemini-flash-latest'];
+  const modelos = ['gemini-3.8-flash', 'gemini-flash-latest'];
   let ultimoError = null;
 
   for(const modelo of modelos){
@@ -7311,7 +7448,7 @@ async function ejecutarLlamadaGemini(apiKey, payload){
         return await res.json();
       }
 
-      // Si falló por configuración de tools/búsqueda, intentar sin tools como respaldo
+      // Si falló por configuración de tools/búsqueda (ej: 429 cuota excedida de búsqueda), intentar sin tools
       if(payload.tools){
         const payloadSinTools = { ...payload };
         delete payloadSinTools.tools;
@@ -7325,14 +7462,40 @@ async function ejecutarLlamadaGemini(apiKey, payload){
         }
       }
 
+      // Si falló por systemInstruction, intentar integrándolo en el primer mensaje de usuario
+      if(payload.systemInstruction && payload.contents && payload.contents.length){
+        const payloadSinSys = JSON.parse(JSON.stringify(payload));
+        const sysTxt = payloadSinSys.systemInstruction?.parts?.[0]?.text || '';
+        delete payloadSinSys.systemInstruction;
+        if(sysTxt){
+          payloadSinSys.contents[0].parts[0].text = sysTxt + "\n\n" + payloadSinSys.contents[0].parts[0].text;
+        }
+        const res3 = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payloadSinSys)
+        });
+        if(res3.ok){
+          return await res3.json();
+        }
+      }
+
       const errJson = await res.json().catch(()=>({}));
-      ultimoError = new Error(errJson.error?.message || `HTTP ${res.status}`);
-      if(res.status === 404 || res.status === 400 || (errJson.error?.message && (errJson.error.message.includes('no longer available') || errJson.error.message.includes('not found')))){
-        continue;
-      } else {
+      const errMsg = errJson.error?.message || `HTTP ${res.status}`;
+      ultimoError = new Error(errMsg);
+
+      // Si la clave API es inválida (401 o mensaje de API_KEY), detenerse inmediatamente
+      if(res.status === 401 || (errMsg && (errMsg.includes('API_KEY_INVALID') || errMsg.includes('API key not valid')))){
         throw ultimoError;
       }
+
+      // Para fallos de modelo no encontrado (404), cuota/rate limit (429), servidores saturados (500, 502, 503) o error de argumento (400), continuar probando el siguiente modelo
+      console.warn(`Modelo ${modelo} retornó error (${res.status}: ${errMsg}), intentando siguiente modelo disponible...`);
+      continue;
     } catch(err) {
+      if(err.message && (err.message.includes('API_KEY_INVALID') || err.message.includes('API key not valid'))){
+        throw err;
+      }
       ultimoError = err;
     }
   }
@@ -7382,6 +7545,7 @@ function abrirCopilotoGemini(){
   const modal = document.getElementById('copiloto-gemini-modal');
   if(!modal) return;
   modal.style.display = 'flex';
+  verificarServidorGemini();
   actualizarEstadoCopilotoBadge();
   const input = document.getElementById('copiloto-input');
   if(input) input.focus();
@@ -7739,14 +7903,16 @@ function sanearUrlJuego(url, tipo, nombreJuego='', pideHTML5=false, esSupervisad
 }
 
 function limpiarChatCopiloto(){
+  copilotoHistorial = [];
   const chat = document.getElementById('copiloto-chat-logs');
   if(!chat) return;
   chat.innerHTML = `
     <div class="copiloto-msg-bubble copiloto-msg-ai">
-      Conversación reiniciada. 🧹<br>
+      Conversación y memoria reiniciadas. 🧹<br>
       ¿Qué juego retro o web deseas buscar y agregar hoy a <b>Juegos Saludables</b>? 🎮
     </div>
   `;
+  mostrarToastSync('🧹 Memoria del copiloto reiniciada (0/6 msgs)');
 }
 
 function scrollCopilotoAlFinal(){
@@ -7773,7 +7939,7 @@ async function enviarMensajeCopiloto(){
   const texto = input.value.trim();
   if(!texto) return;
 
-  // Agregar mensaje del usuario
+  // 1. Agregar mensaje del usuario a la vista
   const userBubble = document.createElement('div');
   userBubble.className = 'copiloto-msg-bubble copiloto-msg-user';
   userBubble.textContent = texto;
@@ -7782,7 +7948,7 @@ async function enviarMensajeCopiloto(){
   scrollCopilotoAlFinal();
 
   const cfg = obtenerConfigGemini();
-  if(!cfg.apiKey){
+  if(!servidorGeminiDisponible && !cfg.apiKey){
     const errorBubble = document.createElement('div');
     errorBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
     errorBubble.innerHTML = `
@@ -7796,21 +7962,41 @@ async function enviarMensajeCopiloto(){
     return;
   }
 
-  // Indicador de carga
+  // 2. Indicador visual de carga
   copilotoCargando = true;
   if(btnSend){
     btnSend.disabled = true;
-    btnSend.textContent = '⏳ Buscando...';
+    btnSend.textContent = '⏳ Pensando...';
   }
 
   const typingBubble = document.createElement('div');
   typingBubble.id = 'copiloto-typing-indicator';
   typingBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
-  typingBubble.innerHTML = '🤖 <i>Analizando catálogo, dominios verificados y configurando juego...</i>';
+  typingBubble.innerHTML = copilotoUsarGoogleSearch
+    ? '🤖 <i>Buscando en Google Search y analizando catálogo...</i>'
+    : '🤖 <i>Analizando catálogo y memoria rápida...</i>';
   chat.appendChild(typingBubble);
   scrollCopilotoAlFinal();
 
-  // Lista de categorías actuales y análisis de dominios activos en el catálogo de Luis
+  // 3. Preparar memoria conversacional (máximo 6 mensajes previos)
+  if(!Array.isArray(copilotoHistorial)) copilotoHistorial = [];
+  if(copilotoHistorial.length > 6){
+    copilotoHistorial = copilotoHistorial.slice(-6);
+  }
+  // La API de Gemini requiere que el primer turno en contents sea siempre 'user'
+  while(copilotoHistorial.length > 0 && copilotoHistorial[0].role !== 'user'){
+    copilotoHistorial.shift();
+  }
+
+  const contentsPayload = [
+    ...copilotoHistorial,
+    {
+      role: 'user',
+      parts: [{ text: texto }]
+    }
+  ];
+
+  // 4. Parámetros del sistema y contexto de juegos
   const categoriasActuales = Array.isArray(catalogo.categorias) && catalogo.categorias.length 
     ? catalogo.categorias 
     : ['Acción', 'Aventura', 'Carreras', 'Retro', 'Infantiles', 'Deportes', 'Puzzles', 'Estrategia', 'Super Nintendo'];
@@ -7825,40 +8011,39 @@ CATEGORÍAS EXISTENTES EN LA WEB:
 ${categoriasActuales.join(', ')}
 
 DOMINIOS Y PROVEEDORES PROBADOS Y PRIORITARIOS EN EL CATÁLOGO ACTIVO DE LUIS:
-Estos servidores y dominios representan juegos que YA funcionan perfectamente en la web de Luis. DEBES DARLES PRIORIDAD ABSOLUTA:
 ${infoCatalogo.resumen}
 
 LÓGICA DE ENLACES Y ESTRUCTURA CONFIABLE:
 1. Retro Emuladores de Consola (SNES, NES, GBA, Genesis, Arcade):
-   - Usa URLs limpias de RetroGamesNexus (ej: https://retrogamesnexus.com/embed/games/nombre-del-juego) o RetroGames.cc con ID (ej: https://www.retrogames.cc/embed/ID-nombre.html).
+   - Usa URLs de RetroGamesNexus (https://retrogamesnexus.com/embed/games/nombre-del-juego) o RetroGames.cc con ID (https://www.retrogames.cc/embed/ID-nombre.html).
 2. Juegos Web HTML5 / Canvas / Minijuegos:
-   - Usa TurboWarp embed (ej: https://turbowarp.org/414716080/embed), Scratch embed, Famobi (cdn.famobi.com), Gamemonetize (html5.gamemonetize.co), Playgama, Gameboss, Madkidgames, Playhop/Yandex, itch.io o GitHub Pages.
+   - Usa TurboWarp embed (https://turbowarp.org/414716080/embed), Scratch embed, Famobi, Gamemonetize, Playgama, Gameboss, Madkidgames, Playhop/Yandex, itch.io o GitHub Pages.
 3. Juegos Flash (.swf):
    - Enlaces directos .swf de CrazyGames (files.crazygames.com) o locales.
 4. Videos de YouTube:
    - Formato embed oficial (https://www.youtube.com/embed/VIDEO_ID).
 
 TIPOS DE JUEGO DISPONIBLES:
-- "snes": Para juegos de consola retro original (Super Nintendo / NES / GBA / Genesis) que se emulan con ROMs.
-- "normal": Para juegos HTML5 / Web / Canvas / JavaScript / Fan-Made que cargan directamente en iframe sin necesidad de emulador de consola.
+- "snes": Para juegos de consola retro original (Super Nintendo / NES / GBA / Genesis).
+- "normal": Para juegos HTML5 / Web / Canvas / JavaScript / Fan-Made que cargan directamente en iframe.
 - "ventana": Para juegos con mejor experiencia en ventana emergente/popup.
 - "ventana2": Para páginas de juegos con bloqueo de iframe.
 - "youtube": Para gameplays, trailers o música de juegos en YouTube.
 - "newtab": Para páginas externas que requieren abrir en pestaña nueva.
 
-REGLAS OBLIGATORIAS DE BÚSQUEDA Y URLS:
+REGLAS OBLIGATORIAS:
 1. SI LUIS ENVÍA O PEGA UN ENLACE DIRECTO:
    - DEBES UTILIZAR ESA URL EXACTA EN EL CAMPO "url". NO LA MODIFIQUES.
 2. DA PRIORIDAD A LOS DOMINIOS Y PROVEEDORES DEL CATÁLOGO PROBADO DE LUIS.
 3. ATENCIÓN A JUEGOS HTML5 Y FAN-MADE:
-   - Si se pide HTML5 o fan-made, asigna tipo "normal" y entrega juegos HTML5/Web reales (ej: TurboWarp, Scratch embed, GitHub Pages), NUNCA emulador SNES.
+   - Si se pide HTML5 o fan-made, asigna tipo "normal" y entrega juegos HTML5/Web reales, NUNCA emulador SNES.
 4. Consigue una URL de portada o boxart en alta resolución.
 5. Elige la categoría más precisa.
 
 FORMATO DE RESPUESTA OBLIGATORIO:
 Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después) con este esquema exacto:
 {
-  "mensaje": "Breve explicación amigable en español de lo que encontraste o auditaste, confirmando si usaste un dominio prioritario del catálogo.",
+  "mensaje": "Breve explicación amigable en español de lo que encontraste o auditaste.",
   "juego": {
     "nombre": "Nombre del juego",
     "url": "https://enlace-jugable",
@@ -7868,43 +8053,82 @@ Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después)
     "descripcion": "Breve sinopsis de 1 línea"
   }
 }
-
-Si el usuario hace una pregunta general que no es pedir un juego, pon "juego": null y responde normalmente en el campo "mensaje".
+Si la solicitud del usuario es una conversación general o pregunta sobre el catálogo y no busca agregar un juego, pon "juego": null y responde en "mensaje".
 `;
 
-  try {
-    const requestBody = {
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: promptSistema + "\n\nPETICIÓN DEL USUARIO: " + texto }
-          ]
-        }
-      ],
-      tools: [
-        { googleSearch: {} }
-      ],
-      generationConfig: {
-        temperature: 0.2
-      }
-    };
+  let rawText = '';
+  let searchQueries = [];
 
-    const data = await ejecutarLlamadaGemini(cfg.apiKey, requestBody);
-    const candidate = data.candidates?.[0];
-    const rawText = candidate?.content?.parts?.[0]?.text || '';
-    const searchQueries = candidate?.groundingMetadata?.webSearchQueries || [];
+  try {
+    let llamadoExitoso = false;
+
+    // A) Intentar consultar vía el endpoint del servidor AI Studio (/api/gemini/chat)
+    try {
+      const serverRes = await fetch('/api/gemini/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: contentsPayload,
+          systemInstruction: promptSistema,
+          useGoogleSearch: copilotoUsarGoogleSearch,
+          apiKey: cfg.apiKey || ''
+        })
+      });
+
+      if (serverRes.ok) {
+        const serverData = await serverRes.json();
+        if (serverData.ok && serverData.text) {
+          rawText = serverData.text;
+          searchQueries = serverData.searchQueries || [];
+          llamadoExitoso = true;
+          servidorGeminiDisponible = true;
+          actualizarEstadoCopilotoBadge();
+        }
+      }
+    } catch(serverErr) {
+      // Servidor no disponible (ej. hosting estático en GitHub Pages)
+    }
+
+    // B) Si el servidor no respondió (ej. en GitHub Pages), llamar directamente con la clave API del usuario
+    if(!llamadoExitoso) {
+      if(!cfg.apiKey) {
+        throw new Error("No hay API Key configurada. Configura tu clave en el botón ⚙️ Clave.");
+      }
+
+      const requestBody = {
+        systemInstruction: {
+          parts: [{ text: promptSistema }]
+        },
+        contents: contentsPayload,
+        generationConfig: {
+          temperature: 0.2
+        }
+      };
+
+      if(copilotoUsarGoogleSearch){
+        requestBody.tools = [{ googleSearch: {} }];
+      }
+
+      const directData = await ejecutarLlamadaGemini(cfg.apiKey, requestBody);
+      const candidate = directData.candidates?.[0];
+      rawText = candidate?.content?.parts?.[0]?.text || '';
+      searchQueries = candidate?.groundingMetadata?.webSearchQueries || [];
+    }
 
     const typingEl = document.getElementById('copiloto-typing-indicator');
     if(typingEl) typingEl.remove();
 
     let parsed = null;
     try {
-      const match = rawText.match(/\{[\s\S]*\}/);
+      const cleanJson = rawText
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim();
+      const match = cleanJson.match(/\{[\s\S]*\}/);
       if(match){
         parsed = JSON.parse(match[0]);
       }else{
-        parsed = JSON.parse(rawText);
+        parsed = JSON.parse(cleanJson);
       }
     } catch(parseErr){
       parsed = {
@@ -7913,6 +8137,20 @@ Si el usuario hace una pregunta general que no es pedir un juego, pon "juego": n
       };
     }
 
+    // Guardar en la memoria conversacional (historial limitado a los últimos 6 mensajes)
+    copilotoHistorial.push({
+      role: 'user',
+      parts: [{ text: texto }]
+    });
+    copilotoHistorial.push({
+      role: 'model',
+      parts: [{ text: rawText || JSON.stringify(parsed) }]
+    });
+    if(copilotoHistorial.length > 6){
+      copilotoHistorial = copilotoHistorial.slice(-6);
+    }
+
+    // Validar y auditar la ficha de juego propuesta
     if(parsed && parsed.juego){
       parsed.juego = buscarJuegoVerificado(texto, parsed.juego);
       if(parsed.juego && parsed.juego.url){
@@ -7925,9 +8163,12 @@ Si el usuario hace una pregunta general que no es pedir un juego, pon "juego": n
     aiBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
     
     let htmlContent = '';
-    if(searchQueries.length > 0){
+    if(copilotoUsarGoogleSearch && searchQueries.length > 0){
       htmlContent += `<div style="font-size:11px;color:#a7f3d0;margin-bottom:6px;background:rgba(16,185,129,0.15);padding:3px 8px;border-radius:5px;display:inline-block">🔍 Investigado en Google Search: <b>"${escapeHtml(searchQueries[0])}"</b></div>`;
+    } else if(!copilotoUsarGoogleSearch){
+      htmlContent += `<div style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;background:rgba(255,255,255,0.06);padding:2px 7px;border-radius:5px;display:inline-block">⚡ Modo Rápido (Catálogo y Memoria)</div>`;
     }
+
     htmlContent += `<div>${escapeHtml(parsed.mensaje || 'Aquí tienes la información:')}</div>`;
 
     if(parsed.juego && parsed.juego.nombre && parsed.juego.url){
@@ -7984,7 +8225,7 @@ Si el usuario hace una pregunta general que no es pedir un juego, pon "juego": n
     const errBubble = document.createElement('div');
     errBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
     errBubble.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-    errBubble.innerHTML = `❌ <b>Error al consultar Gemini:</b> ${escapeHtml(err.message)}<br><br><small style="color:#94a3b8">Verifica que tu clave API esté activa y configurada correctamente.</small>`;
+    errBubble.innerHTML = `❌ <b>Error al consultar Gemini:</b> ${escapeHtml(err.message)}<br><br><small style="color:#94a3b8">Puedes cambiar al modo rápido sin Google Search o verificar tu clave en ⚙️ Clave.</small>`;
     chat.appendChild(errBubble);
     scrollCopilotoAlFinal();
   } finally {
@@ -8095,6 +8336,9 @@ function copilotoEditarJuego(tempId){
     if(fImagen) fImagen.value = j.imagen || '';
     if(fTipo) fTipo.value = j.tipo || 'normal';
     if(fCat && j.categoria) fCat.value = j.categoria;
+    if(typeof actualizarVistaPrevia === 'function'){
+      actualizarVistaPrevia('f');
+    }
   }, 100);
 }
 
@@ -8802,6 +9046,8 @@ async function hashClave(clave,sal){
 }
 
 async function iniciarCuentas(){
+
+  verificarServidorGemini();
 
   try{
 
