@@ -585,6 +585,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 54
+    },
+    {
+      "id": "game-1791252591342",
+      "nombre": "Insertar Chrono Trigger (SNES) en tu sitio web",
+      "imagen": "https://retrogamesnexus.com/images/games/cover/snes/chrono-trigger.webp",
+      "url": "https://retrogamesnexus.com/es/embed/games/chrono-trigger",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 55
     }
   ]
 }
