@@ -2,7 +2,8 @@
   "version": 1,
   "categorias": [
     "Gatos",
-    "Educativos"
+    "Educativos",
+    "Carreras"
   ],
   "juegos": [
     {
@@ -39,7 +40,7 @@
       "id": "game-018",
       "nombre": "Mario All Star",
       "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
+      "url": "https://www.retrogames.cc/embed/46302-super-mario-all-stars-enhanced.html",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
@@ -115,7 +116,7 @@
       "id": "game-1790813474678",
       "nombre": "Sonic head 3",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQchO8qdMaUUEsBoFWiu85cdLEN01v4KcWgwzjdvmVwYw&s=10",
-      "url": "https://retrogamesnexus.com/embed/games/sonic-the-hedgehog-3",
+      "url": "https://www.retrogames.cc/embed/30349-sonic-the-hedgehog-3-usa.html",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
@@ -585,28 +586,6 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 54
-    },
-    {
-      "id": "game-1791252591342",
-      "nombre": "Insertar Chrono Trigger (SNES) en tu sitio web",
-      "imagen": "https://retrogamesnexus.com/images/games/cover/snes/chrono-trigger.webp",
-      "url": "https://retrogamesnexus.com/es/embed/games/chrono-trigger",
-      "tipo": "snes",
-      "accion": "abrirEmuladorSNES",
-      "categoria": "",
-      "youtubeStart": 0,
-      "orden": 55
-    },
-    {
-      "id": "game-1791491666220",
-      "nombre": "Rosita Fresita",
-      "imagen": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/51/01/3f51018e-fd43-ea03-b56b-bdf0efb36b95/AppIcon-1x_U007emarketing-0-8-0-85-220-0.png/512x512bb.jpg",
-      "url": "https://html5.gamemonetize.games/c3m25hjrxh41h8q8vucz838q4fr2x5l9/",
-      "tipo": "iframe",
-      "accion": "abrirJuego",
-      "categoria": "",
-      "youtubeStart": 0,
-      "orden": 56
     }
   ]
 }

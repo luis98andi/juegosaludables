@@ -2,7 +2,8 @@
   "version": 1,
   "categorias": [
     "Gatos",
-    "Educativos"
+    "Educativos",
+    "Carreras"
   ],
   "juegos": [
     {
@@ -39,7 +40,7 @@
       "id": "game-018",
       "nombre": "Mario All Star",
       "imagen": "https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg",
-      "url": "https://retrogamesnexus.com/embed/games/super-mario-all-stars",
+      "url": "https://www.retrogames.cc/embed/46302-super-mario-all-stars-enhanced.html",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",
@@ -115,7 +116,7 @@
       "id": "game-1790813474678",
       "nombre": "Sonic head 3",
       "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQchO8qdMaUUEsBoFWiu85cdLEN01v4KcWgwzjdvmVwYw&s=10",
-      "url": "https://retrogamesnexus.com/embed/games/sonic-the-hedgehog-3",
+      "url": "https://www.retrogames.cc/embed/30349-sonic-the-hedgehog-3-usa.html",
       "tipo": "snes",
       "accion": "abrirEmuladorSNES",
       "categoria": "",

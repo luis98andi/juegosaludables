@@ -435,9 +435,11 @@ export default defineConfig(() => {
             }
             try {
               let body = '';
-              for await (const chunk of req) {
-                body += chunk;
-              }
+              await new Promise<void>((resolve, reject) => {
+                req.on('data', (chunk: any) => { body += chunk; });
+                req.on('end', () => resolve());
+                req.on('error', reject);
+              });
               const data = JSON.parse(body || '{}');
               const { contents, systemInstruction, useGoogleSearch, apiKey: clientApiKey } = data;
               const apiKey = clientApiKey || process.env.GEMINI_API_KEY;
@@ -455,48 +457,58 @@ export default defineConfig(() => {
                 }
               });
 
-              const modelsToTry = ['gemini-3.8-flash', 'gemini-flash-latest'];
+              // gemini-3.1-flash-lite tiene máxima estabilidad y disponibilidad ante picos de demanda
+              const modelsToTry = ['gemini-3.1-flash-lite', 'gemini-3.8-flash', 'gemini-flash-latest'];
               let result = null;
               let lastErr: any = null;
+              let searchQuotaExhausted = false;
 
               for (const model of modelsToTry) {
                 try {
-                  const config: any = {
+                  const baseConfig: any = {
                     temperature: 0.2
                   };
                   if (systemInstruction) {
-                    config.systemInstruction = systemInstruction;
-                  }
-                  if (useGoogleSearch) {
-                    config.tools = [{ googleSearch: {} }];
+                    baseConfig.systemInstruction = systemInstruction;
                   }
 
                   let response;
-                  try {
-                    response = await ai.models.generateContent({
-                      model,
-                      contents,
-                      config
-                    });
-                  } catch (e: any) {
-                    // Si falló por cuota de búsqueda (429) o incompatibilidad de tools, reintentar sin tools
-                    if (useGoogleSearch) {
-                      const configSinTools = { ...config };
-                      delete configSinTools.tools;
+                  if (useGoogleSearch && !searchQuotaExhausted) {
+                    try {
+                      const searchConfig = {
+                        ...baseConfig,
+                        tools: [{ googleSearch: {} }]
+                      };
                       response = await ai.models.generateContent({
                         model,
                         contents,
-                        config: configSinTools
+                        config: searchConfig
                       });
-                    } else {
-                      throw e;
+                    } catch (searchErr: any) {
+                      const errMsg = searchErr?.message || '';
+                      if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('quota')) {
+                        searchQuotaExhausted = true;
+                      }
+                      console.warn(`[Gemini Server API] Google Search no disponible en ${model}, reintentando sin herramientas: ${errMsg}`);
+                      response = await ai.models.generateContent({
+                        model,
+                        contents,
+                        config: baseConfig
+                      });
                     }
+                  } else {
+                    response = await ai.models.generateContent({
+                      model,
+                      contents,
+                      config: baseConfig
+                    });
                   }
 
                   result = {
                     text: response.text || '',
                     searchQueries: response.candidates?.[0]?.groundingMetadata?.webSearchQueries || [],
-                    modelUsed: model
+                    modelUsed: model,
+                    searchQuotaExhausted: searchQuotaExhausted
                   };
                   break;
                 } catch (err: any) {
@@ -512,9 +524,16 @@ export default defineConfig(() => {
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({ ok: true, ...result }));
             } catch (err: any) {
+              let friendlyMsg = err?.message || 'Error en Gemini API';
+              try {
+                const parsedErr = JSON.parse(friendlyMsg);
+                if (parsedErr?.error?.message) {
+                  friendlyMsg = parsedErr.error.message;
+                }
+              } catch(e) {}
               res.statusCode = 500;
               res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ ok: false, error: err?.message || 'Error en Gemini API' }));
+              res.end(JSON.stringify({ ok: false, error: friendlyMsg }));
             }
           });
 

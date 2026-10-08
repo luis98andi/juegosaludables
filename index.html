@@ -1541,6 +1541,105 @@ body.modo-orden{
   border-bottom-left-radius: 3px;
 }
 
+/* CAJA DE CARGA ACTIVA CON CRONÓMETRO, PROGRESO Y ACCIONES EN VIVO */
+.copiloto-loading-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+  max-width: 100%;
+}
+
+.copiloto-loading-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.copiloto-loading-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.copiloto-spinner-icon {
+  display: inline-block;
+  animation: copilotoSpin 1.4s linear infinite;
+  font-size: 14px;
+}
+
+@keyframes copilotoSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.copiloto-loading-timer {
+  font-size: 11px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.copiloto-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.copiloto-progress-bar {
+  height: 100%;
+  width: 15%;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4, #10b981);
+  background-size: 200% 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+  animation: copilotoGlow 2s ease infinite;
+}
+
+@keyframes copilotoGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.copiloto-loading-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.copiloto-btn-cancel-query {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copiloto-btn-cancel-query:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fff;
+  border-color: #ef4444;
+}
+
 .copiloto-card-propuesta {
   margin-top: 10px;
   background: #14141d;
@@ -2101,6 +2200,7 @@ body.modo-orden{
   </div>
   
   <div class="copiloto-chips-bar">
+    <span class="copiloto-chip" onclick="pedirCopilotoSugerencia('Buscar opciones de Rosita Fresita')">🍓 Rosita Fresita</span>
     <span class="copiloto-chip" onclick="pedirCopilotoSugerencia('Agrega Chrono Trigger de SNES')">🎮 Chrono Trigger (SNES)</span>
     <span class="copiloto-chip" onclick="pedirCopilotoSugerencia('Agrega Super Mario Kart de SNES')">🏎️ Super Mario Kart</span>
     <span class="copiloto-chip" onclick="pedirCopilotoSugerencia('Agrega Street Fighter 2 SNES')">🥊 Street Fighter II</span>
@@ -2226,8 +2326,12 @@ body.modo-orden{
           🔒 Cambiar contraseña
         </button>
 
-        <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold">
+        <button onclick="clicActualizarGitHub()" style="background:#2b6cb0;color:#fff;font-weight:bold" title="Sube el catálogo de juegos a GitHub en 1 clic">
           ☁️ Actualizar GitHub
+        </button>
+
+        <button onclick="sincronizarTodoGitHub()" style="background:#805ad5;color:#fff;font-weight:bold" title="Sincroniza todo a GitHub: juegos, cuentas, index.html y ads.txt">
+          ⚡ Sincronizar TODO
         </button>
 
         <button onclick="verificarEstadoGitHub()" style="background:#2c5282;color:#fff;font-weight:bold">
@@ -2306,8 +2410,9 @@ body.modo-orden{
         </div>
         <div class="admin-actions" style="margin-top:10px">
           <button onclick="guardarConfigGitHub()">💾 Guardar token</button>
-          <button onclick="actualizarGitHub()">☁️ Guardar y subir ahora</button>
-          <button onclick="subirArchivosRaizGitHub()" style="background:#805ad5;color:#fff;font-weight:bold" title="Sube index.html y ads.txt a tu repositorio para activar AdSense">🚀 Subir index.html y ads.txt</button>
+          <button onclick="actualizarGitHub()">☁️ Guardar y subir catálogo</button>
+          <button onclick="sincronizarTodoGitHub()" style="background:#805ad5;color:#fff;font-weight:bold" title="Sube catálogo, cuentas, index.html y ads.txt">⚡ Sincronizar TODO</button>
+          <button onclick="subirArchivosRaizGitHub()" style="background:#4a5568;color:#fff" title="Sube index.html y ads.txt a tu repositorio para activar AdSense">🚀 Subir index.html y ads.txt</button>
           <button onclick="ocultarGitHub()">Cerrar</button>
         </div>
         <p id="github-status" class="admin-muted" style="margin:8px 0 0"></p>
@@ -7097,15 +7202,21 @@ function toggleRespaldoJSON(){
 }
 
 function obtenerConfigGitHub(){
-
   try{
-    return JSON.parse(
+    const guardada = JSON.parse(
       localStorage.getItem('freshmind_github_config') || '{}'
     );
+    if(!guardada.owner) guardada.owner = 'luis98andi';
+    if(!guardada.repo) guardada.repo = 'juegosaludables';
+    if(!guardada.branch) guardada.branch = 'main';
+    return guardada;
   }catch(e){
-    return {};
+    return {
+      owner: 'luis98andi',
+      repo: 'juegosaludables',
+      branch: 'main'
+    };
   }
-
 }
 
 async function clicActualizarGitHub(){
@@ -7301,6 +7412,89 @@ let copilotoCargando = false;
 let copilotoHistorial = [];
 let copilotoUsarGoogleSearch = localStorage.getItem('copiloto_google_search') !== '0';
 let servidorGeminiDisponible = false;
+let copilotoTimerInterval = null;
+let copilotoAbortController = null;
+let copilotoSegundos = 0;
+
+function cancelarConsultaCopiloto(porTimeout=false){
+  if(copilotoAbortController){
+    try{ copilotoAbortController.abort(); }catch(e){}
+    copilotoAbortController = null;
+  }
+  if(copilotoTimerInterval){
+    clearInterval(copilotoTimerInterval);
+    copilotoTimerInterval = null;
+  }
+  const typingEl = document.getElementById('copiloto-typing-indicator');
+  if(typingEl){
+    typingEl.remove();
+  }
+  copilotoCargando = false;
+  const btnSend = document.getElementById('copiloto-btn-send');
+  if(btnSend){
+    btnSend.disabled = false;
+    btnSend.textContent = '⚡ Enviar';
+  }
+
+  const chat = document.getElementById('copiloto-chat-logs');
+  if(chat){
+    const msgBubble = document.createElement('div');
+    msgBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
+    if(porTimeout){
+      msgBubble.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+      msgBubble.innerHTML = `⏱️ <b>Tiempo límite alcanzado (45 segundos):</b> La consulta tardó más de lo habitual. Puedes reintentar ahora o probar en modo rápido (⚡ Búsqueda Desactivada).`;
+    } else {
+      msgBubble.innerHTML = '🛑 <i>Búsqueda cancelada por el usuario.</i>';
+    }
+    chat.appendChild(msgBubble);
+    scrollCopilotoAlFinal();
+  }
+  mostrarToastSync(porTimeout ? '⏱️ Tiempo límite de búsqueda alcanzado' : '🛑 Búsqueda cancelada');
+}
+
+function actualizarProgresoCopiloto(){
+  copilotoSegundos++;
+  const timerEl = document.getElementById('copiloto-loading-timer');
+  const barEl = document.getElementById('copiloto-progress-bar');
+  const textEl = document.getElementById('copiloto-loading-text');
+  const etaEl = document.getElementById('copiloto-loading-eta');
+  const btnSend = document.getElementById('copiloto-btn-send');
+
+  if(timerEl) timerEl.textContent = `⏱️ ${copilotoSegundos}s`;
+  if(btnSend) btnSend.textContent = `⏳ (${copilotoSegundos}s)`;
+
+  if(copilotoSegundos >= 45){
+    cancelarConsultaCopiloto(true);
+    return;
+  }
+
+  // Progreso visual y estados informativos paso a paso con tiempo estimado
+  if(copilotoSegundos <= 2){
+    if(textEl) textEl.textContent = '🔍 Paso 1/3: Analizando solicitud y catálogo...';
+    if(etaEl) etaEl.textContent = 'Estimado: ~3s a 5s restantes (25%)';
+    if(barEl) barEl.style.width = '25%';
+  } else if(copilotoSegundos <= 5){
+    if(textEl){
+      textEl.textContent = copilotoUsarGoogleSearch 
+        ? '🌐 Paso 2/3: Buscando en Google Search y verificando enlaces...' 
+        : '🤖 Paso 2/3: Consultando con IA Gemini opciones jugables...';
+    }
+    if(etaEl) etaEl.textContent = 'Estimado: ~2s a 3s restantes (60%)';
+    if(barEl) barEl.style.width = '60%';
+  } else if(copilotoSegundos <= 9){
+    if(textEl) textEl.textContent = '⚡ Paso 3/3: Verificando compatibilidad de emuladores y portadas...';
+    if(etaEl) etaEl.textContent = 'Estimado: ~1s restante (85%)';
+    if(barEl) barEl.style.width = '85%';
+  } else if(copilotoSegundos <= 14){
+    if(textEl) textEl.textContent = '🎨 Ensamblando fichas interactivas y botones de 1 clic...';
+    if(etaEl) etaEl.textContent = 'Finalizando propuesta... (94%)';
+    if(barEl) barEl.style.width = '94%';
+  } else {
+    if(textEl) textEl.textContent = '⏳ Servidores ocupados, recibiendo respuesta final...';
+    if(etaEl) etaEl.textContent = 'Unos segundos más...';
+    if(barEl) barEl.style.width = '97%';
+  }
+}
 
 async function verificarServidorGemini(){
   try{
@@ -7431,17 +7625,20 @@ function actualizarEstadoCopilotoBadge(){
   actualizarBotonGoogleSearch();
 }
 
-async function ejecutarLlamadaGemini(apiKey, payload){
-  const modelos = ['gemini-3.8-flash', 'gemini-flash-latest'];
+async function ejecutarLlamadaGemini(apiKey, payload, signal=null){
+  const modelos = ['gemini-3.1-flash-lite', 'gemini-3.8-flash', 'gemini-flash-latest'];
   let ultimoError = null;
 
   for(const modelo of modelos){
+    if(signal && signal.aborted) throw new Error('Consulta cancelada.');
     try {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: signal
       });
 
       if(res.ok){
@@ -7455,7 +7652,8 @@ async function ejecutarLlamadaGemini(apiKey, payload){
         const res2 = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payloadSinTools)
+          body: JSON.stringify(payloadSinTools),
+          signal: signal
         });
         if(res2.ok){
           return await res2.json();
@@ -7473,7 +7671,8 @@ async function ejecutarLlamadaGemini(apiKey, payload){
         const res3 = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payloadSinSys)
+          body: JSON.stringify(payloadSinSys),
+          signal: signal
         });
         if(res3.ok){
           return await res3.json();
@@ -7493,6 +7692,7 @@ async function ejecutarLlamadaGemini(apiKey, payload){
       console.warn(`Modelo ${modelo} retornó error (${res.status}: ${errMsg}), intentando siguiente modelo disponible...`);
       continue;
     } catch(err) {
+      if(signal && signal.aborted) throw err;
       if(err.message && (err.message.includes('API_KEY_INVALID') || err.message.includes('API key not valid'))){
         throw err;
       }
@@ -7584,15 +7784,6 @@ function toggleMinimizarCopiloto(){
    ============================================================ */
 const DICCIONARIO_JUEGOS_VERIFICADOS = [
   {
-    claves: ['mario kart html5', 'mario kart fan', 'mario kart web', 'mario kart 3d html5'],
-    nombre: 'Mario Kart 3D (HTML5 Fan Game)',
-    tipo: 'normal',
-    categoria: 'Carreras',
-    url: 'https://turbowarp.org/414716080/embed',
-    imagen: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1x3a.jpg',
-    descripcion: 'Recreación fan-made en 3D HTML5 / WebGL inspirada en Mario Kart.'
-  },
-  {
     claves: ['chrono trigger', 'crono trigger', 'chrono'],
     nombre: 'Chrono Trigger',
     tipo: 'snes',
@@ -7605,8 +7796,16 @@ const DICCIONARIO_JUEGOS_VERIFICADOS = [
     nombre: 'Super Mario Kart',
     tipo: 'snes',
     categoria: 'Carreras',
-    url: 'https://retrogamesnexus.com/embed/games/super-mario-kart',
+    url: 'https://www.retrogames.cc/embed/43860-super-mario-kart-deluxe.html',
     imagen: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1x3a.jpg'
+  },
+  {
+    claves: ['super mario all stars', 'mario all stars', 'super mario all-stars'],
+    nombre: 'Super Mario All-Stars',
+    tipo: 'snes',
+    categoria: 'Aventura',
+    url: 'https://www.retrogames.cc/embed/46302-super-mario-all-stars-enhanced.html',
+    imagen: 'https://mario.wiki.gallery/images/thumb/7/72/SMAS.jpg/1200px-SMAS.jpg'
   },
   {
     claves: ['super mario world', 'mario world'],
@@ -7649,11 +7848,11 @@ const DICCIONARIO_JUEGOS_VERIFICADOS = [
     imagen: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co204a.jpg'
   },
   {
-    claves: ['sonic the hedgehog', 'sonic html5', 'sonic'],
+    claves: ['sonic the hedgehog', 'sonic html5', 'sonic', 'sonic 3'],
     nombre: 'Sonic the Hedgehog 3',
     tipo: 'snes',
     categoria: 'Aventura',
-    url: 'https://retrogamesnexus.com/embed/games/sonic-the-hedgehog-3',
+    url: 'https://www.retrogames.cc/embed/30349-sonic-the-hedgehog-3-usa.html',
     imagen: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1v7a.jpg'
   },
   {
@@ -7868,13 +8067,6 @@ function sanearUrlJuego(url, tipo, nombreJuego='', pideHTML5=false, esSupervisad
     return u; // Retener URL si proviene de un servidor probado del catálogo
   }
 
-  // 3. Si el usuario pidió un Mario Kart fan HTML5 (usar TurboWarp 3D Mario Kart que nunca da 404 ni Minecraft)
-  if(pideHTML5 && uLower.includes('mario') && uLower.includes('kart')){
-    if(!u.startsWith('http') || u.includes('10128407') || u.includes('mario-kart-js') || u.includes('retrogamesnexus') || u.includes('snes')){
-      return 'https://turbowarp.org/414716080/embed';
-    }
-  }
-
   // 4. Juegos Flash (.swf) o Archive.org embeds
   if(u.endsWith('.swf') || u.includes('.swf') || u.includes('archive.org/embed/')){
     return u;
@@ -7929,6 +8121,16 @@ function pedirCopilotoSugerencia(texto){
   enviarMensajeCopiloto();
 }
 
+function formatearMensajeCopiloto(texto){
+  if(!texto) return '';
+  let seguro = escapeHtml(texto);
+  seguro = seguro.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  seguro = seguro.replace(/(?:^|\n)[*-]\s+(.*?)(?=\n|$)/g, '<br>• $1');
+  seguro = seguro.replace(/###\s*(.*?)(?=\n|$)/g, '<div style="font-weight:bold;margin-top:6px;color:#e2e8f0">$1</div>');
+  seguro = seguro.replace(/\n\n+/g, '<br><br>').replace(/\n/g, '<br>');
+  return seguro;
+}
+
 async function enviarMensajeCopiloto(){
   if(copilotoCargando) return;
   const input = document.getElementById('copiloto-input');
@@ -7962,21 +8164,42 @@ async function enviarMensajeCopiloto(){
     return;
   }
 
-  // 2. Indicador visual de carga
+  // 2. Indicador visual de carga con cronómetro, pasos y progreso en tiempo real
   copilotoCargando = true;
+  copilotoSegundos = 0;
+  copilotoAbortController = new AbortController();
+
   if(btnSend){
     btnSend.disabled = true;
-    btnSend.textContent = '⏳ Pensando...';
+    btnSend.textContent = '⏳ (0s)';
   }
 
   const typingBubble = document.createElement('div');
   typingBubble.id = 'copiloto-typing-indicator';
   typingBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
-  typingBubble.innerHTML = copilotoUsarGoogleSearch
-    ? '🤖 <i>Buscando en Google Search y analizando catálogo...</i>'
-    : '🤖 <i>Analizando catálogo y memoria rápida...</i>';
+  typingBubble.innerHTML = `
+    <div class="copiloto-loading-box">
+      <div class="copiloto-loading-header">
+        <div class="copiloto-loading-status">
+          <span class="copiloto-spinner-icon">⚡</span>
+          <span id="copiloto-loading-text">${copilotoUsarGoogleSearch ? '🌐 Paso 1/3: Buscando en Google Search e investigando opciones...' : '🤖 Paso 1/3: Analizando catálogo y memoria rápida...'}</span>
+        </div>
+        <span id="copiloto-loading-timer" class="copiloto-loading-timer">⏱️ 0s</span>
+      </div>
+      <div class="copiloto-progress-track">
+        <div id="copiloto-progress-bar" class="copiloto-progress-bar" style="width: 15%;"></div>
+      </div>
+      <div class="copiloto-loading-footer">
+        <span id="copiloto-loading-eta">Estimado: ~3s a 5s restantes (15%)</span>
+        <button type="button" class="copiloto-btn-cancel-query" onclick="cancelarConsultaCopiloto(false)">🛑 Cancelar</button>
+      </div>
+    </div>
+  `;
   chat.appendChild(typingBubble);
   scrollCopilotoAlFinal();
+
+  if(copilotoTimerInterval) clearInterval(copilotoTimerInterval);
+  copilotoTimerInterval = setInterval(actualizarProgresoCopiloto, 1000);
 
   // 3. Preparar memoria conversacional (máximo 6 mensajes previos)
   if(!Array.isArray(copilotoHistorial)) copilotoHistorial = [];
@@ -8017,7 +8240,7 @@ LÓGICA DE ENLACES Y ESTRUCTURA CONFIABLE:
 1. Retro Emuladores de Consola (SNES, NES, GBA, Genesis, Arcade):
    - Usa URLs de RetroGamesNexus (https://retrogamesnexus.com/embed/games/nombre-del-juego) o RetroGames.cc con ID (https://www.retrogames.cc/embed/ID-nombre.html).
 2. Juegos Web HTML5 / Canvas / Minijuegos:
-   - Usa TurboWarp embed (https://turbowarp.org/414716080/embed), Scratch embed, Famobi, Gamemonetize, Playgama, Gameboss, Madkidgames, Playhop/Yandex, itch.io o GitHub Pages.
+   - Usa Scratch/TurboWarp embed (https://turbowarp.org/{id}/embed), Famobi, Gamemonetize, Playgama, Gameboss, Madkidgames, Playhop/Yandex, itch.io o GitHub Pages.
 3. Juegos Flash (.swf):
    - Enlaces directos .swf de CrazyGames (files.crazygames.com) o locales.
 4. Videos de YouTube:
@@ -8036,14 +8259,15 @@ REGLAS OBLIGATORIAS:
    - DEBES UTILIZAR ESA URL EXACTA EN EL CAMPO "url". NO LA MODIFIQUES.
 2. DA PRIORIDAD A LOS DOMINIOS Y PROVEEDORES DEL CATÁLOGO PROBADO DE LUIS.
 3. ATENCIÓN A JUEGOS HTML5 Y FAN-MADE:
-   - Si se pide HTML5 o fan-made, asigna tipo "normal" y entrega juegos HTML5/Web reales, NUNCA emulador SNES.
+   - Si se pide HTML5 o fan-made (ej. Mario Kart HTML5), asigna tipo "normal" y entrega juegos HTML5/Web reales o Scratch/TurboWarp, NUNCA emulador SNES.
 4. Consigue una URL de portada o boxart en alta resolución.
 5. Elige la categoría más precisa.
+6. Si Luis pide varias opciones (ej. "dame 4 opciones"), incluye una lista en "juegos": [ { ... }, { ... } ].
 
 FORMATO DE RESPUESTA OBLIGATORIO:
-Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después) con este esquema exacto:
+Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después) con este esquema:
 {
-  "mensaje": "Breve explicación amigable en español de lo que encontraste o auditaste.",
+  "mensaje": "Breve explicación amigable en español de lo que encontraste.",
   "juego": {
     "nombre": "Nombre del juego",
     "url": "https://enlace-jugable",
@@ -8051,9 +8275,19 @@ Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después)
     "tipo": "snes" | "normal" | "ventana" | "ventana2" | "youtube" | "newtab",
     "categoria": "Categoría",
     "descripcion": "Breve sinopsis de 1 línea"
-  }
+  },
+  "juegos": [
+    {
+      "nombre": "Nombre de opción",
+      "url": "https://enlace-jugable",
+      "imagen": "https://enlace-portada.jpg",
+      "tipo": "normal",
+      "categoria": "Categoría",
+      "descripcion": "Breve sinopsis"
+    }
+  ]
 }
-Si la solicitud del usuario es una conversación general o pregunta sobre el catálogo y no busca agregar un juego, pon "juego": null y responde en "mensaje".
+Si es una conversación general o no busca agregar un juego, pon "juego": null, "juegos": [] y responde en "mensaje".
 `;
 
   let rawText = '';
@@ -8063,10 +8297,12 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
     let llamadoExitoso = false;
 
     // A) Intentar consultar vía el endpoint del servidor AI Studio (/api/gemini/chat)
+    let serverErrorMsg = null;
     try {
       const serverRes = await fetch('/api/gemini/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: copilotoAbortController ? copilotoAbortController.signal : undefined,
         body: JSON.stringify({
           contents: contentsPayload,
           systemInstruction: promptSistema,
@@ -8083,15 +8319,26 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
           llamadoExitoso = true;
           servidorGeminiDisponible = true;
           actualizarEstadoCopilotoBadge();
+        } else if (serverData.error) {
+          serverErrorMsg = serverData.error;
+        }
+      } else {
+        const errJson = await serverRes.json().catch(() => null);
+        if (errJson && errJson.error) {
+          serverErrorMsg = errJson.error;
         }
       }
     } catch(serverErr) {
+      if(copilotoAbortController && copilotoAbortController.signal.aborted) throw serverErr;
       // Servidor no disponible (ej. hosting estático en GitHub Pages)
     }
 
     // B) Si el servidor no respondió (ej. en GitHub Pages), llamar directamente con la clave API del usuario
     if(!llamadoExitoso) {
       if(!cfg.apiKey) {
+        if(serverErrorMsg){
+          throw new Error(serverErrorMsg);
+        }
         throw new Error("No hay API Key configurada. Configura tu clave en el botón ⚙️ Clave.");
       }
 
@@ -8109,10 +8356,15 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
         requestBody.tools = [{ googleSearch: {} }];
       }
 
-      const directData = await ejecutarLlamadaGemini(cfg.apiKey, requestBody);
+      const directData = await ejecutarLlamadaGemini(cfg.apiKey, requestBody, copilotoAbortController ? copilotoAbortController.signal : null);
       const candidate = directData.candidates?.[0];
       rawText = candidate?.content?.parts?.[0]?.text || '';
       searchQueries = candidate?.groundingMetadata?.webSearchQueries || [];
+    }
+
+    if(copilotoTimerInterval){
+      clearInterval(copilotoTimerInterval);
+      copilotoTimerInterval = null;
     }
 
     const typingEl = document.getElementById('copiloto-typing-indicator');
@@ -8133,7 +8385,8 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
     } catch(parseErr){
       parsed = {
         mensaje: rawText || 'He procesado tu solicitud.',
-        juego: null
+        juego: null,
+        juegos: []
       };
     }
 
@@ -8150,12 +8403,46 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
       copilotoHistorial = copilotoHistorial.slice(-6);
     }
 
-    // Validar y auditar la ficha de juego propuesta
-    if(parsed && parsed.juego){
-      parsed.juego = buscarJuegoVerificado(texto, parsed.juego);
-      if(parsed.juego && parsed.juego.url){
-        const pideHTML5 = /html5|fan|clone|scratch|js|web|fanmade|fan-made|browser|3d/i.test(texto);
-        parsed.juego.url = sanearUrlJuego(parsed.juego.url, parsed.juego.tipo, parsed.juego.nombre, pideHTML5, parsed.juego.supervisado);
+    // Recopilar lista de juegos (soporta tanto 'juegos' múltiple como 'juego' único, y campos nombre/titulo)
+    let rawLista = [];
+    if(Array.isArray(parsed.juegos) && parsed.juegos.length > 0){
+      rawLista = parsed.juegos;
+    } else if(parsed.juego){
+      rawLista = [parsed.juego];
+    }
+
+    const pideHTML5 = /html5|fan|clone|scratch|js|web|fanmade|fan-made|browser|3d/i.test(texto);
+
+    let listaJuegos = rawLista
+      .filter(j => j && (j.nombre || j.titulo))
+      .map(j => {
+        const nombreFinal = (j.nombre || j.titulo || '').trim();
+        const urlFinal = (j.url || j.enlace || '').trim();
+        return {
+          ...j,
+          nombre: nombreFinal,
+          url: urlFinal,
+          imagen: j.imagen || j.portada || 'portadas/logo.png',
+          categoria: j.categoria || 'Infantiles',
+          tipo: j.tipo || (pideHTML5 ? 'normal' : 'snes'),
+          descripcion: j.descripcion || ''
+        };
+      });
+
+    // Validar y auditar cada juego de la lista con el diccionario verificado
+    listaJuegos = listaJuegos.map(j => {
+      let auditado = buscarJuegoVerificado(j.nombre || texto, j);
+      if(auditado && auditado.url){
+        auditado.url = sanearUrlJuego(auditado.url, auditado.tipo, auditado.nombre, pideHTML5, auditado.supervisado);
+      }
+      return auditado;
+    });
+
+    // Si la IA no trajo URLs válidas pero el usuario buscó un juego verificado (ej: Rosita Fresita, Mario Kart, Sonic)
+    if(listaJuegos.length === 0){
+      const verificadoDirecto = buscarJuegoVerificado(texto);
+      if(verificadoDirecto && verificadoDirecto.url){
+        listaJuegos = [verificadoDirecto];
       }
     }
 
@@ -8169,49 +8456,51 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
       htmlContent += `<div style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;background:rgba(255,255,255,0.06);padding:2px 7px;border-radius:5px;display:inline-block">⚡ Modo Rápido (Catálogo y Memoria)</div>`;
     }
 
-    htmlContent += `<div>${escapeHtml(parsed.mensaje || 'Aquí tienes la información:')}</div>`;
+    htmlContent += `<div>${formatearMensajeCopiloto(parsed.mensaje || 'Aquí tienes las opciones encontradas:')}</div>`;
 
-    if(parsed.juego && parsed.juego.nombre && parsed.juego.url){
-      const tempId = 'temp-copiloto-' + Date.now();
-      copilotoJuegosPendientes[tempId] = parsed.juego;
+    if(listaJuegos.length > 0){
+      listaJuegos.forEach((juegoItem, index) => {
+        const tempId = 'temp-copiloto-' + Date.now() + '-' + index;
+        copilotoJuegosPendientes[tempId] = juegoItem;
 
-      const tipoBadge = parsed.juego.supervisado ? '👁️ Enlace Supervisado por Luis' :
-                        parsed.juego.tipo === 'snes' ? '🎮 Super Nintendo' :
-                        parsed.juego.tipo === 'youtube' ? '📺 YouTube' :
-                        parsed.juego.tipo === 'ventana' ? '🪟 Ventana' :
-                        parsed.juego.tipo === 'newtab' ? '🚀 Nueva pestaña' : '🌐 Web / HTML5';
+        const tipoBadge = juegoItem.supervisado ? '👁️ Supervisado por Luis' :
+                          juegoItem.tipo === 'snes' ? '🎮 Super Nintendo' :
+                          juegoItem.tipo === 'youtube' ? '📺 YouTube' :
+                          juegoItem.tipo === 'ventana' ? '🪟 Ventana' :
+                          juegoItem.tipo === 'newtab' ? '🚀 Nueva pestaña' : '🌐 Web / HTML5';
 
-      htmlContent += `
-        <div id="card-${tempId}" class="copiloto-card-propuesta">
-          <div class="copiloto-card-top">
-            <img class="copiloto-card-img" src="${escapeAttr(parsed.juego.imagen || 'portadas/logo.png')}" onerror="this.src='portadas/logo.png'" alt="Portada">
-            <div class="copiloto-card-info">
-              <div class="copiloto-card-title">${escapeHtml(parsed.juego.nombre)}</div>
-              <div class="copiloto-tags-row">
-                <span class="copiloto-tag">${escapeHtml(tipoBadge)}</span>
-                <span class="copiloto-tag">🏷️ ${escapeHtml(parsed.juego.categoria || 'Retro')}</span>
+        htmlContent += `
+          <div id="card-${tempId}" class="copiloto-card-propuesta" style="margin-top:10px">
+            <div class="copiloto-card-top">
+              <img class="copiloto-card-img" src="${escapeAttr(juegoItem.imagen || 'portadas/logo.png')}" onerror="this.src='portadas/logo.png'" alt="Portada">
+              <div class="copiloto-card-info">
+                <div class="copiloto-card-title">${escapeHtml(juegoItem.nombre)}</div>
+                <div class="copiloto-tags-row">
+                  <span class="copiloto-tag">${escapeHtml(tipoBadge)}</span>
+                  <span class="copiloto-tag">🏷️ ${escapeHtml(juegoItem.categoria || 'Retro')}</span>
+                </div>
+                ${juegoItem.descripcion ? `<div style="font-size:11.5px;color:#94a3b8;margin-top:4px;line-height:1.3">${escapeHtml(juegoItem.descripcion)}</div>` : ''}
               </div>
-              ${parsed.juego.descripcion ? `<div style="font-size:11.5px;color:#94a3b8;margin-top:4px;line-height:1.3">${escapeHtml(parsed.juego.descripcion)}</div>` : ''}
+            </div>
+
+            <div style="font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,0.3);padding:4px 8px;border-radius:6px">
+              🔗 ${escapeHtml(juegoItem.url)}
+            </div>
+
+            <div class="copiloto-card-actions">
+              <button type="button" class="copiloto-btn-probar" onclick="copilotoProbarJuego('${tempId}')" title="Probar el juego en vivo para ver si carga">
+                ▶️ Probar ahora
+              </button>
+              <button type="button" class="copiloto-btn-agregar" onclick="copilotoAgregarJuego('${tempId}')" title="Agregar directamente a tu catálogo">
+                ✅ Agregar al catálogo
+              </button>
+              <button type="button" class="copiloto-btn-editar" onclick="copilotoEditarJuego('${tempId}')" title="Modificar portada o datos antes de guardar">
+                ✏️ Editar
+              </button>
             </div>
           </div>
-
-          <div style="font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,0.3);padding:4px 8px;border-radius:6px">
-            🔗 ${escapeHtml(parsed.juego.url)}
-          </div>
-
-          <div class="copiloto-card-actions">
-            <button type="button" class="copiloto-btn-probar" onclick="copilotoProbarJuego('${tempId}')" title="Probar el juego en vivo para ver si carga">
-              ▶️ Probar ahora
-            </button>
-            <button type="button" class="copiloto-btn-agregar" onclick="copilotoAgregarJuego('${tempId}')" title="Agregar directamente a tu catálogo">
-              ✅ Agregar al catálogo
-            </button>
-            <button type="button" class="copiloto-btn-editar" onclick="copilotoEditarJuego('${tempId}')" title="Modificar portada o datos antes de guardar">
-              ✏️ Editar
-            </button>
-          </div>
-        </div>
-      `;
+        `;
+      });
     }
 
     aiBubble.innerHTML = htmlContent;
@@ -8219,17 +8508,28 @@ Si la solicitud del usuario es una conversación general o pregunta sobre el cat
     scrollCopilotoAlFinal();
 
   } catch(err) {
+    if(copilotoTimerInterval){
+      clearInterval(copilotoTimerInterval);
+      copilotoTimerInterval = null;
+    }
     const typingEl = document.getElementById('copiloto-typing-indicator');
     if(typingEl) typingEl.remove();
 
     const errBubble = document.createElement('div');
     errBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
     errBubble.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-    errBubble.innerHTML = `❌ <b>Error al consultar Gemini:</b> ${escapeHtml(err.message)}<br><br><small style="color:#94a3b8">Puedes cambiar al modo rápido sin Google Search o verificar tu clave en ⚙️ Clave.</small>`;
+    errBubble.innerHTML = `❌ <b>Error al consultar Gemini:</b> ${escapeHtml(err.message)}<br><br><small style="color:#94a3b8">Puedes cambiar al modo rápido sin Google Search (⚡ Desactivada) o verificar tu clave en ⚙️ Clave.</small>`;
     chat.appendChild(errBubble);
     scrollCopilotoAlFinal();
   } finally {
+    if(copilotoTimerInterval){
+      clearInterval(copilotoTimerInterval);
+      copilotoTimerInterval = null;
+    }
+    const typingEl = document.getElementById('copiloto-typing-indicator');
+    if(typingEl) typingEl.remove();
     copilotoCargando = false;
+    copilotoAbortController = null;
     if(btnSend){
       btnSend.disabled = false;
       btnSend.textContent = '⚡ Enviar';
@@ -8483,7 +8783,7 @@ async function subirArchivosRaizGitHub(){
   const status=document.getElementById('github-status');
   if(!cfg.owner || !cfg.repo || !cfg.token){
     if(status) status.textContent='Falta usuario, repositorio o token.';
-    alert('⚠️ Primero completa tu Usuario, Repositorio y Token de GitHub, y presiona "💾 Guardar token".');
+    mostrarToastSync('⚠️ Primero completa tu Usuario, Repositorio y Token en 🔑 Token.');
     return;
   }
   if(status) status.textContent='⏳ Leyendo index.html para subir a GitHub...';
@@ -8501,10 +8801,77 @@ async function subirArchivosRaizGitHub(){
 
     if(status) status.textContent='✅ ¡index.html y ads.txt subidos con éxito a GitHub!';
     mostrarToastSync('✅ index.html y ads.txt subidos a GitHub ✓');
-    alert('✅ ¡Archivos publicados con éxito en tu GitHub!\n\nGitHub Pages tardará de 1 a 2 minutos en actualizarse. Ahora ve a Google AdSense y haz clic en "Verificar" o "Solicitar revisión".');
   }catch(err){
     if(status) status.textContent='❌ Error al subir a GitHub: '+err.message;
-    alert('❌ Error al subir a GitHub: '+err.message+'\n\nSi prefieres subirlo directamente por GitHub web, puedes copiar index.html y crear ads.txt en tu repositorio.');
+    mostrarToastSync('❌ Error al subir a GitHub: '+err.message);
+  }
+}
+
+async function sincronizarTodoGitHub(){
+  const cfg=obtenerConfigGitHub();
+  const status=document.getElementById('github-status');
+  const quick=document.getElementById('github-quick-status');
+
+  if(!cfg.token){
+    mostrarGitHub(true);
+    if(status) status.textContent='⚠️ Ingresa tu Token de GitHub para sincronizar.';
+    mostrarToastSync('⚠️ Falta tu Token de GitHub. Ingresa uno en 🔑 Token.');
+    return;
+  }
+
+  const fullCfg={
+    owner:cfg.owner || 'luis98andi',
+    repo:cfg.repo || 'juegosaludables',
+    branch:cfg.branch || 'main',
+    token:cfg.token
+  };
+
+  const notify = (msg) => {
+    if(quick){ quick.style.display='block'; quick.textContent=msg; }
+    if(status){ status.textContent=msg; }
+    mostrarToastSync(msg, 3000);
+  };
+
+  notify('⏳ [1/4] Subiendo catálogo ('+(cuentaActual ? cuentaActual.archivo : 'juegos.json')+')...');
+  try{
+    reordenar();
+    await subirArchivoGitHub(
+      fullCfg,
+      cuentaActual ? cuentaActual.archivo : 'juegos.json',
+      JSON.stringify(catalogo,null,2),
+      'Actualizar catálogo desde FreshMind Games'
+    );
+
+    notify('⏳ [2/4] Subiendo cuentas.json...');
+    await subirArchivoGitHub(
+      fullCfg,
+      'cuentas.json',
+      JSON.stringify(datosCuentas(),null,2),
+      'Actualizar cuentas desde FreshMind Games'
+    );
+    cuentasSucias=false;
+
+    notify('⏳ [3/4] Leyendo y subiendo index.html actualizado...');
+    try{
+      const rIdx=await fetch('index.html', {cache:'no-store'});
+      if(rIdx.ok){
+        const txtIdx=await rIdx.text();
+        await subirArchivoGitHub(fullCfg, 'index.html', txtIdx, 'Actualizar index.html y juegos FreshMind Games');
+      }
+    }catch(e){
+      console.warn('Advertencia subiendo index.html:', e);
+    }
+
+    notify('⏳ [4/4] Subiendo ads.txt...');
+    const adsContent='google.com, pub-8026306095938145, DIRECT, f08c47fec0942fa0\n';
+    try{
+      await subirArchivoGitHub(fullCfg, 'ads.txt', adsContent, 'Actualizar ads.txt AdSense');
+    }catch(e){}
+
+    notify('✅ ¡Todo sincronizado a GitHub con éxito (Juegos, Cuentas e Index)!');
+  }catch(err){
+    console.error('Error sincronizando todo con GitHub:', err);
+    notify('❌ Error al sincronizar con GitHub: '+err.message+' (revisa tu token en 🔑 Token)');
   }
 }
 
