@@ -586,6 +586,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 54
+    },
+    {
+      "id": "game-1791492495620",
+      "nombre": "Rosita Fresita",
+      "imagen": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/3f/51/01/3f51018e-fd43-ea03-b56b-bdf0efb36b95/AppIcon-1x_U007emarketing-0-8-0-85-220-0.png/512x512bb.jpg",
+      "url": "https://html5.gamemonetize.games/c3m25hjrxh41h8q8vucz838q4fr2x5l9/",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 55
     }
   ]
 }
