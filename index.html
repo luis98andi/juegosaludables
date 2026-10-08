@@ -4311,7 +4311,7 @@ function abrirEmuladorSNES(url){
 
   iframe.allow=
     'autoplay; gamepad; fullscreen; '+
-    'accelerometer; gyroscope';
+    'accelerometer; gyroscope; pointer-lock; keyboard-map';
 
   target.appendChild(iframe);
 
@@ -4354,17 +4354,33 @@ async function pantallaCompleta(){
 
   const target=
     document.getElementById('ruffle-target');
+  if(!target)return;
 
-  if(!document.fullscreenElement){
+  const iframe=target.querySelector('iframe');
+  const elementoFullscreen=iframe || target;
+  const yaEsFullscreen=!!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
 
-    if(target.requestFullscreen)
-      await target.requestFullscreen();
+  if(!yaEsFullscreen){
 
-    else if(target.webkitRequestFullscreen)
-      await target.webkitRequestFullscreen();
-
-    else if(target.msRequestFullscreen)
-      await target.msRequestFullscreen();
+    try{
+      if(elementoFullscreen.requestFullscreen)
+        await elementoFullscreen.requestFullscreen();
+      else if(elementoFullscreen.webkitRequestFullscreen)
+        await elementoFullscreen.webkitRequestFullscreen();
+      else if(elementoFullscreen.msRequestFullscreen)
+        await elementoFullscreen.msRequestFullscreen();
+      else if(target.requestFullscreen)
+        await target.requestFullscreen();
+    }catch(err){
+      try{
+        if(target.requestFullscreen)
+          await target.requestFullscreen();
+        else if(target.webkitRequestFullscreen)
+          await target.webkitRequestFullscreen();
+        else if(target.msRequestFullscreen)
+          await target.msRequestFullscreen();
+      }catch(e){}
+    }
 
     try{
 
@@ -4383,11 +4399,16 @@ async function pantallaCompleta(){
 
   }else{
 
-    if(document.exitFullscreen)
-      await document.exitFullscreen();
-
-    else if(document.webkitExitFullscreen)
-      await document.webkitExitFullscreen();
+    try{
+      if(document.exitFullscreen)
+        await document.exitFullscreen();
+      else if(document.webkitExitFullscreen)
+        await document.webkitExitFullscreen();
+      else if(document.mozCancelFullScreen)
+        await document.mozCancelFullScreen();
+      else if(document.msExitFullscreen)
+        await document.msExitFullscreen();
+    }catch(e){}
 
   }
 
@@ -4399,9 +4420,12 @@ function actualizarBotonFullscreen(){
     document.getElementById(
       'fullscreen-btn'
     );
+  if(!btn)return;
+
+  const esFull=!!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
 
   btn.textContent=
-    document.fullscreenElement
+    esFull
       ? '⛶ Salir de pantalla completa'
       : '⛶ Pantalla completa';
 
@@ -4409,6 +4433,18 @@ function actualizarBotonFullscreen(){
 
 document.addEventListener(
   'fullscreenchange',
+  actualizarBotonFullscreen
+);
+document.addEventListener(
+  'webkitfullscreenchange',
+  actualizarBotonFullscreen
+);
+document.addEventListener(
+  'mozfullscreenchange',
+  actualizarBotonFullscreen
+);
+document.addEventListener(
+  'MSFullscreenChange',
   actualizarBotonFullscreen
 );
 
@@ -4423,10 +4459,18 @@ function cerrarJuego(){
   }catch(e){}
   ventanaJuegoActual=null;
 
-  if(document.fullscreenElement){
+  if(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement){
 
-    if(document.exitFullscreen)
-      document.exitFullscreen();
+    try{
+      if(document.exitFullscreen)
+        document.exitFullscreen();
+      else if(document.webkitExitFullscreen)
+        document.webkitExitFullscreen();
+      else if(document.mozCancelFullScreen)
+        document.mozCancelFullScreen();
+      else if(document.msExitFullscreen)
+        document.msExitFullscreen();
+    }catch(e){}
 
   }
 
