@@ -1571,11 +1571,15 @@ async function enviarMensajeCopiloto(){
     ? catalogo.categorias 
     : ['Acción', 'Aventura', 'Carreras', 'Retro', 'Infantiles', 'Deportes', 'Puzzles', 'Estrategia', 'Super Nintendo'];
 
-  const infoCatalogo = copilotoUsarGoogleSearch ? { dominios: [], resumen: '' } : obtenerDominiosYLogicaDelCatalogo();
-
+  const { disabled, custom } = obtenerConfigDominiosCopiloto();
+  
+  const infoCatalogo = obtenerDominiosYLogicaDelCatalogo();
+  
   const seccionCatalogoPrompt = copilotoUsarGoogleSearch
     ? `MODO BÚSQUEDA WEB ACTIVA (Google Search):
 - Estás conectado a Google Search en vivo. Debes buscar libremente en internet los mejores enlaces jugables, portadas y datos actualizados.
+- FILTRO DE DOMINIOS DESACTIVADOS (NO USAR): ${disabled.join(', ')}
+- DOMINIOS PREFERIDOS (CUSTOM): ${custom.join(', ')}
 - NO te limites ni uses forzosamente los enlaces o proveedores locales previamente guardados de la web; investiga en la web para encontrar la mejor versión jugable en línea (HTML5, emuladores oficiales web, fan-games en GitHub Pages / Itch.io / Scratch, o videos de YouTube).`
     : `MODO RÁPIDO (Memoria interna y Catálogo guardado de Luis):
 DOMINIOS Y PROVEEDORES PROBADOS Y PRIORITARIOS EN EL CATÁLOGO ACTIVO DE LUIS:
