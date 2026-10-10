@@ -1786,6 +1786,10 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
 
     let listaJuegos = rawLista
       .filter(j => j && (j.nombre || j.titulo))
+      .filter(j => {
+        const { disabled } = obtenerConfigDominiosCopiloto();
+        return !disabled.some(domain => (j.url || '').toLowerCase().includes(domain.toLowerCase()));
+      })
       .map(j => {
         const nombreFinal = (j.nombre || j.titulo || '').trim();
         const urlFinal = (j.url || j.enlace || '').trim();
