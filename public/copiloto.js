@@ -1788,7 +1788,11 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
       .filter(j => j && (j.nombre || j.titulo))
       .filter(j => {
         const { disabled } = obtenerConfigDominiosCopiloto();
-        return !disabled.some(domain => (j.url || '').toLowerCase().includes(domain.toLowerCase()));
+        console.log('DEBUG: Filtro - Dominios desactivados encontrados:', disabled);
+        console.log('DEBUG: Filtro - URL del juego:', j.url);
+        const estaDesactivado = disabled.some(domain => (j.url || '').toLowerCase().includes(domain.toLowerCase()));
+        console.log('DEBUG: Filtro - ¿Está desactivado?', estaDesactivado);
+        return !estaDesactivado;
       })
       .map(j => {
         const nombreFinal = (j.nombre || j.titulo || '').trim();
