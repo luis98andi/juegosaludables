@@ -608,6 +608,17 @@
       "categoria": "Carreras",
       "youtubeStart": 0,
       "orden": 56
+    },
+    {
+      "id": "game-1791597017451",
+      "nombre": "Mr Nuts (GBA)",
+      "imagen": "https://i.987967.xyz/screenshot/44/a/17450_afaf7d37c8fca1d78f39d8fb7bd6f7e01d5cf49d.png",
+      "url": "https://www.retrogames.cc/embed/17450-digimon-battle-spirit.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "Carreras",
+      "youtubeStart": 0,
+      "orden": 57
     }
   ]
 }
