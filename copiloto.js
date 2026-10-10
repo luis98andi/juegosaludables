@@ -1177,9 +1177,11 @@ async function resolverPortadaJuegoCopiloto(nombre, url = '', imgActual = '') {
 }
 
 function obtenerDominiosYLogicaDelCatalogo(){
+  const { disabled, custom } = obtenerConfigDominiosCopiloto();
+  
   if(!catalogo || !Array.isArray(catalogo.juegos)) {
     return {
-      dominios: ['retrogamesnexus.com', 'retrogames.cc', 'turbowarp.org', 'scratch.mit.edu', 'famobi.com', 'gamemonetize.co', 'playgama.com', 'gameboss.com', 'crazygames.com', 'youtube.com'],
+      dominios: ['retrogamesnexus.com', 'retrogames.cc', 'turbowarp.org', 'scratch.mit.edu', 'famobi.com', 'gamemonetize.co', 'playgama.com', 'gameboss.com', 'crazygames.com', 'youtube.com'].filter(d => !disabled.includes(d)),
       resumen: '- retrogamesnexus.com\n- turbowarp.org\n- famobi.com\n- gamemonetize.co\n- playgama.com\n- gameboss.com\n- crazygames.com\n- retrogames.cc'
     };
   }
@@ -1195,18 +1197,20 @@ function obtenerDominiosYLogicaDelCatalogo(){
       if(uStr.startsWith('http://') || uStr.startsWith('https://')){
         const urlObj = new URL(uStr);
         const host = urlObj.hostname.replace(/^www\./, '');
-        if(host && !dominiosSet.has(host)){
+        if(host && !dominiosSet.has(host) && !disabled.includes(host)){
           dominiosSet.add(host);
           resumenList.push(`- ${host} (${j.tipo || 'normal'}: "${j.nombre}")`);
         }
       } else if(uStr.endsWith('.swf') || uStr.startsWith('games/')){
-        dominiosSet.add('Archivos locales .swf / Ruffle');
+        if(!disabled.includes('Archivos locales .swf / Ruffle')) {
+            dominiosSet.add('Archivos locales .swf / Ruffle');
+        }
       }
     } catch(e){}
   });
 
   return {
-    dominios: Array.from(dominiosSet),
+    dominios: Array.from(dominiosSet).concat(custom).filter((d, i, a) => a.indexOf(d) === i),
     resumen: resumenList.length ? resumenList.slice(0, 20).join('\n') : '- Dominios verificados de Juegos Saludables'
   };
 }
