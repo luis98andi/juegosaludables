@@ -1853,6 +1853,19 @@ body.modo-orden{
           <button onclick="ocultarConfigGemini()">Cerrar</button>
         </div>
         <p id="gemini-status" class="admin-muted" style="margin:8px 0 0"></p>
+
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,0.15);margin:14px 0">
+        <h4 style="margin:0 0 6px;color:#c4b5fd;display:flex;align-items:center;gap:6px">🌐 Gestión de Dominios y Fuentes de Búsqueda</h4>
+        <p class="admin-muted" style="margin:0 0 10px;font-size:12px">
+          Activa o desactiva fuentes web (ej. desactiva Internet Archive) o añade dominios personalizados (como nexusgamesretro.com) para evitar repeticiones y personalizar de dónde busca el Copiloto IA.
+        </p>
+        <div id="copiloto-domains-list" style="display:grid;gap:6px;max-height:160px;overflow-y:auto;padding-right:4px">
+          <!-- Generado dinámicamente -->
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <input id="copiloto-new-domain-input" placeholder="Añadir dominio personalizado (ej: nexusgamesretro.com)..." style="flex:1;padding:6px 10px;border-radius:6px;border:1px solid #444;background:#1a1a1a;color:#fff;font-size:12px">
+          <button type="button" onclick="agregarDominioCustomCopiloto()" style="background:#0284c7;color:#fff;border:0;padding:6px 12px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:12px">➕ Añadir</button>
+        </div>
       </div>
 
       <div id="github-config" style="display:none;margin:14px 0;padding:14px;border-radius:14px;background:rgba(0,0,0,.16)">
@@ -1871,7 +1884,7 @@ body.modo-orden{
           <button onclick="guardarConfigGitHub()">💾 Guardar token</button>
           <button onclick="actualizarGitHub()">☁️ Guardar y subir catálogo</button>
           <button onclick="sincronizarTodoGitHub()" style="background:#805ad5;color:#fff;font-weight:bold" title="Sube catálogo, cuentas, index.html y ads.txt">⚡ Sincronizar TODO</button>
-          <button onclick="subirArchivosRaizGitHub()" style="background:#4a5568;color:#fff" title="Sube index.html y ads.txt a tu repositorio para activar AdSense">🚀 Subir index.html y ads.txt</button>
+          <button onclick="subirArchivosRaizGitHub()" style="background:#4a5568;color:#fff" title="Sube index.html, copiloto.js, copiloto.css y ads.txt sin tocar tus archivos de juegos">🚀 Actualizar página y Copiloto (sin tocar juegos)</button>
           <button onclick="ocultarGitHub()">Cerrar</button>
         </div>
         <p id="github-status" class="admin-muted" style="margin:8px 0 0"></p>
@@ -3294,6 +3307,65 @@ function reproducirSiguienteVideo(juegoIdActual) {
   abrirJuego(siguiente.url, siguiente.tipo, siguiente.accion, siguiente);
 }
 
+/* Cache en cliente para búsquedas de GameMonetize */
+const cacheBusquedaGameMonetize = new Map();
+
+async function buscarJuegosRealesGameMonetize(query, limite = 6) {
+  if (!query || typeof query !== 'string') return [];
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return [];
+
+  if (cacheBusquedaGameMonetize.has(q)) {
+    return cacheBusquedaGameMonetize.get(q);
+  }
+
+  try {
+    // 1. Intentar endpoint proxy local en desarrollo/servidor
+    let res = await fetch(`/api/gamemonetize/search?q=${encodeURIComponent(q)}`).catch(() => null);
+    if (res && res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.games) && data.games.length > 0) {
+        cacheBusquedaGameMonetize.set(q, data.games);
+        return data.games.slice(0, limite);
+      }
+    }
+
+    // 2. Fallback directo al feed oficial de GameMonetize (permite CORS: Access-Control-Allow-Origin: *)
+    const feedRes = await fetch('https://rss.gamemonetize.com/rssfeed.php?format=json&category=All&type=html5&popularity=newest&company=All&amount=500', {
+      headers: { 'Accept': 'application/json' }
+    });
+    if (feedRes.ok) {
+      const allGames = await feedRes.json();
+      if (Array.isArray(allGames)) {
+        const tokens = q.split(/\s+/).filter(Boolean);
+        const matches = allGames.filter(g => {
+          const title = (g.title || '').toLowerCase();
+          const tags = (g.tags || '').toLowerCase();
+          const desc = (g.description || '').toLowerCase();
+          const cat = (g.category || '').toLowerCase();
+          const full = `${title} ${tags} ${desc} ${cat}`;
+          return tokens.every(tok => full.includes(tok)) || title.includes(q);
+        }).slice(0, 20).map(g => ({
+          id: g.id,
+          title: g.title,
+          url: g.url,
+          thumb: g.thumb,
+          category: g.category,
+          description: g.description,
+          tags: g.tags
+        }));
+        cacheBusquedaGameMonetize.set(q, matches);
+        return matches.slice(0, limite);
+      }
+    }
+  } catch (err) {
+    console.warn('[GameMonetize Search] Fallback silencioso:', err);
+  }
+
+  cacheBusquedaGameMonetize.set(q, []);
+  return [];
+}
+
 function generarEnlacesSugeridosHtml5Abiertos(nombreJuego){
   if(!nombreJuego)return [];
   const slug=String(nombreJuego).toLowerCase()
@@ -3302,7 +3374,6 @@ function generarEnlacesSugeridosHtml5Abiertos(nombreJuego){
   if(!slug)return [];
   const slugUnd = slug.replace(/-/g, '_');
   return [
-    {url:`https://html5.gamemonetize.co/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameMonetize'],depth:0,score:120},
     {url:`https://html5.gamedistribution.com/${slug}/`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · GameDistribution'],depth:0,score:115},
     {url:`https://www.crazygames.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · CrazyGames Embed'],depth:0,score:110},
     {url:`https://www.y8.com/embed/${slug}`,cat:'html5',tipo:'iframe',srcs:['Sugerencia abierta · Y8 Embed'],depth:0,score:105},
@@ -5308,22 +5379,31 @@ async function buscarPortadasAutomaticas(prefijo,forzar=false){
 
   const queryNombre=(nomInput.value.trim() || nombre).replace(/\b(snes|nes|genesis|online|swf)\b/gi,'').trim();
 
-  /* 3. Buscar carátulas oficiales por nombre en iTunes App Store de alta precisión */
+  /* 3. Búsqueda de carátulas y boxarts de alta definición (vía /api/covers/search y fallbacks web) */
   if(queryNombre){
     try{
-      const itunesProm=fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(queryNombre)}&entity=software&limit=5`)
-        .then(r=>r.ok?r.json():null)
-        .then(d=>{
-          if(Array.isArray(d?.results)){
-            d.results.forEach(item=>{
-              const art=item.artworkUrl512 || (item.artworkUrl100 ? item.artworkUrl100.replace('100x100bb','512x512bb') : '');
-              if(art)portadas.push(art);
-            });
-          }
-        }).catch(()=>{});
-
-      await itunesProm;
+      const rCovers = await fetch(`/api/covers/search?q=${encodeURIComponent(queryNombre)}`).catch(()=>null);
+      if(rCovers && rCovers.ok){
+        const dCovers = await rCovers.json();
+        if(Array.isArray(dCovers.covers) && dCovers.covers.length){
+          dCovers.covers.forEach(c => portadas.push(c));
+        }
+      }
     }catch(e){}
+
+    // Fallback enciclopédico de Wikipedia si aún no hay suficientes portadas
+    if(portadas.length < 3){
+      try{
+        const rWiki = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryNombre)}&prop=pageimages&format=json&pithumbsize=600&redirects=1&origin=*`).catch(()=>null);
+        if(rWiki && rWiki.ok){
+          const wData = await rWiki.json();
+          const pages = Object.values(wData?.query?.pages || {});
+          for(const p of pages){
+            if(p?.thumbnail?.source) portadas.push(p.thumbnail.source);
+          }
+        }
+      }catch(e){}
+    }
   }
 
   const unicas=[...new Set(portadas.filter(Boolean))];
@@ -5498,7 +5578,7 @@ function registrarEnHistorial(nombre, url, enlaces) {
   }
 }
 
-function buscarMasSitiosSugerenciasHtml5(prefijo) {
+async function buscarMasSitiosSugerenciasHtml5(prefijo) {
   const nomEl = document.getElementById(prefijo + 'Nombre');
   const urlEl = document.getElementById(prefijo + 'Url');
   if (!urlEl) return;
@@ -5511,6 +5591,23 @@ function buscarMasSitiosSugerenciasHtml5(prefijo) {
   }
   
   const sugerencias = generarEnlacesSugeridosHtml5Abiertos(nomJuego);
+  
+  // Buscar opciones reales en el catálogo oficial de GameMonetize (sin URLs inventadas)
+  try {
+    const juegosGM = await buscarJuegosRealesGameMonetize(nomJuego, 4);
+    if (Array.isArray(juegosGM) && juegosGM.length > 0) {
+      juegosGM.forEach(gm => {
+        sugerencias.unshift({
+          url: gm.url,
+          cat: 'html5',
+          tipo: 'iframe',
+          srcs: [`GameMonetize Oficial · ${gm.title}`],
+          depth: 0,
+          score: 130
+        });
+      });
+    }
+  } catch(e) {}
   
   let listaActual = cacheEnlacesExtraidos[url] || [];
   sugerencias.forEach(s => {
@@ -6908,7 +7005,7 @@ function guardarConfigGitHub(){
 
 </script>
 <!-- Copiloto IA Gemini modularizado -->
-<script src="copiloto.js"></script>
+<script src="copiloto.js?v=999"></script>
 <script>
 function textoBase64UTF8(texto){
   const bytes=new TextEncoder().encode(texto);
