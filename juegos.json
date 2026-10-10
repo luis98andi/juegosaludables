@@ -597,6 +597,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 55
+    },
+    {
+      "id": "game-1791594476822",
+      "nombre": "Super Mario Kart",
+      "imagen": "https://i.987967.xyz/screenshot/79/2024/11/18/43860_4a2af271f5b5e81cf2e21c618d6d0c3ee34c46b7.png",
+      "url": "https://www.retrogames.cc/embed/43860-super-mario-kart-deluxe.html",
+      "tipo": "snes",
+      "accion": "abrirEmuladorSNES",
+      "categoria": "Carreras",
+      "youtubeStart": 0,
+      "orden": 56
     }
   ]
 }
