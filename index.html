@@ -337,60 +337,110 @@ body.en-juego #btn-cuentas {
   white-space: nowrap;
 }
 
-/* 5 BURBUJAS CIRCULARES DE NAVEGACIÓN */
-.sesame-bubble-nav {
+/* CARROUSEL UNIFICADO EN UNA SOLA FILA (CENTRO DEL TOPBAR) */
+.sesame-nav-carousel-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  flex: 1;
+  max-width: 760px;
+  margin: 0 12px;
+  overflow: hidden;
+  position: relative;
 }
 
-.sesame-bubble-btn {
-  width: 50px;
-  height: 50px;
+.sesame-carousel-arrow {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 0;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  color: #475569;
+  font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.sesame-carousel-arrow:hover {
+  background: #00AEEF;
+  border-color: #00AEEF;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.sesame-char-carousel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 4px 2px;
+  flex: 1;
+}
+.sesame-char-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.sesame-char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.sesame-char-btn:hover {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.sesame-char-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--char-bg, #2ecc71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 22px;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+  transition: all 0.22s ease;
   position: relative;
-  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-.sesame-bubble-btn:hover {
-  transform: translateY(-4px) scale(1.12);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-}
-.sesame-bubble-btn:active {
-  transform: scale(0.95);
 }
 
-.bubble-games { background: #00AEEF; color: white; }
-.bubble-videos { background: #FF9900; color: white; }
-.bubble-art { background: #E6007E; color: white; }
-.bubble-friends { background: #7B2CBF; color: white; }
-.bubble-favorites { background: #ED1C24; color: white; }
-
-/* Puntero triángulo activo debajo del icono de Juegos */
-.sesame-bubble-btn.active .bubble-pointer {
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-top: 9px solid currentColor;
+.sesame-char-btn.active .sesame-char-circle {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3.5px #00AEEF, 0 6px 14px rgba(0, 174, 239, 0.4);
+  transform: scale(1.1);
 }
-.bubble-games.active .bubble-pointer { color: #00AEEF; }
+
+.sesame-char-label {
+  font-family: 'Fredoka', 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+}
+.sesame-char-btn.active .sesame-char-label {
+  color: #00AEEF;
+  font-weight: 800;
+}
 
 /* HERRAMIENTAS DERECHA: SIGN IN, GROWN UPS, BUSCADOR */
 .sesame-top-right {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .sesame-search-wrap {
@@ -421,19 +471,19 @@ body.en-juego #btn-cuentas {
 }
 
 .sesame-search-box {
-  width: 120px;
+  width: 110px;
   border: 0;
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1e293b;
   padding: 6px 6px 6px 2px;
   transition: width 0.25s ease;
 }
 .sesame-search-box:focus {
-  width: 180px;
+  width: 160px;
 }
 .sesame-search-box::placeholder {
   color: #94a3b8;
@@ -443,11 +493,11 @@ body.en-juego #btn-cuentas {
 .sesame-user-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #f8fafc;
   border: 2px solid #e2e8f0;
   border-radius: 24px;
-  padding: 6px 14px;
+  padding: 6px 12px;
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
@@ -469,9 +519,9 @@ body.en-juego #btn-cuentas {
   color: #ffffff;
   border: 0;
   border-radius: 20px;
-  padding: 8px 14px;
+  padding: 7px 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -481,106 +531,6 @@ body.en-juego #btn-cuentas {
   background: #0f172a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* CARROUSEL HORIZONTAL DE PERSONAJES / CATEGORÍAS */
-.sesame-char-bar-wrap {
-  background: #00AEEF;
-  width: 100%;
-  padding: 12px 20px 14px;
-  border-bottom: 3px solid rgba(0, 0, 0, 0.08);
-}
-
-.sesame-char-bar-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-}
-
-.sesame-char-carousel {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  padding: 8px 4px;
-  flex: 1;
-}
-.sesame-char-carousel::-webkit-scrollbar {
-  display: none;
-}
-
-.sesame-char-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  padding: 4px;
-  flex-shrink: 0;
-  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.sesame-char-btn:hover {
-  transform: translateY(-4px) scale(1.08);
-}
-
-.sesame-char-circle {
-  width: 66px;
-  height: 66px;
-  border-radius: 50%;
-  background: var(--char-bg, #2ecc71);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  border: 3.5px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  transition: all 0.22s ease;
-  position: relative;
-}
-
-.sesame-char-btn.active .sesame-char-circle {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 4.5px #ffffff, 0 8px 22px rgba(0, 0, 0, 0.3);
-  transform: scale(1.12);
-}
-
-.sesame-char-label {
-  font-family: 'Fredoka', 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  white-space: nowrap;
-}
-
-.sesame-char-next-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-.sesame-char-next-btn:hover {
-  background: rgba(255, 255, 255, 0.95);
-  color: #00AEEF;
-  transform: scale(1.1);
 }
 
 /* GRID Y TARJETAS BLANCAS CON BADGE CIRCULAR DE CONTROL ESTILO SESAME STREET */
@@ -1812,25 +1762,14 @@ body.modo-orden{
       </div>
     </a>
 
-    <!-- 5 ICON BUBBLES ESTILO SESAME STREET -->
-    <nav class="sesame-bubble-nav">
-      <button type="button" class="sesame-bubble-btn bubble-games active" title="Juegos" onclick="seleccionarCategoria('Todos')">
-        <span>🎮</span>
-        <div class="bubble-pointer"></div>
-      </button>
-      <button type="button" class="sesame-bubble-btn bubble-videos" title="Videos" onclick="filtrarPorVideos()">
-        <span>▶️</span>
-      </button>
-      <button type="button" class="sesame-bubble-btn bubble-art" title="Arte y Creatividad" onclick="seleccionarCategoria('Educativos')">
-        <span>🎨</span>
-      </button>
-      <button type="button" class="sesame-bubble-btn bubble-friends" title="¿Quién va a jugar? (Cambiar cuenta)" onclick="mostrarSelector()">
-        <span>🟣</span>
-      </button>
-      <button type="button" class="sesame-bubble-btn bubble-favorites" title="Favoritos" onclick="filtrarFavoritos()">
-        <span>❤️</span>
-      </button>
-    </nav>
+    <!-- CARROUSEL UNIFICADO EN LA MISMA FILA (CATEGORÍAS Y PERSONAJES) -->
+    <div class="sesame-nav-carousel-wrapper">
+      <button type="button" class="sesame-carousel-arrow arrow-prev" onclick="desplazarCarousel(-1)" title="Anterior">❮</button>
+      <div id="sesame-char-carousel" class="sesame-char-carousel">
+        <!-- Se genera dinámicamente con los personajes / categorías -->
+      </div>
+      <button type="button" class="sesame-carousel-arrow arrow-next" onclick="desplazarCarousel(1)" title="Siguiente">❯</button>
+    </div>
 
     <!-- HERRAMIENTAS DERECHA: BUSCADOR, PERFIL DE USUARIO, GROWN UPS (ADMIN) -->
     <div class="sesame-top-right">
@@ -1846,7 +1785,7 @@ body.modo-orden{
           id="searchInput"
           class="sesame-search-box"
           type="search"
-          placeholder="Buscar juego..."
+          placeholder="Buscar..."
           oninput="aplicarFiltros()"
           onblur="cerrarBuscadorSiVacio()"
           onkeydown="if(event.key==='Escape'){this.value='';aplicarFiltros();cerrarBuscadorSiVacio();this.blur();}"
@@ -1865,16 +1804,6 @@ body.modo-orden{
     </div>
   </div>
 </header>
-
-<!-- CARROUSEL HORIZONTAL DE PERSONAJES / CATEGORÍAS (AZUL CELESTE SESAME STREET) -->
-<div class="sesame-char-bar-wrap">
-  <div class="sesame-char-bar-inner">
-    <div id="sesame-char-carousel" class="sesame-char-carousel">
-      <!-- Se genera dinámicamente con los personajes / categorías -->
-    </div>
-    <button type="button" class="sesame-char-next-btn" onclick="desplazarCarousel(1)" title="Ver más categorías">❯</button>
-  </div>
-</div>
 
 <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y JUEGOS -->
 <div class="main-layout-wrap">
@@ -3017,6 +2946,38 @@ function renderCategorias(){
       btn.append(circle, label);
       carousel.appendChild(btn);
     });
+
+    // Añadir botón rápido de Videos
+    const btnVideos = document.createElement('button');
+    btnVideos.type = 'button';
+    btnVideos.className = 'sesame-char-btn';
+    btnVideos.style.setProperty('--char-bg', '#FF9900');
+    btnVideos.title = 'Ver videos y gameplays';
+    btnVideos.onclick = () => filtrarPorVideos();
+    const cVid = document.createElement('div');
+    cVid.className = 'sesame-char-circle';
+    cVid.innerHTML = `<span class="sesame-char-icon">▶️</span>`;
+    const lVid = document.createElement('span');
+    lVid.className = 'sesame-char-label';
+    lVid.textContent = 'Videos';
+    btnVideos.append(cVid, lVid);
+    carousel.appendChild(btnVideos);
+
+    // Añadir botón rápido de Favoritos
+    const btnFavs = document.createElement('button');
+    btnFavs.type = 'button';
+    btnFavs.className = 'sesame-char-btn';
+    btnFavs.style.setProperty('--char-bg', '#ED1C24');
+    btnFavs.title = 'Ver juegos favoritos';
+    btnFavs.onclick = () => filtrarFavoritos();
+    const cFav = document.createElement('div');
+    cFav.className = 'sesame-char-circle';
+    cFav.innerHTML = `<span class="sesame-char-icon">❤️</span>`;
+    const lFav = document.createElement('span');
+    lFav.className = 'sesame-char-label';
+    lFav.textContent = 'Favoritos';
+    btnFavs.append(cFav, lFav);
+    carousel.appendChild(btnFavs);
   }
 
   // 2. Menú legacy lateral (mantenido para soporte)
