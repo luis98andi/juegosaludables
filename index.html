@@ -16,6 +16,9 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" href="portadas/logo.png">
 <link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8026306095938145"
@@ -29,12 +32,16 @@
 *{box-sizing:border-box}
 
 body{
-  font-family:Arial,sans-serif;
-  background:url('fondo.jpg') no-repeat center center fixed;
-  background-size:cover;
-  color:white;
+  font-family:'Fredoka','Outfit',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background-color:#00AEEF;
+  background-image:radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.18) 0%, transparent 24%),
+                   radial-gradient(circle at 88% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 28%),
+                   radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.12) 0%, transparent 32%);
+  color:#1e293b;
   margin:0;
-  padding:20px
+  padding:0;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
 /* CUENTA PRIVILEGIADA SIN ANUNCIOS (HIJA / VIP) */
@@ -53,35 +60,15 @@ body.sin-anuncios .google-auto-placed {
   opacity: 0 !important;
 }
 
-h1{text-align:center}
-
-.logo{
-  width:100%;
-  max-width:260px;
-  height:110px;
-  object-fit:cover;
-  clip-path:inset(0 3px 0 0)
-}
-
-h1{margin:10px 0}
-
-/* BUSCADOR (SOLO ICONO QUE SE EXPANDE AL TOCAR) */
-.top-tools{
-  position:fixed;
-  top:16px;
-  right:18px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  z-index:200;
-  transition:opacity 0.2s ease, visibility 0.2s ease;
-}
-
-/* OCULTAR ELEMENTOS FLOTANTES (LUPA, 3 RAYAS Y MENÚS) CUANDO HAY UN JUEGO ABIERTO */
+/* OCULTAR ELEMENTOS FLOTANTES Y BARRAS SUPERIORES CUANDO HAY UN JUEGO ABIERTO */
+body.en-juego .sesame-topbar,
+body.en-juego .sesame-char-bar-wrap,
 body.en-juego .top-tools,
 body.en-juego .categories-floating-btn,
 body.en-juego .categories,
-body.en-juego #btn-ocultos {
+body.en-juego #btn-ocultos,
+body.en-juego #admin-launcher,
+body.en-juego #btn-cuentas {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -277,55 +264,444 @@ body.en-juego #btn-ocultos {
   transform: scale(1.1);
 }
 
-/* JUEGOS - MÁS ICONOS EN HORIZONTAL */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(135px,1fr));
-  gap:14px;
-  width:100%;
+/* ========================================================
+   DISEÑO ESTILO SESAME STREET GAMES (PLAZA SÉSAMO / ELMO)
+======================================================== */
+
+/* TOPBAR SUPERIOR BLANCA CON LOGO STREET SIGN Y BUBBLES */
+.sesame-topbar {
+  background: #ffffff;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 250;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.04);
 }
 
-.card{
-  background:none;
-  border-radius:10px;
-  padding:8px;
-  text-align:center;
-  cursor:pointer;
-  transition:transform .18s ease-out;
-  position:relative;
-  contain:layout style;
-  content-visibility:auto;
-  contain-intrinsic-size:135px 200px;
-  transform:translateZ(0);
+.sesame-topbar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 76px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.card:hover{transform:scale(1.05) translateZ(0)}
-
-.card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-  border-radius:16px
+/* LOGO: STREET SIGN VERDE CON BORDE AMARILLO Y CORONA 123 */
+.sesame-logo-sign {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  flex-shrink: 0;
+}
+.sesame-logo-sign:hover {
+  transform: scale(1.04);
+}
+.sesame-sign-crown {
+  background: #ffde00;
+  color: #00703c;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 1px 16px;
+  border-radius: 12px 12px 0 0;
+  border: 2.5px solid #00703c;
+  border-bottom: 0;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  transform: translateY(2px);
+  z-index: 2;
+}
+.sesame-sign-body {
+  background: #008751;
+  border: 3px solid #ffde00;
+  border-radius: 18px;
+  padding: 4px 18px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sesame-sign-text {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
 }
 
-.card p{
-  position:absolute;
-  left:8px;
-  right:8px;
-  bottom:8px;
-  margin:0;
-  padding:26px 8px 8px;
-  box-sizing:border-box;
-  border-radius:0 0 16px 16px;
-  background:linear-gradient(transparent,rgba(0,0,0,.78));
-  color:white;
-  font-size:13px;
-  font-weight:bold;
-  opacity:0;
-  transition:.2s
+/* 5 BURBUJAS CIRCULARES DE NAVEGACIÓN */
+.sesame-bubble-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.card:hover p{opacity:1}
+.sesame-bubble-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  position: relative;
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+.sesame-bubble-btn:hover {
+  transform: translateY(-4px) scale(1.12);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+.sesame-bubble-btn:active {
+  transform: scale(0.95);
+}
+
+.bubble-games { background: #00AEEF; color: white; }
+.bubble-videos { background: #FF9900; color: white; }
+.bubble-art { background: #E6007E; color: white; }
+.bubble-friends { background: #7B2CBF; color: white; }
+.bubble-favorites { background: #ED1C24; color: white; }
+
+/* Puntero triángulo activo debajo del icono de Juegos */
+.sesame-bubble-btn.active .bubble-pointer {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid currentColor;
+}
+.bubble-games.active .bubble-pointer { color: #00AEEF; }
+
+/* HERRAMIENTAS DERECHA: SIGN IN, GROWN UPS, BUSCADOR */
+.sesame-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sesame-search-wrap {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 28px;
+  padding: 2px 6px;
+  transition: all 0.25s ease;
+}
+.sesame-search-wrap:focus-within {
+  border-color: #00AEEF;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.2);
+}
+
+.sesame-search-toggle {
+  background: transparent;
+  border: 0;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.sesame-search-box {
+  width: 120px;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  padding: 6px 6px 6px 2px;
+  transition: width 0.25s ease;
+}
+.sesame-search-box:focus {
+  width: 180px;
+}
+.sesame-search-box::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.sesame-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  transition: all 0.2s ease;
+}
+.sesame-user-pill:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.sesame-grownups-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1e293b;
+  color: #ffffff;
+  border: 0;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.sesame-grownups-btn:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* CARROUSEL HORIZONTAL DE PERSONAJES / CATEGORÍAS */
+.sesame-char-bar-wrap {
+  background: #00AEEF;
+  width: 100%;
+  padding: 12px 20px 14px;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.08);
+}
+
+.sesame-char-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.sesame-char-carousel {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 8px 4px;
+  flex: 1;
+}
+.sesame-char-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.sesame-char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.sesame-char-btn:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+
+.sesame-char-circle {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: var(--char-bg, #2ecc71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border: 3.5px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: all 0.22s ease;
+  position: relative;
+}
+
+.sesame-char-btn.active .sesame-char-circle {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 4.5px #ffffff, 0 8px 22px rgba(0, 0, 0, 0.3);
+  transform: scale(1.12);
+}
+
+.sesame-char-label {
+  font-family: 'Fredoka', 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.sesame-char-next-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.sesame-char-next-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #00AEEF;
+  transform: scale(1.1);
+}
+
+/* GRID Y TARJETAS BLANCAS CON BADGE CIRCULAR DE CONTROL ESTILO SESAME STREET */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 26px;
+  width: 100%;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 80, 160, 0.16);
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: 290px 290px;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 18px 38px rgba(0, 60, 140, 0.24);
+}
+
+.card-media {
+  position: relative;
+  width: 100%;
+  height: 205px;
+  overflow: hidden;
+  background: #cceeff;
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  border-radius: 0;
+  display: block;
+}
+
+.card:hover .card-media img {
+  transform: scale(1.05);
+}
+
+/* Badge circular de gamepad estilo Sesame Street (abajo a la derecha) */
+.card-gamepad-badge {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #00AEEF;
+  border: 3.5px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease;
+  z-index: 2;
+}
+
+.card:hover .card-gamepad-badge {
+  transform: scale(1.15) rotate(-10deg);
+  background: #FF9900;
+}
+
+.card-info {
+  padding: 16px 20px 18px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.card-title {
+  margin: 0;
+  font-family: 'Fredoka', 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Compatibilidad si card p se crea */
+.card p {
+  margin: 0;
+  font-family: 'Fredoka', 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  text-align: left;
+  padding: 16px 20px 18px;
+  background: #ffffff;
+  position: static;
+  opacity: 1 !important;
+  text-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .sesame-bubble-nav { display: none; }
+  .sesame-search-box { width: 90px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .card-media { height: 170px; }
+}
 
 .card.juego-oculto-card{
   opacity:.55;
@@ -1425,41 +1801,88 @@ body.modo-orden{
 
 <body>
 
-<h1>
-  <img src="portadas/logo.png" alt="FreshMind Games" class="logo">
-</h1>
+<!-- SESAME STREET STYLE TOPBAR -->
+<header class="sesame-topbar">
+  <div class="sesame-topbar-inner">
+    <!-- LOGO: STREET SIGN BADGE -->
+    <a href="#" onclick="seleccionarCategoria('Todos');return false;" class="sesame-logo-sign" title="Inicio - FreshMind Games">
+      <div class="sesame-sign-crown">123</div>
+      <div class="sesame-sign-body">
+        <span class="sesame-sign-text">FRESHMIND</span>
+      </div>
+    </a>
 
-<!-- BUSCADOR ARRIBA A LA DERECHA (SOLO ICONO QUE SE ACTIVA AL TOCAR) -->
-<div class="top-tools">
-  <div id="searchWrap" class="search-wrap">
-    <button
-      id="searchToggleBtn"
-      class="search-toggle-btn"
-      type="button"
-      title="Buscar juego"
-      onclick="toggleBuscador()"
-    >🔎</button>
-    <input
-      id="searchInput"
-      class="search-box"
-      type="search"
-      placeholder="Buscar juego..."
-      oninput="aplicarFiltros()"
-      onblur="cerrarBuscadorSiVacio()"
-      onkeydown="if(event.key==='Escape'){this.value='';aplicarFiltros();cerrarBuscadorSiVacio();this.blur();}"
-    >
+    <!-- 5 ICON BUBBLES ESTILO SESAME STREET -->
+    <nav class="sesame-bubble-nav">
+      <button type="button" class="sesame-bubble-btn bubble-games active" title="Juegos" onclick="seleccionarCategoria('Todos')">
+        <span>🎮</span>
+        <div class="bubble-pointer"></div>
+      </button>
+      <button type="button" class="sesame-bubble-btn bubble-videos" title="Videos" onclick="filtrarPorVideos()">
+        <span>▶️</span>
+      </button>
+      <button type="button" class="sesame-bubble-btn bubble-art" title="Arte y Creatividad" onclick="seleccionarCategoria('Educativos')">
+        <span>🎨</span>
+      </button>
+      <button type="button" class="sesame-bubble-btn bubble-friends" title="¿Quién va a jugar? (Cambiar cuenta)" onclick="mostrarSelector()">
+        <span>🟣</span>
+      </button>
+      <button type="button" class="sesame-bubble-btn bubble-favorites" title="Favoritos" onclick="filtrarFavoritos()">
+        <span>❤️</span>
+      </button>
+    </nav>
+
+    <!-- HERRAMIENTAS DERECHA: BUSCADOR, PERFIL DE USUARIO, GROWN UPS (ADMIN) -->
+    <div class="sesame-top-right">
+      <div id="searchWrap" class="sesame-search-wrap">
+        <button
+          id="searchToggleBtn"
+          class="sesame-search-toggle"
+          type="button"
+          title="Buscar juego"
+          onclick="toggleBuscador()"
+        >🔍</button>
+        <input
+          id="searchInput"
+          class="sesame-search-box"
+          type="search"
+          placeholder="Buscar juego..."
+          oninput="aplicarFiltros()"
+          onblur="cerrarBuscadorSiVacio()"
+          onkeydown="if(event.key==='Escape'){this.value='';aplicarFiltros();cerrarBuscadorSiVacio();this.blur();}"
+        >
+      </div>
+
+      <button id="sesame-user-btn" class="sesame-user-pill" onclick="mostrarSelector()" title="Cambiar cuenta de juego">
+        <span id="sesame-user-avatar">🎮</span>
+        <span id="sesame-user-name">SIGN IN</span>
+      </button>
+
+      <button id="admin-launcher-nav" class="sesame-grownups-btn" onclick="abrirAdmin()" title="Zona de Administrador (Grown Ups)">
+        <span>GROWN UPS</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CARROUSEL HORIZONTAL DE PERSONAJES / CATEGORÍAS (AZUL CELESTE SESAME STREET) -->
+<div class="sesame-char-bar-wrap">
+  <div class="sesame-char-bar-inner">
+    <div id="sesame-char-carousel" class="sesame-char-carousel">
+      <!-- Se genera dinámicamente con los personajes / categorías -->
+    </div>
+    <button type="button" class="sesame-char-next-btn" onclick="desplazarCarousel(1)" title="Ver más categorías">❯</button>
   </div>
 </div>
 
 <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y JUEGOS -->
 <div class="main-layout-wrap">
-  <!-- BOTÓN FLOTANTE CUANDO ESTÁ COLAPSADO (PEGADO A LA IZQUIERDA) -->
-  <button id="categoriesToggleBtn" class="categories-floating-btn" type="button" onclick="toggleSidebarCollapse()" title="Abrir Categorías">
+  <!-- Botón legacy y contenedor de categorías (para retrocompatibilidad) -->
+  <button id="categoriesToggleBtn" class="categories-floating-btn" type="button" onclick="toggleSidebarCollapse()" title="Abrir Categorías" style="display:none">
     ☰ <span id="catFloatingLabel">Categorías</span>
   </button>
-
-  <!-- CATEGORÍAS -->
-  <div id="categories" class="categories collapsed"></div>
+  <div id="categories" class="categories collapsed" style="display:none"></div>
 
   <div id="grid" class="grid"></div>
 </div>
@@ -2489,9 +2912,43 @@ document.addEventListener('pointerdown', (e) => {
   }
 });
 
+function seleccionarCategoria(cat){
+  categoriaActual = cat;
+  renderCategorias();
+  aplicarFiltros();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filtrarPorVideos(){
+  const sInput = document.getElementById('searchInput');
+  if(sInput) sInput.value = '';
+  categoriaActual = 'Todos';
+  const filtrados = [...catalogo.juegos]
+    .filter(j => (!j.oculto || modoOrden) && (j.tipo === 'youtube' || /youtube|trailer|gameplay/i.test(j.url || '')));
+  renderCategorias();
+  renderJuegos(filtrados.length ? filtrados : null);
+}
+
+function filtrarFavoritos(){
+  const sInput = document.getElementById('searchInput');
+  if(sInput) sInput.value = '';
+  categoriaActual = 'Todos';
+  const filtrados = [...catalogo.juegos].slice(0, 12);
+  renderCategorias();
+  renderJuegos(filtrados);
+}
+
+function desplazarCarousel(dir){
+  const c = document.getElementById('sesame-char-carousel');
+  if(c){
+    c.scrollBy({ left: dir * 260, behavior: 'smooth' });
+  }
+}
+
 function renderCategorias(){
 
   const cont=document.getElementById('categories');
+  const carousel=document.getElementById('sesame-char-carousel');
   const floatLabel = document.getElementById('catFloatingLabel');
   if (floatLabel) {
     const icon = obtenerIconoCategoria(categoriaActual);
@@ -2511,73 +2968,113 @@ function renderCategorias(){
     if(j.categoria){
       categorias.add(j.categoria);
     }
-
   });
-
-  cont.innerHTML='';
-
-  // Por defecto COLAPSADO / OCULTO a menos que explícitamente se haya guardado '0'
-  const isCollapsed = localStorage.getItem('sidebar_collapsed') !== '0';
-  if (isCollapsed) {
-    cont.classList.add('collapsed');
-  } else {
-    cont.classList.remove('collapsed');
-  }
-
-  // Create Sidebar Header with Collapse Button
-  const header = document.createElement('div');
-  header.className = 'sidebar-header-row';
-  
-  const title = document.createElement('span');
-  title.className = 'sidebar-title';
-  title.textContent = 'Categorías';
-  
-  const toggleBtn = document.createElement('button');
-  toggleBtn.type = 'button';
-  toggleBtn.className = 'sidebar-toggle-btn';
-  toggleBtn.innerHTML = '✕';
-  toggleBtn.title = 'Cerrar / Ocultar Categorías';
-  toggleBtn.onclick = (e) => {
-    e.stopPropagation();
-    toggleSidebarCollapse(true);
-  };
-  
-  header.appendChild(title);
-  header.appendChild(toggleBtn);
-  cont.appendChild(header);
 
   const todas=["Todos",...Array.from(categorias)];
-  const catFragment=document.createDocumentFragment();
 
-  todas.forEach(cat=>{
-
-    const btn=document.createElement('button');
-
-    btn.className=
-      'category-btn '+
-      (categoriaActual===cat?'active':'');
-
-    // Add coherent beautiful emoji icon next to category name
-    const icon = obtenerIconoCategoria(cat);
-    btn.innerHTML = `<span style="margin-right:8px;font-size:16px">${icon}</span> <span>${escapeHtml(cat)}</span>`;
-
-    btn.onclick=()=>{
-
-      categoriaActual=cat;
-
-      renderCategorias();
-      aplicarFiltros();
-      
-      // Al seleccionar una categoría, cerrar suavemente el menú flotante para dejar ver los juegos
-      toggleSidebarCollapse(true);
-
+  // 1. CARROUSEL HORIZONTAL DE PERSONAJES / CATEGORÍAS ESTILO SESAME STREET
+  if(carousel){
+    carousel.innerHTML = '';
+    const CHAR_MAP = {
+      'Todos': { color: '#2ecc71', icon: '⭐', label: 'Todos' },
+      'Infantiles': { color: '#e74c3c', icon: '🔴', label: 'Elmo' },
+      'Retro': { color: '#1e88e5', icon: '🍪', label: 'Cookie' },
+      'Super Nintendo': { color: '#0d47a1', icon: '🕹️', label: 'SNES' },
+      'Aventura': { color: '#ec407a', icon: '🪄', label: 'Abby' },
+      'Acción': { color: '#283593', icon: '⚡', label: 'Grover' },
+      'Educativos': { color: '#fbc02d', icon: '🐥', label: 'Big Bird' },
+      'Carreras': { color: '#fb8c00', icon: '🏎️', label: 'Carreras' },
+      'Puzzles': { color: '#8e24aa', icon: '🧩', label: 'Puzzles' },
+      'Gatos': { color: '#00acc1', icon: '🐱', label: 'Gatos' },
+      'Estrategia': { color: '#5e35b1', icon: '🧠', label: 'Estrategia' }
     };
+    const COLOR_FALLBACKS = ['#e74c3c', '#1e88e5', '#ec407a', '#2ecc71', '#fbc02d', '#fb8c00', '#8e24aa', '#00acc1'];
 
-    catFragment.appendChild(btn);
+    todas.forEach((cat, idx) => {
+      const charInfo = CHAR_MAP[cat] || {
+        color: COLOR_FALLBACKS[idx % COLOR_FALLBACKS.length],
+        icon: obtenerIconoCategoria(cat),
+        label: cat
+      };
 
-  });
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sesame-char-btn ' + (categoriaActual === cat ? 'active' : '');
+      btn.style.setProperty('--char-bg', charInfo.color);
+      btn.title = `Ver juegos de ${cat}`;
+      btn.onclick = () => {
+        seleccionarCategoria(cat);
+      };
 
-  cont.appendChild(catFragment);
+      const circle = document.createElement('div');
+      circle.className = 'sesame-char-circle';
+      circle.innerHTML = `<span class="sesame-char-icon">${charInfo.icon}</span>`;
+
+      const label = document.createElement('span');
+      label.className = 'sesame-char-label';
+      label.textContent = charInfo.label;
+
+      btn.append(circle, label);
+      carousel.appendChild(btn);
+    });
+  }
+
+  // 2. Menú legacy lateral (mantenido para soporte)
+  if(cont){
+    cont.innerHTML='';
+
+    const isCollapsed = localStorage.getItem('sidebar_collapsed') !== '0';
+    if (isCollapsed) {
+      cont.classList.add('collapsed');
+    } else {
+      cont.classList.remove('collapsed');
+    }
+
+    const header = document.createElement('div');
+    header.className = 'sidebar-header-row';
+    
+    const title = document.createElement('span');
+    title.className = 'sidebar-title';
+    title.textContent = 'Categorías';
+    
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.className = 'sidebar-toggle-btn';
+    toggleBtn.innerHTML = '✕';
+    toggleBtn.title = 'Cerrar / Ocultar Categorías';
+    toggleBtn.onclick = (e) => {
+      e.stopPropagation();
+      toggleSidebarCollapse(true);
+    };
+    
+    header.appendChild(title);
+    header.appendChild(toggleBtn);
+    cont.appendChild(header);
+
+    const catFragment=document.createDocumentFragment();
+
+    todas.forEach(cat=>{
+
+      const btn=document.createElement('button');
+
+      btn.className=
+        'category-btn '+
+        (categoriaActual===cat?'active':'');
+
+      const icon = obtenerIconoCategoria(cat);
+      btn.innerHTML = `<span style="margin-right:8px;font-size:16px">${icon}</span> <span>${escapeHtml(cat)}</span>`;
+
+      btn.onclick=()=>{
+        seleccionarCategoria(cat);
+        toggleSidebarCollapse(true);
+      };
+
+      catFragment.appendChild(btn);
+
+    });
+
+    cont.appendChild(catFragment);
+  }
 
   actualizarBotonOcultos();
 
@@ -2681,19 +3178,35 @@ function renderJuegos(lista=null){
       );
     };
 
-    const img=document.createElement('img');
+    // Contenedor de miniatura con badge circular de gamepad estilo Sesame Street
+    const mediaWrap=document.createElement('div');
+    mediaWrap.className='card-media';
 
-    img.src=j.imagen;
+    const img=document.createElement('img');
+    img.src=j.imagen || 'portadas/logo.png';
     img.alt=j.nombre;
     img.loading='lazy';
     img.decoding='async';
+    img.onerror=()=>{ img.src='portadas/logo.png'; };
 
-    const p=document.createElement('p');
+    const badge=document.createElement('div');
+    badge.className='card-gamepad-badge';
+    badge.title='¡Jugar ahora!';
+    badge.innerHTML=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"></rect><path d="M6 12h4m-2-2v4m7-1h.01m3-2h.01"></path></svg>`;
 
+    mediaWrap.append(img, badge);
+
+    // Contenedor de título limpio y nítido
+    const infoWrap=document.createElement('div');
+    infoWrap.className='card-info';
+
+    const p=document.createElement('h3');
+    p.className='card-title';
     p.textContent=j.nombre+(j.oculto?' (Oculto)':'');
-    if(j.oculto || modoOrden)p.style.opacity='1';
 
-    card.append(img,p);
+    infoWrap.appendChild(p);
+
+    card.append(mediaWrap, infoWrap);
 
     if(modoOrden){
 
@@ -7947,20 +8460,30 @@ async function abrirCuenta(c,inicial){
 function actualizarBotonCuentas(){
 
   const b=document.getElementById('btn-cuentas');
+  if(b){
+    b.style.display='flex';
+    b.textContent=cuentaActual
+      ? cuentaActual.avatar
+      : '🎮';
+    b.title=cuentaActual
+      ? 'Cuenta: '+cuentaActual.nombre+' (toca para cambiar cuenta o cambiar tu emoji)'
+      : 'Cambiar cuenta o emoji';
+  }
 
-  b.style.display='flex';
-  b.textContent=cuentaActual
-    ? cuentaActual.avatar
-    : '🎮';
-  b.title=cuentaActual
-    ? 'Cuenta: '+cuentaActual.nombre+' (toca para cambiar cuenta o cambiar tu emoji)'
-    : 'Cambiar cuenta o emoji';
+  const uAvatar = document.getElementById('sesame-user-avatar');
+  const uName = document.getElementById('sesame-user-name');
+  if(uAvatar) uAvatar.textContent = cuentaActual ? (cuentaActual.avatar || '👤') : '🎮';
+  if(uName) uName.textContent = cuentaActual ? (cuentaActual.nombre || 'Perfil') : 'SIGN IN';
 
-  document.getElementById('admin-cuenta').textContent=
-    cuentas.length>1 && cuentaActual ? '· '+cuentaActual.nombre : '';
+  const adminC = document.getElementById('admin-cuenta');
+  if(adminC){
+    adminC.textContent = cuentas.length>1 && cuentaActual ? '· '+cuentaActual.nombre : '';
+  }
 
-  document.getElementById('admin-archivo').textContent=
-    cuentaActual ? cuentaActual.archivo : 'juegos.json';
+  const adminA = document.getElementById('admin-archivo');
+  if(adminA){
+    adminA.textContent = cuentaActual ? cuentaActual.archivo : 'juegos.json';
+  }
 
 }
 
