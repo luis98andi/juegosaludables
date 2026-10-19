@@ -952,7 +952,6 @@ body.is-dragging-card *{
 }
 body.is-dragging-card .card:not(.arrastrando){
   transition:none!important;
-  pointer-events:none!important;
 }
 body.modo-orden{
   padding-bottom:170px !important;
@@ -1616,9 +1615,6 @@ body.modo-orden{
   <div class="dock-main-row">
     <!-- Grupo 1: Acciones Principales -->
     <div class="dock-group dock-group-primary">
-         <button type="button" class="dock-btn" onclick="entrarModoOrden()" title="Activar modo ordenar y mover tarjetas arrastrando">
-        <span class="dock-icon">↕️</span> <span class="dock-txt">Ordenar</span>
-      </button>
       <button type="button" class="dock-btn dock-btn-copilot" onclick="abrirHerramientaAdmin('copiloto')" title="Abrir Copiloto IA Gemini para buscar y agregar juegos automáticamente">
         <span class="dock-icon">🤖</span> <span class="dock-txt">Copiloto IA</span>
       </button>
@@ -7588,7 +7584,7 @@ async function ordenSubirGitHub(){
     scheduleMover();
   });
 
-function soltar(e){
+  function soltar(e){
     if(!drag||e.pointerId!==drag.id)return;
 
     clearInterval(timer);
@@ -7601,26 +7597,13 @@ function soltar(e){
 
     drag=null;
 
-    // 1. Asignar el nuevo número de orden según cómo quedaron en la pantalla
     [...grid.querySelectorAll('.card')].forEach((c,i)=>{
       const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
-      if(j) j.orden = i + 1;
+      if(j)j.orden=i+1;
     });
 
-    // 2. Ordenar el catálogo internamente con esos nuevos valores
     catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
-    
-    // 3. Actualizar la vista
-    reordenar();
 
-    const msg=document.getElementById('orden-msg');
-    if(msg){
-      msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
-    }
-
-    cambiosPendientesSync=true;
-    huboCambiosSesionOrden=true;
-  }
     const msg=document.getElementById('orden-msg');
     if(msg){
       msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
