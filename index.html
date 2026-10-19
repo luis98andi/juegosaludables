@@ -8203,17 +8203,19 @@ function elegirCuenta(id){
 
   if(c.claveEntrar){
 
-    /* Verificar si la contraseña ya fue guardada en este dispositivo (Laptop o Celular) */
-    try{
-      const passGuardado=localStorage.getItem('freshmind_saved_pass_'+c.id);
-      if(passGuardado && passGuardado===c.claveEntrar){
-        localStorage.setItem('freshmind_ultima_cuenta', c.id);
-        ocultarSelector();
-        abrirCuenta(c);
-        mostrarToastSync('✨ Sesión iniciada: '+c.nombre);
-        return;
-      }
-    }catch(e){}
+    /* Verificar si la contraseña ya fue guardada en este dispositivo (excepto para luis que siempre requiere clave) */
+    if(c.id !== 'luis'){
+      try{
+        const passGuardado=localStorage.getItem('freshmind_saved_pass_'+c.id);
+        if(passGuardado && passGuardado===c.claveEntrar){
+          localStorage.setItem('freshmind_ultima_cuenta', c.id);
+          ocultarSelector();
+          abrirCuenta(c);
+          mostrarToastSync('✨ Sesión iniciada: '+c.nombre);
+          return;
+        }
+      }catch(e){}
+    }
 
     cuentaPendiente=c;
 
@@ -8256,7 +8258,7 @@ async function confirmarClaveCuenta(){
 
   if(hash===c.claveEntrar){
 
-    const recordar=document.getElementById('cuentas-clave-recordar')?.checked;
+    const recordar=(c.id !== 'luis') && document.getElementById('cuentas-clave-recordar')?.checked;
     if(recordar){
       try{
         localStorage.setItem('freshmind_saved_pass_'+c.id, hash);
