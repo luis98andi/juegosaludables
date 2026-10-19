@@ -4267,17 +4267,17 @@ function mostrarAgregar(){
         🪄 Pega cualquier <b>enlace normal de una web</b> (ej. RetroGames.cc, Minijuegos, Archive.org, YouTube) o un embed: el sistema extrae automáticamente el juego embebido/SWF, detecta si hay bloqueo de iframe y busca la mejor portada.
       </p>
 
-      <div class="form-grid">
+      <div class="form-grid" style="width:100%;max-width:100%;overflow:hidden">
 
-        <label style="grid-column:1/-1">
+        <label style="grid-column:1/-1;width:100%;max-width:100%;overflow:hidden">
           <span>🔗 Enlace de la página o juego (tu enlace original se respeta intacto)</span>
           <input
             id="fUrl"
-            style="width:100%;box-sizing:border-box;margin-top:5px;max-width:100%"
+            style="width:100%;box-sizing:border-box;margin-top:5px;max-width:100%;min-width:0"
             placeholder="https://... pega aquí el enlace de tu juego o página"
             oninput="autoAgregar()"
           >
-          <div class="url-tools-toolbar">
+          <div class="url-tools-toolbar" style="width:100%;max-width:100%;overflow:hidden;box-sizing:border-box">
             <button
               type="button"
               class="url-tool-btn"
