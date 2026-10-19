@@ -7554,6 +7554,7 @@ async function ordenSubirGitHub(){
 
     document.body.classList.add('is-dragging-card');
     card.classList.add('arrastrando');
+    card.style.pointerEvents='none';
     actualizarTransform();
 
     try{h.setPointerCapture(e.pointerId);}catch(err){}
@@ -7591,6 +7592,7 @@ async function ordenSubirGitHub(){
     document.body.classList.remove('is-dragging-card');
     drag.card.classList.remove('arrastrando');
     drag.card.style.transform='';
+    drag.card.style.pointerEvents='';
 
     drag=null;
 
