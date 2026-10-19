@@ -171,11 +171,12 @@
       "id": "game-008",
       "nombre": "Mine – Online",
       "imagen": "portadas/mine online.jpg",
-      "url": "https://playhop.com/dist-app/448223?header=no&skip-guard=1&utm_source=parent_window_api&utm_medium=playgama&clid=2951034&flags={%22adv_types_disabled%22:16}",
+      "url": "https://playhop.com/es/dist-app/508325?skip-guard=1&header=no&utm_source=distrib&utm_medium=moosite&hide_payments_and_currency=1&flags=%7B%22adv_sticky_banner_disabled%22%3Atrue",
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
       "categoria": "",
-      "orden": 16
+      "orden": 16,
+      "youtubeStart": 0
     },
     {
       "id": "game-009",
