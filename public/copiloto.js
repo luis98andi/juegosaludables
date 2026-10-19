@@ -1561,11 +1561,7 @@ async function enviarMensajeCopiloto(){
     if(rIdx && rIdx.ok){
       const dIdx = await rIdx.json();
       if(Array.isArray(dIdx.games) && dIdx.games.length > 0){
-        const disabledList = cfgDom.disabled || [];
-        juegosIndexados = dIdx.games.filter(g => {
-          const urlLower = (g.url || '').toLowerCase();
-          return !disabledList.some(d => urlLower.includes(d.toLowerCase()));
-        });
+        juegosIndexados = dIdx.games;
       }
     }
   } catch(e) {}

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "categorias": [],
+  "juegos": [
+    {
+      "id": "game-1790813060102",
+      "nombre": "retrocc",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn6-KlqvMoT_i3UCBDnMbfbPoGZORqY6sm04gNuNCYSvZR69VpdtaOr7E&s=10",
+      "url": "https://retrogamesnexus.com/es",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 1
+    },
+    {
+      "id": "game-1790821335030",
+      "nombre": "worms 2",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlfiI4ACzxOQKIBA9Wt0of3MM7QxWNWIRxUWY87NN2Pg&s=10",
+      "url": "https://retroonline.net/Windows/Worms%202",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 2
+    },
+    {
+      "id": "game-1790821769134",
+      "nombre": "Retro Online",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxWg7Bnjp4D8Rr6m78iFVbhwV_QNdsuw1KKjF4jNsawg&s=10",
+      "url": "https://retroonline.net/Index",
+      "tipo": "newtab",
+      "accion": "abrirEnNuevaPestana",
+      "categoria": "Infantil",
+      "youtubeStart": 0,
+      "orden": 3
+    }
+  ]
+}

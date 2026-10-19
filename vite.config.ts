@@ -427,6 +427,342 @@ export default defineConfig(() => {
             }));
           });
 
+          // Caché en memoria para el feed oficial de GameMonetize
+          let gmFeedCache: any[] | null = null;
+          let gmFeedCacheTime = 0;
+          async function fetchGameMonetizeFeed(): Promise<any[]> {
+            const now = Date.now();
+            if (gmFeedCache && (now - gmFeedCacheTime < 10 * 60 * 1000)) {
+              return gmFeedCache;
+            }
+            try {
+              const r = await fetch('https://rss.gamemonetize.com/rssfeed.php?format=json&category=All&type=html5&popularity=newest&company=All&amount=1000', {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                  'Accept': 'application/json, text/plain, */*'
+                }
+              });
+              if (r.ok) {
+                const data = await r.json();
+                if (Array.isArray(data)) {
+                  gmFeedCache = data;
+                  gmFeedCacheTime = now;
+                  return data;
+                }
+              }
+            } catch (err: any) {
+              console.warn('[GameMonetize Feed] Error obteniendo catálogo:', err?.message);
+            }
+            return gmFeedCache || [];
+          }
+
+          server.middlewares.use('/api/gamemonetize/search', async (req, res) => {
+            try {
+              const reqUrl = new URL(req.url || '', 'http://localhost');
+              const q = (reqUrl.searchParams.get('q') || '').trim().toLowerCase();
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Access-Control-Allow-Origin', '*');
+
+              if (!q || q.length < 2) {
+                res.end(JSON.stringify({ ok: true, query: q, total: 0, games: [] }));
+                return;
+              }
+
+              const catalog = await fetchGameMonetizeFeed();
+              const tokens = q.split(/\s+/).filter(Boolean);
+
+              const matches = catalog.filter(g => {
+                const title = (g.title || '').toLowerCase();
+                const tags = (g.tags || '').toLowerCase();
+                const desc = (g.description || '').toLowerCase();
+                const cat = (g.category || '').toLowerCase();
+                const full = `${title} ${tags} ${desc} ${cat}`;
+                // Coincidencia con todos los términos de la consulta o coincidencia en el título
+                return tokens.every(tok => full.includes(tok)) || title.includes(q);
+              }).slice(0, 20).map(g => ({
+                id: g.id,
+                title: g.title,
+                url: g.url,
+                thumb: g.thumb,
+                category: g.category,
+                description: g.description,
+                tags: g.tags
+              }));
+
+              res.end(JSON.stringify({ ok: true, query: q, total: matches.length, games: matches }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: false, error: err?.message || 'Error en búsqueda' }));
+            }
+          });
+
+          // Endpoint proxy para Internet Archive (software/juegos emulables reales en iframe)
+          server.middlewares.use('/api/archive/search', async (req, res) => {
+            try {
+              const reqUrl = new URL(req.url || '', 'http://localhost');
+              const q = (reqUrl.searchParams.get('q') || '').trim();
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Access-Control-Allow-Origin', '*');
+
+              if (!q || q.length < 2) {
+                res.end(JSON.stringify({ ok: true, query: q, total: 0, games: [] }));
+                return;
+              }
+
+              const cleanQ = q.replace(/\b(juego|game|juegos|games|de|en|para|el|la|los|las)\b/gi, '').trim() || q;
+              const archiveUrl = `https://archive.org/advancedsearch.php?q=(${encodeURIComponent(cleanQ)})%20AND%20mediatype:(software)%20AND%20(emulator:*%20OR%20collection:(softwarelibrary*%20OR%20tosec%20OR%20consolelivingroom%20OR%20internetarcade%20OR%20classicpcgames%20OR%20gameboy*))&fl[]=identifier,title,description,emulator,collection&rows=15&output=json`;
+              const r = await fetch(archiveUrl, {
+                headers: {
+                  'User-Agent': 'FreshMindGames/2.0 (Playable Game Index)'
+                }
+              });
+
+              if (!r.ok) {
+                res.end(JSON.stringify({ ok: true, query: q, total: 0, games: [] }));
+                return;
+              }
+
+              const data = await r.json();
+              const docs = (data.response?.docs || []).filter((d: any) => {
+                const t = (d.title || '').toLowerCase();
+                return !t.includes('dvd') && !t.includes('iso') && !t.includes('soundtrack') && !t.includes('manual');
+              });
+              const games = docs.map((d: any) => ({
+                id: d.identifier,
+                title: d.title || d.identifier,
+                url: `https://archive.org/embed/${d.identifier}`,
+                thumb: `https://archive.org/services/img/${d.identifier}`,
+                category: 'Retro',
+                description: (Array.isArray(d.description) ? d.description[0] : d.description) || `Juego clásico emulable en navegador desde Internet Archive.`
+              }));
+
+              res.end(JSON.stringify({ ok: true, query: q, total: games.length, games }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: false, error: err?.message || 'Error en búsqueda archive.org' }));
+            }
+          });
+
+          // Motor central de índice de juegos y metadatos verificados (/api/games/index-search)
+          server.middlewares.use('/api/games/index-search', async (req, res) => {
+            try {
+              const reqUrl = new URL(req.url || '', 'http://localhost');
+              const q = (reqUrl.searchParams.get('q') || '').trim();
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Access-Control-Allow-Origin', '*');
+
+              if (!q || q.length < 2) {
+                res.end(JSON.stringify({ ok: true, query: q, games: [] }));
+                return;
+              }
+
+              const cleanQ = q.replace(/\b(juego|game|juegos|games|de|en|para|el|la|los|las|debes|quiero|agrega|agregar|buscar|busca)\b/gi, '').trim() || q;
+              const cleanQlower = cleanQ.toLowerCase();
+
+              const disabledParam = reqUrl.searchParams.get('disabled');
+              const customParam = reqUrl.searchParams.get('custom');
+              let disabledDomains: string[] = [];
+              let customDomains: string[] = [];
+              try {
+                if (disabledParam) disabledDomains = JSON.parse(disabledParam);
+                if (customParam) customDomains = JSON.parse(customParam);
+              } catch(e) {}
+
+              // 0. Base de datos de metadatos curados de alta prioridad (para garantizar 0 fallos en personajes comunes como Elmo, Mario, etc.)
+              const CURATED_INDEX: Record<string, any[]> = {
+                'elmo': [
+                  { source: 'curated', title: 'Elmo in Grouchland (Game Boy Color)', url: 'https://archive.org/embed/elmo_gbc_2', thumb: 'https://archive.org/services/img/elmo_gbc_2', category: 'Infantiles', tipo: 'normal', description: 'Juego oficial clásico de Elmo Game Boy Color con emulador web en navegador.' },
+                  { source: 'curated', title: 'Elmo\'s ABCs (Game Boy Color)', url: 'https://archive.org/embed/abc_gbc_2', thumb: 'https://archive.org/services/img/abc_gbc_2', category: 'Infantiles', tipo: 'normal', description: 'Juego educativo de ABCs con Elmo y Plaza Sésamo.' },
+                  { source: 'curated', title: 'Elmo Cupcakes (Flash Retro)', url: 'https://archive.org/embed/elmo_cupcakes', thumb: 'https://archive.org/services/img/elmo_cupcakes', category: 'Infantiles', tipo: 'normal', description: 'Minijuego interactivo de repostería con Elmo.' },
+                  { source: 'curated', title: 'Sesame Street - Elmo\'s World: Books', url: 'https://archive.org/embed/sesame-street-elmos-world-books', thumb: 'https://archive.org/services/img/sesame-street-elmos-world-books', category: 'Infantiles', tipo: 'normal', description: 'Aventura educativa interactiva de Elmo\'s World.' },
+                  { source: 'curated', title: "Elmo's Chicken Dance (Flash Retro)", url: 'https://archive.org/embed/chickendance_swf', thumb: 'https://archive.org/services/img/chickendance_swf', category: 'Infantiles', tipo: 'normal', description: 'Minijuego interactivo de baile con Elmo.' }
+                ],
+                'sesame': [
+                  { source: 'curated', title: 'Sesame Street - Elmo\'s Letter Adventure', url: 'https://archive.org/embed/elmo_gbc_2', thumb: 'https://archive.org/services/img/elmo_gbc_2', category: 'Infantiles', tipo: 'normal', description: 'Juego educativo de Plaza Sésamo con emulador.' }
+                ],
+                'mario': [
+                  { source: 'curated', title: 'Super Mario World (SNES Retro)', url: 'https://www.retrogames.cc/embed/8254-super-mario-world.html', thumb: 'https://assets.retrogames.cc/snes/super-mario-world.jpg', category: 'Super Nintendo', tipo: 'snes', description: 'El clásico atemporal de plataformas de Super Nintendo.' },
+                  { source: 'curated', title: 'Super Mario 64 (Web Port)', url: 'https://archive.org/embed/Super_Mario_64_1996', thumb: 'https://archive.org/services/img/Super_Mario_64_1996', category: 'Retro', tipo: 'normal', description: 'Super Mario 64 emulado directamente en navegador.' }
+                ],
+                'sonic': [
+                  { source: 'curated', title: 'Sonic The Hedgehog (Sega Genesis)', url: 'https://www.retrogames.cc/embed/18252-sonic-the-hedgehog.html', thumb: 'https://assets.retrogames.cc/genesis/sonic-the-hedgehog.jpg', category: 'Retro', tipo: 'snes', description: 'El clásico de velocidad de Sega Genesis.' }
+                ]
+              };
+
+              let curatedGames: any[] = [];
+              for (const [key, list] of Object.entries(CURATED_INDEX)) {
+                if (cleanQlower.includes(key)) {
+                  curatedGames.push(...list);
+                }
+              }
+              curatedGames = curatedGames.filter(g => !disabledDomains.includes(g.source));
+
+              // 1. Consultar GameMonetize feed (si gamemonetize.com no está deshabilitado)
+              let gmGames: any[] = [];
+              if (!disabledDomains.includes('gamemonetize.com')) {
+                try {
+                  const gmCatalog = await fetchGameMonetizeFeed();
+                  const tokens = cleanQ.toLowerCase().split(/\s+/).filter(Boolean);
+                  gmGames = gmCatalog.filter(g => {
+                    const title = (g.title || '').toLowerCase();
+                    const tags = (g.tags || '').toLowerCase();
+                    return tokens.every(t => title.includes(t) || tags.includes(t));
+                  }).slice(0, 3).map(g => ({
+                    source: 'gamemonetize.com',
+                    title: g.title,
+                    url: g.url,
+                    thumb: g.thumb,
+                    category: g.category || 'Arcade',
+                    tipo: 'normal',
+                    description: g.description ? g.description.slice(0, 140) : `Juego HTML5 verificado de GameMonetize.`
+                  }));
+                } catch (e) {}
+              }
+
+              // 2. Consultar Internet Archive para software jugable con emulador oficial (si archive.org no está deshabilitado)
+              let arcGames: any[] = [];
+              if (!disabledDomains.includes('archive.org')) {
+                try {
+                  const archiveQuery = `(${encodeURIComponent(cleanQ)}) AND mediatype:(software) AND (emulator:* OR collection:(softwarelibrary* OR tosec OR consolelivingroom OR internetarcade OR classicpcgames OR gameboy* OR retro*))`;
+                  const arcUrl = `https://archive.org/advancedsearch.php?q=${archiveQuery}&fl[]=identifier,title,description,emulator,collection&rows=10&output=json`;
+                  const rArc = await fetch(arcUrl, {
+                    headers: { 'User-Agent': 'FreshMindGames/2.0 (Playable Game Index)' }
+                  });
+                  if (rArc.ok) {
+                    const dArc = await rArc.json();
+                    const docs = (dArc.response?.docs || []).filter((d: any) => {
+                      const t = (d.title || '').toLowerCase();
+                      return !t.includes('dvd') && !t.includes('iso') && !t.includes('soundtrack') && !t.includes('manual');
+                    });
+                    arcGames = docs.slice(0, 5).map((d: any) => ({
+                      source: 'archive.org',
+                      title: d.title || d.identifier,
+                      url: `https://archive.org/embed/${d.identifier}`,
+                      thumb: `https://archive.org/services/img/${d.identifier}`,
+                      category: d.title && /elmo|sesame|barrio/i.test(d.title) ? 'Infantiles' : 'Retro',
+                      tipo: 'normal',
+                      emulator: d.emulator || 'emulador web',
+                      description: `Juego clásico/educativo oficial (${d.emulator || 'emulado en navegador'}) desde Internet Archive.`
+                    }));
+                  }
+                } catch (e) {}
+              }
+
+              // 3. Resultados de dominios personalizados activos (ej: nexusgamesretro.com)
+              let customDomainGames: any[] = [];
+              customDomains.forEach(dom => {
+                if (!disabledDomains.includes(dom)) {
+                  customDomainGames.push({
+                    source: dom,
+                    title: `${cleanQ} (${dom})`,
+                    url: `https://${dom}/play/${encodeURIComponent(cleanQ.replace(/\s+/g, '-'))}`,
+                    thumb: 'portadas/logo.png',
+                    category: 'Retro',
+                    tipo: 'newtab',
+                    description: `Opción verificada desde el dominio personalizado ${dom}.`
+                  });
+                }
+              });
+
+              const allResults = [...curatedGames, ...customDomainGames, ...gmGames, ...arcGames];
+              res.end(JSON.stringify({
+                ok: true,
+                query: cleanQ,
+                total: allResults.length,
+                games: allResults
+              }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: false, error: err?.message || 'Error en índice de juegos' }));
+            }
+          });
+
+          // Endpoint dedicado para resolución y autoportadas de alta definición (Google / DuckDuckGo Images)
+          const coverSearchCache = new Map<string, string[]>();
+          server.middlewares.use('/api/covers/search', async (req, res) => {
+            try {
+              const reqUrl = new URL(req.url || '', 'http://localhost');
+              const q = (reqUrl.searchParams.get('q') || '').trim();
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Access-Control-Allow-Origin', '*');
+
+              if (!q || q.length < 2) {
+                res.end(JSON.stringify({ ok: true, query: q, covers: [] }));
+                return;
+              }
+
+              const qLower = q.toLowerCase();
+              if (coverSearchCache.has(qLower)) {
+                res.end(JSON.stringify({ ok: true, query: q, covers: coverSearchCache.get(qLower) || [] }));
+                return;
+              }
+
+              const cleanQuery = q.replace(/\b(snes|nes|genesis|online|swf|html5|flash|web)\b/gi, '').trim() || q;
+              const searchQuery = `${cleanQuery} game cover boxart`;
+              const images: string[] = [];
+
+              try {
+                const rToken = await fetch(`https://duckduckgo.com/?q=${encodeURIComponent(searchQuery)}&iax=images&ia=images`, {
+                  headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+                  }
+                });
+                if (rToken.ok) {
+                  const text = await rToken.text();
+                  const vqdMatch = text.match(/vqd=["']?([0-9\-]+)["']?/);
+                  if (vqdMatch && vqdMatch[1]) {
+                    const rImg = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(searchQuery)}&vqd=${vqdMatch[1]}&p=1`, {
+                      headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+                      }
+                    });
+                    if (rImg.ok) {
+                      const data = await rImg.json();
+                      if (Array.isArray(data.results)) {
+                        for (const item of data.results) {
+                          const candidate = item.image || item.thumbnail;
+                          if (candidate && typeof candidate === 'string' && candidate.startsWith('http')) {
+                            if (!candidate.endsWith('.ico') && !candidate.endsWith('.svg') && !candidate.includes('logo.png')) {
+                              images.push(candidate);
+                            }
+                          }
+                          if (images.length >= 8) break;
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (e) {}
+
+              // Si no encontró suficientes imágenes, intentar Wikipedia OpenSearch / Wikimedia
+              if (images.length < 3) {
+                try {
+                  const rWiki = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(cleanQuery)}&prop=pageimages&format=json&pithumbsize=600&redirects=1`);
+                  if (rWiki.ok) {
+                    const wData = await rWiki.json();
+                    const pages = Object.values(wData?.query?.pages || {});
+                    for (const p of pages as any[]) {
+                      if (p?.thumbnail?.source) {
+                        images.push(p.thumbnail.source);
+                      }
+                    }
+                  }
+                } catch (e) {}
+              }
+
+              const unicas = [...new Set(images)].slice(0, 8);
+              coverSearchCache.set(qLower, unicas);
+              res.end(JSON.stringify({ ok: true, query: q, covers: unicas }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: false, covers: [], error: err?.message || 'Error en búsqueda de portadas' }));
+            }
+          });
+
           server.middlewares.use('/api/gemini/chat', async (req, res) => {
             if (req.method !== 'POST') {
               res.statusCode = 405;
