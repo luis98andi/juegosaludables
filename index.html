@@ -1616,6 +1616,9 @@ body.modo-orden{
   <div class="dock-main-row">
     <!-- Grupo 1: Acciones Principales -->
     <div class="dock-group dock-group-primary">
+         <button type="button" class="dock-btn" onclick="entrarModoOrden()" title="Activar modo ordenar y mover tarjetas arrastrando">
+        <span class="dock-icon">↕️</span> <span class="dock-txt">Ordenar</span>
+      </button>
       <button type="button" class="dock-btn dock-btn-copilot" onclick="abrirHerramientaAdmin('copiloto')" title="Abrir Copiloto IA Gemini para buscar y agregar juegos automáticamente">
         <span class="dock-icon">🤖</span> <span class="dock-txt">Copiloto IA</span>
       </button>
@@ -7585,7 +7588,7 @@ async function ordenSubirGitHub(){
     scheduleMover();
   });
 
-  function soltar(e){
+function soltar(e){
     if(!drag||e.pointerId!==drag.id)return;
 
     clearInterval(timer);
@@ -7598,12 +7601,20 @@ async function ordenSubirGitHub(){
 
     drag=null;
 
-    [...grid.querySelectorAll('.card')].forEach((c,i)=>{
-      const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
-      if(j)j.orden=i+1;
+    const domIds=[...grid.querySelectorAll('.card')].map(c=>c.dataset.id);
+    const mapJuegos=new Map(catalogo.juegos.map(j=>[j.id,j]));
+    const nuevosJuegos=[];
+    
+    domIds.forEach(id=>{
+      if(mapJuegos.has(id)){
+        nuevosJuegos.push(mapJuegos.get(id));
+        mapJuegos.delete(id);
+      }
     });
-
-    catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
+    mapJuegos.forEach(j=>nuevosJuegos.push(j));
+    
+    catalogo.juegos=nuevosJuegos;
+    reordenar();
 
     const msg=document.getElementById('orden-msg');
     if(msg){
