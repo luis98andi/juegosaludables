@@ -1465,7 +1465,7 @@ body.modo-orden{
 <div class="main-layout-wrap">
   <!-- BOTÓN FLOTANTE CUANDO ESTÁ COLAPSADO (PEGADO A LA IZQUIERDA) -->
   <button id="categoriesToggleBtn" class="categories-floating-btn" type="button" onclick="toggleSidebarCollapse()" title="Abrir Categorías">
-    ☰ <span id="catFloatingLabel">Categorías</span>
+    ☰
   </button>
 
   <!-- CATEGORÍAS -->
@@ -2502,11 +2502,6 @@ document.addEventListener('pointerdown', (e) => {
 function renderCategorias(){
 
   const cont=document.getElementById('categories');
-  const floatLabel = document.getElementById('catFloatingLabel');
-  if (floatLabel) {
-    const icon = obtenerIconoCategoria(categoriaActual);
-    floatLabel.textContent = `${icon} ${categoriaActual}`;
-  }
 
   const categorias=new Set();
 
