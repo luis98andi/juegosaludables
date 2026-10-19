@@ -7601,21 +7601,26 @@ function soltar(e){
 
     drag=null;
 
-    const domIds=[...grid.querySelectorAll('.card')].map(c=>c.dataset.id);
-    const mapJuegos=new Map(catalogo.juegos.map(j=>[j.id,j]));
-    const nuevosJuegos=[];
-    
-    domIds.forEach(id=>{
-      if(mapJuegos.has(id)){
-        nuevosJuegos.push(mapJuegos.get(id));
-        mapJuegos.delete(id);
-      }
+    // 1. Asignar el nuevo número de orden según cómo quedaron en la pantalla
+    [...grid.querySelectorAll('.card')].forEach((c,i)=>{
+      const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
+      if(j) j.orden = i + 1;
     });
-    mapJuegos.forEach(j=>nuevosJuegos.push(j));
+
+    // 2. Ordenar el catálogo internamente con esos nuevos valores
+    catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
     
-    catalogo.juegos=nuevosJuegos;
+    // 3. Actualizar la vista
     reordenar();
 
+    const msg=document.getElementById('orden-msg');
+    if(msg){
+      msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
+    }
+
+    cambiosPendientesSync=true;
+    huboCambiosSesionOrden=true;
+  }
     const msg=document.getElementById('orden-msg');
     if(msg){
       msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
