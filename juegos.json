@@ -301,7 +301,8 @@
       "tipo": "iframe",
       "accion": "abrirJuego",
       "categoria": "",
-      "orden": 28
+      "orden": 28,
+      "tamano": "grande"
     },
     {
       "id": "game-1790796094022",
