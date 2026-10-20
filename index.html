@@ -280,9 +280,10 @@ body.en-juego #btn-ocultos {
 /* JUEGOS - MÁS ICONOS EN HORIZONTAL */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(135px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(64px,1fr));
   gap:14px;
   width:100%;
+  align-items:start;
 }
 
 .card{
@@ -307,6 +308,19 @@ body.en-juego #btn-ocultos {
   object-fit:cover;
   border-radius:16px
 }
+
+.card[data-tamano="pequeno"]{grid-column:span 1}
+.card[data-tamano="mediano"]{grid-column:span 2}
+.card[data-tamano="grande"]{grid-column:span 3}
+.card[data-tamano]{min-width:0}
+.card[data-tamano="pequeno"] img,
+.card[data-tamano="mediano"] img,
+.card[data-tamano="grande"] img{
+  height:auto;
+  aspect-ratio:1/1;
+  display:block;
+}
+.card[data-tamano="pequeno"]{padding:4px}
 
 .card p{
   position:absolute;
@@ -593,6 +607,12 @@ body.en-juego #btn-ocultos {
   box-shadow:0 15px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06);
 }
 
+.admin-box:has(.game-editor-form){
+  box-sizing:border-box;
+  width:100%;
+  max-width:960px;
+}
+
 .admin-box h2{margin-top:0; font-size: 20px;}
 
 .admin-actions{
@@ -624,6 +644,44 @@ body.en-juego #btn-ocultos {
   border-color:rgba(59,130,246,0.5);
   transform:translateY(-2px);
   box-shadow:0 6px 16px rgba(0,0,0,0.35);
+}
+
+.admin-manual{
+  margin:10px 0 14px;
+  padding:16px;
+  border:1px solid rgba(96,165,250,0.4);
+  border-radius:12px;
+  background:rgba(15,23,42,0.82);
+  color:#e2e8f0;
+  line-height:1.5;
+}
+
+.admin-manual h3,
+.admin-manual h4{
+  margin:0 0 8px;
+  color:#bfdbfe;
+}
+
+.admin-manual section+section{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.12);
+}
+
+.admin-manual ul,
+.admin-manual ol{
+  margin:6px 0 0;
+  padding-left:22px;
+}
+
+.admin-manual li+li{
+  margin-top:5px;
+}
+
+.admin-manual-note{
+  padding:9px 11px;
+  border-radius:8px;
+  background:rgba(59,130,246,0.13);
 }
 
 .admin-box button:not(.admin-actions button):not(.dock-btn):not(.card-bar-btn):not(.url-tool-btn){
@@ -714,6 +772,38 @@ body.en-juego #btn-ocultos {
   gap:10px
 }
 
+.game-editor-form{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.game-editor-form > *{
+  min-width:0;
+}
+
+.game-editor-form input,
+.game-editor-form select{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+
+.game-editor-form .category-field-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:stretch;
+}
+
+.game-editor-form .cover-field{
+  grid-column:1/-1;
+}
+
+.game-editor-form .image-field-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:stretch;
+}
+
 .form-grid label{
   display:flex;
   flex-direction:column;
@@ -802,25 +892,13 @@ body.en-juego #btn-ocultos {
 .card-admin-bar{
   position:absolute;
   top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  display:inline-flex;
+  left:8px;
+  right:8px;
+  display:flex;
   align-items:center;
-  gap:4px;
-  padding:4px 6px;
-  border-radius:30px;
-  background:rgba(15,23,42,0.88);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,0.22);
-  box-shadow:0 6px 20px rgba(0,0,0,0.55);
+  justify-content:space-between;
   z-index:10;
-  transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.card-admin-bar:hover{
-  background:rgba(15,23,42,0.98);
-  border-color:rgba(59,130,246,0.6);
-  box-shadow:0 8px 24px rgba(0,0,0,0.7), 0 0 14px rgba(59,130,246,0.3);
+  pointer-events:none;
 }
 .card-bar-btn{
   width:30px;
@@ -862,6 +940,82 @@ body.en-juego #btn-ocultos {
 .card-bar-btn.btn-del:hover{
   background:rgba(239,68,68,0.6);
   color:#fff;
+}
+.card-admin-bar .card-bar-btn{
+  pointer-events:auto;
+}
+.card.admin-menu-open{
+  z-index:20;
+  overflow:visible;
+  contain:none;
+  content-visibility:visible;
+}
+.card-action-menu{
+  position:absolute;
+  top:38px;
+  left:0;
+  right:auto;
+  z-index:30;
+  width:206px;
+  padding:9px;
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:12px;
+  background:rgba(15,23,42,0.98);
+  box-shadow:0 10px 28px rgba(0,0,0,0.6);
+  color:#f1f5f9;
+  text-align:left;
+  pointer-events:auto;
+  box-sizing:border-box;
+}
+.card-action-menu[hidden]{
+  display:none!important;
+}
+.card-menu-size-label{
+  display:block;
+  margin:0 0 6px;
+  color:#cbd5e1;
+  font-size:11px;
+  font-weight:700;
+}
+.card-menu-sizes{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:4px;
+  margin-bottom:8px;
+}
+.card-action-menu button{
+  min-width:0;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:7px;
+  padding:6px 4px;
+  background:rgba(255,255,255,0.08);
+  color:#f8fafc;
+  font-size:11px;
+  font-weight:600;
+  cursor:pointer;
+}
+.card-action-menu button:hover,
+.card-action-menu button[aria-pressed="true"]{
+  border-color:#60a5fa;
+  background:rgba(37,99,235,0.55);
+  color:#fff;
+}
+.card-menu-actions{
+  display:grid;
+  gap:5px;
+  padding-top:7px;
+  border-top:1px solid rgba(255,255,255,0.14);
+}
+.card-menu-action{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  width:100%;
+  text-align:left;
+}
+.card-menu-action.btn-del:hover{
+  border-color:#f87171;
+  background:rgba(239,68,68,0.45);
 }
 
 /* Fallback de compatibilidad */
@@ -935,15 +1089,34 @@ body.en-juego #btn-ocultos {
   word-break:break-all;
 }
 .card.arrastrando{
-  transition:none!important;
-  z-index:9999!important;
+  position:fixed!important;
+  z-index:1200!important;
+  margin:0!important;
+  pointer-events:none!important;
   opacity:.95;
   box-shadow:0 18px 40px rgba(0,0,0,.75)!important;
   border-radius:16px;
   will-change:transform;
   touch-action:none;
-  pointer-events:none!important;
   transform-origin:center center;
+  transition:transform .08s ease-out!important;
+}
+.card.arrastrando,
+.card.arrastrando *{
+  pointer-events:none!important;
+}
+.card-drag-placeholder{
+  box-sizing:border-box;
+  border:2px dashed rgba(96,165,250,.95);
+  border-radius:14px;
+  background:rgba(59,130,246,.18);
+  box-shadow:inset 0 0 24px rgba(59,130,246,.16);
+  visibility:visible!important;
+  contain:none!important;
+  content-visibility:visible!important;
+}
+.card-drag-placeholder>*{
+  visibility:hidden!important;
 }
 body.is-dragging-card,
 body.is-dragging-card *{
@@ -1391,7 +1564,7 @@ body.modo-orden{
   }
 
   .grid{
-    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns:repeat(auto-fill,minmax(56px,1fr)) !important;
     gap:10px;
   }
 
@@ -1404,7 +1577,17 @@ body.modo-orden{
     border-radius:12px;
   }
 
+  .card[data-tamano="pequeno"] img,
+  .card[data-tamano="mediano"] img,
+  .card[data-tamano="grande"] img{
+    height:auto;
+  }
+
   .form-grid{grid-template-columns:1fr}
+
+  .game-editor-form{
+    grid-template-columns:1fr;
+  }
 
   .admin-row{
     align-items:flex-start
@@ -1417,6 +1600,12 @@ body.modo-orden{
 
   .search-wrap.open .search-box{
     width:175px
+  }
+}
+
+@media(max-width:480px){
+  .game-editor-form .image-field-row{
+    grid-template-columns:1fr;
   }
 }
 
@@ -1607,7 +1796,7 @@ body.modo-orden{
       <span class="dock-status-dot"></span>
       <span class="dock-status-title">Panel de Administración</span>
     </div>
-    <span id="orden-msg" class="dock-hint">Arrastra ⠿ para ordenar · ✏️ editar · 🙈 ocultar · 🗑️ borrar</span>
+    <span id="orden-msg" class="dock-hint">Arrastra ⠿ y suelta en el espacio punteado · ⋯ opciones</span>
     <button type="button" id="btn-min-orden-bar" class="dock-btn-min" onclick="toggleMinimizarOrdenBar()" title="Minimizar barra para ver todos los juegos">🔽 Minimizar</button>
   </div>
 
@@ -1754,6 +1943,10 @@ body.modo-orden{
           🤖 Copiloto IA Gemini
         </button>
 
+        <button type="button" onclick="toggleManualAdmin()" style="background:#334155;color:#fff;font-weight:bold" aria-expanded="false" aria-controls="admin-manual">
+          📖 Manual
+        </button>
+
         <button onclick="mostrarAgregar()">
           ➕ Agregar juego
         </button>
@@ -1825,6 +2018,66 @@ body.modo-orden{
       </div>
 
       <p id="github-quick-status" class="admin-muted" style="display:none;margin:0 0 12px;padding:8px 12px;border-radius:8px;background:#222"></p>
+
+      <div id="admin-manual" class="admin-manual" style="display:none" tabindex="-1">
+        <h3>📖 Manual del administrador</h3>
+        <p>Esta guía explica los botones del panel y el flujo recomendado para agregar juegos.</p>
+
+        <section>
+          <h4>➕ Agregar un juego</h4>
+          <ol>
+            <li><b>Enlace de la página o juego:</b> pega la dirección web. El sistema intenta detectar automáticamente el nombre y los datos; puedes editar el resultado.</li>
+            <li><b>Escanear web:</b> busca dentro de la página enlaces de juego, como iframes, HTML5, emuladores o archivos SWF. No reemplaza por sí solo el enlace original.</li>
+            <li><b>Probar enlace:</b> abre una vista previa del enlace en el formulario. Usa <b>Cerrar prueba</b> para quitarla.</li>
+            <li><b>Ventana JS:</b> abre la herramienta de búsqueda de enlaces JavaScript para páginas que no muestran fácilmente el juego.</li>
+            <li><b>Más sitios:</b> prepara sugerencias para buscar el juego en otras páginas.</li>
+            <li><b>Historial:</b> muestra las búsquedas de enlaces hechas durante esta sesión.</li>
+            <li><b>Pausar/Reanudar búsqueda:</b> detiene o reactiva la búsqueda automática de contenido integrado, útil si quieres conservar y editar el enlace sin que se procese.</li>
+            <li><b>Nombre:</b> revisa o cambia el título. Al escribirlo manualmente se detiene la actualización automática del nombre.</li>
+            <li><b>Categoría:</b> elige dónde aparecerá el juego. <b>Nueva</b> permite crear una categoría desde el mismo formulario.</li>
+            <li><b>Tipo / Modo de apertura:</b> elige cómo se ejecutará: <b>iframe</b> incrustado, una de las opciones de <b>ventana</b>, <b>SNES / Genesis</b>, <b>Flash SWF</b>, <b>YouTube</b> o abrir en <b>otra pestaña</b>. Usa el modo que corresponda al enlace.</li>
+            <li><b>URL de imagen:</b> pega una dirección de portada. <b>Auto-portada</b> busca imágenes por el nombre y <b>Google</b> abre Google Imágenes.</li>
+            <li><b>Vista previa y miniaturas:</b> revisa cómo se verá la portada; si aparecen sugerencias, selecciona una para usarla.</li>
+            <li><b>Añadir al catálogo:</b> guarda el juego en el catálogo de la cuenta activa. <b>Cancelar</b> cierra el formulario sin añadirlo.</li>
+          </ol>
+          <p class="admin-manual-note"><b>Flujo recomendado:</b> pega el enlace, deja que se complete la información, revisa nombre/categoría/tipo/portada, prueba el enlace y finalmente pulsa <b>Añadir al catálogo</b>.</p>
+        </section>
+
+        <section>
+          <h4>🧩 Tamaño y acciones de las tarjetas</h4>
+          <p>Mientras estás ordenando, pulsa <b>⋯</b> en una tarjeta para elegir <b>Pequeño</b>, <b>Mediano</b> o <b>Grande</b>. El tamaño se guarda para esa tarjeta. En ese mismo menú están editar, duplicar, ocultar/mostrar y eliminar.</p>
+        </section>
+
+        <section>
+          <h4>🧰 Otros botones del panel</h4>
+          <ul>
+            <li><b>Copiloto IA Gemini:</b> abre el asistente para buscar y preparar propuestas de juegos. Requiere configurar una clave de Gemini.</li>
+            <li><b>Historial de juegos:</b> consulta el historial de juegos jugados.</li>
+            <li><b>Categorías:</b> crea o elimina categorías del catálogo. Si eliminas una que tiene juegos, estos pasan a “Todos (General)”.</li>
+            <li><b>Agregar hasta 20:</b> muestra varios espacios para ingresar varios juegos en una sola operación.</li>
+            <li><b>Traer de otra cuenta:</b> permite seleccionar juegos de otra cuenta y copiarlos a la cuenta activa.</li>
+            <li><b>Ver ocultos:</b> cierra el panel y activa el filtro para mostrar las tarjetas ocultas.</li>
+            <li><b>Cuentas:</b> administra las cuentas disponibles y sus catálogos.</li>
+            <li><b>Cambiar contraseña:</b> cambia la contraseña de administración.</li>
+            <li><b>Respaldo JSON:</b> abre opciones para descargar una copia del catálogo o cargar una copia guardada. Antes de importar, revisa que el archivo sea el correcto.</li>
+            <li><b>Volver a las tarjetas:</b> cierra el administrador y regresa a la página principal.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h4>☁️ GitHub y claves</h4>
+          <ul>
+            <li><b>Token:</b> configura el repositorio, la rama y el token que usa esta aplicación para comunicarse con GitHub.</li>
+            <li><b>Actualizar GitHub:</b> sube el catálogo activo; si falta la configuración, abre el panel para completarla.</li>
+            <li><b>Sincronizar TODO:</b> envía los datos y archivos incluidos por la sincronización completa de esta aplicación.</li>
+            <li><b>Verificar GitHub:</b> comprueba el estado de la conexión al repositorio.</li>
+            <li><b>Clave Gemini:</b> guarda o prueba la clave del Copiloto y permite gestionar los dominios de búsqueda.</li>
+          </ul>
+          <p class="admin-manual-note">Las acciones de GitHub de este panel son distintas de los botones <b>Commit</b> y <b>Push</b> de Visual Studio Code. No compartas tus tokens ni claves.</p>
+        </section>
+
+        <button type="button" onclick="toggleManualAdmin()">Cerrar manual</button>
+      </div>
 
       <div id="respaldo-json-box" style="display:none;margin:10px 0 14px;padding:12px;border-radius:10px;background:#222">
         <div class="admin-muted" style="margin-bottom:8px">
@@ -2419,7 +2672,7 @@ async function sincronizarGitHubSilencioso(prefijoMsg='Cambios'){
     mostrarToastSync(`☁️ GitHub actualizado ✓`, 2400);
     const ordenMsg=document.getElementById('orden-msg');
     if(modoOrden && ordenMsg){
-      ordenMsg.textContent='☁️ GitHub actualizado ✓ · Arrastra ⠿ · 🏷️ categoría · ✏️ editar · 🗑️ borrar';
+      ordenMsg.textContent='☁️ GitHub actualizado ✓ · Arrastra ⠿ · ⋯ tamaños y acciones';
     }
   }catch(e){
     console.error(e);
@@ -2617,6 +2870,78 @@ function aplicarFiltros(){
   renderJuegos(filtrados);
 }
 
+function cerrarMenusTarjetas(){
+  document.querySelectorAll('#grid .card.admin-menu-open').forEach(card=>{
+    card.classList.remove('admin-menu-open');
+    const menu=card.querySelector('.card-action-menu');
+    const trigger=card.querySelector('.card-menu-trigger');
+    if(menu)menu.hidden=true;
+    if(trigger)trigger.setAttribute('aria-expanded','false');
+  });
+}
+
+function toggleMenuTarjeta(id,event){
+  if(event)event.stopPropagation();
+  const card=[...document.querySelectorAll('#grid .card')].find(item=>item.dataset.id===id);
+  const adminBar=card?.querySelector('.card-admin-bar');
+  const menu=card?.querySelector('.card-action-menu');
+  const trigger=card?.querySelector('.card-menu-trigger');
+  if(!card || !adminBar || !menu || !trigger)return;
+
+  const abrir=menu.hidden;
+  cerrarMenusTarjetas();
+  if(abrir){
+    card.classList.add('admin-menu-open');
+    menu.hidden=false;
+    trigger.setAttribute('aria-expanded','true');
+
+    const barRect=adminBar.getBoundingClientRect();
+    const cardRect=card.getBoundingClientRect();
+    const anchoMenu=menu.offsetWidth;
+    const anchoViewport=document.documentElement.clientWidth;
+    const left=Math.max(8,Math.min(barRect.left,anchoViewport-anchoMenu-8));
+    menu.style.left=`${left-barRect.left}px`;
+    menu.style.right='auto';
+
+    const dock=document.getElementById('orden-bar');
+    const limiteInferior=dock && getComputedStyle(dock).display!=='none'
+      ? dock.getBoundingClientRect().top-8
+      : window.innerHeight-8;
+    const topAbajo=barRect.bottom+6;
+    const topDeseado=topAbajo+menu.offsetHeight<=limiteInferior
+      ? topAbajo
+      : Math.max(8,cardRect.top-menu.offsetHeight-6);
+    menu.style.top=`${topDeseado-barRect.top}px`;
+  }
+}
+
+function cambiarTamanoJuego(id,tamano,event){
+  if(event)event.stopPropagation();
+  if(!modoOrden)return;
+  if(!['pequeno','mediano','grande'].includes(tamano)){
+    console.error('Tamaño de tarjeta no válido:',tamano);
+    return;
+  }
+  const juego=catalogo.juegos.find(item=>item.id===id);
+  const card=[...document.querySelectorAll('#grid .card')].find(item=>item.dataset.id===id);
+  if(!juego || !card)return;
+
+  juego.tamano=tamano;
+  card.dataset.tamano=tamano;
+  card.querySelectorAll('[data-tamano-opcion]').forEach(button=>{
+    button.setAttribute('aria-pressed',String(button.dataset.tamanoOpcion===tamano));
+  });
+  programarAutoSyncGitHub(`📐 Tamaño de "${juego.nombre}" actualizado`,900);
+}
+
+document.addEventListener('click',event=>{
+  if(!event.target.closest('#grid .card-admin-bar'))cerrarMenusTarjetas();
+});
+
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape')cerrarMenusTarjetas();
+});
+
 function renderJuegos(lista=null){
 
   const grid=document.getElementById('grid');
@@ -2666,6 +2991,7 @@ function renderJuegos(lista=null){
     card.className='card'+(j.oculto?' juego-oculto-card':'');
 
     card.dataset.id=j.id;
+    card.dataset.tamano=['pequeno','mediano','grande'].includes(j.tamano)?j.tamano:'mediano';
 
     card.onclick=()=>{
       if(modoOrden)return;
@@ -2716,33 +3042,89 @@ function renderJuegos(lista=null){
       adminBar.className='card-admin-bar';
       adminBar.onclick=e=>e.stopPropagation();
 
-      const h=document.createElement('div');
+      const h=document.createElement('button');
+      h.type='button';
       h.className='handle card-bar-btn';
       h.textContent='⠿';
       h.title='Arrastra para mover de posición';
 
+      const menuTrigger=document.createElement('button');
+      menuTrigger.type='button';
+      menuTrigger.className='card-bar-btn card-menu-trigger';
+      menuTrigger.textContent='⋯';
+      menuTrigger.title='Tamaño y acciones de esta tarjeta';
+      menuTrigger.setAttribute('aria-label',`Opciones de ${j.nombre}`);
+      menuTrigger.setAttribute('aria-expanded','false');
+      menuTrigger.onclick=e=>toggleMenuTarjeta(j.id,e);
+
+      const menu=document.createElement('div');
+      menu.className='card-action-menu';
+      menu.hidden=true;
+      menu.setAttribute('role','group');
+      menu.setAttribute('aria-label',`Tamaño y acciones de ${j.nombre}`);
+
+      const sizeLabel=document.createElement('span');
+      sizeLabel.className='card-menu-size-label';
+      sizeLabel.textContent='Tamaño de tarjeta';
+      menu.appendChild(sizeLabel);
+
+      const sizeOptions=document.createElement('div');
+      sizeOptions.className='card-menu-sizes';
+      sizeOptions.setAttribute('role','group');
+      sizeOptions.setAttribute('aria-label',`Tamaño de ${j.nombre}`);
+      [
+        ['pequeno','Pequeño'],
+        ['mediano','Mediano'],
+        ['grande','Grande']
+      ].forEach(([value,label])=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.dataset.tamanoOpcion=value;
+        button.textContent=label;
+        button.setAttribute('aria-pressed',String(card.dataset.tamano===value));
+        button.onclick=e=>cambiarTamanoJuego(j.id,value,e);
+        sizeOptions.appendChild(button);
+      });
+      menu.appendChild(sizeOptions);
+
+      const actions=document.createElement('div');
+      actions.className='card-menu-actions';
+
       const btnEdit=document.createElement('button');
       btnEdit.type='button';
-      btnEdit.className='card-bar-btn btn-edit';
-      btnEdit.textContent='✏️';
-      btnEdit.title='Editar juego, enlaces y portadas';
-      btnEdit.onclick=e=>{e.stopPropagation();editarDesdeTarjeta(j.id);};
+      btnEdit.className='card-menu-action btn-edit';
+      btnEdit.textContent='✏️ Editar juego';
+      btnEdit.onclick=e=>{
+        e.stopPropagation();
+        cerrarMenusTarjetas();
+        editarDesdeTarjeta(j.id);
+      };
+
+      const btnDuplicate=document.createElement('button');
+      btnDuplicate.type='button';
+      btnDuplicate.className='card-menu-action';
+      btnDuplicate.textContent='📄 Duplicar juego';
+      btnDuplicate.onclick=e=>duplicarJuegoDesdeTarjeta(j.id,e);
 
       const btnOcultar=document.createElement('button');
       btnOcultar.type='button';
-      btnOcultar.className='card-bar-btn btn-hide'+(j.oculto?' active':'');
-      btnOcultar.textContent=j.oculto?'👁️':'🙈';
-      btnOcultar.title=j.oculto?'Desocultar juego':'Ocultar juego';
+      btnOcultar.className='card-menu-action btn-hide'+(j.oculto?' active':'');
+      btnOcultar.textContent=j.oculto?'👁️ Mostrar juego':'🙈 Ocultar juego';
       btnOcultar.onclick=e=>alternarOcultoJuego(j.id,e);
 
       const btnDel=document.createElement('button');
       btnDel.type='button';
-      btnDel.className='card-bar-btn btn-del';
-      btnDel.textContent='🗑️';
-      btnDel.title='Eliminar juego del catálogo';
-      btnDel.onclick=e=>{e.stopPropagation();eliminarJuego(j.id);};
+      btnDel.className='card-menu-action btn-del';
+      btnDel.textContent='🗑️ Eliminar juego';
+      btnDel.onclick=e=>{
+        e.stopPropagation();
+        cerrarMenusTarjetas();
+        eliminarJuego(j.id);
+      };
 
-      adminBar.append(h,btnEdit,btnOcultar,btnDel);
+      actions.append(btnEdit,btnDuplicate,btnOcultar,btnDel);
+      menu.appendChild(actions);
+      adminBar.append(h,menuTrigger,menu);
       card.appendChild(adminBar);
 
     }
@@ -4150,6 +4532,20 @@ function cerrarAdmin(){
 
 }
 
+function toggleManualAdmin(){
+  const manual=document.getElementById('admin-manual');
+  const button=document.querySelector('[aria-controls="admin-manual"]');
+  if(!manual || !button){
+    console.error('No se encontró el manual del administrador.');
+    return;
+  }
+
+  const abrir=manual.style.display==='none';
+  manual.style.display=abrir?'block':'none';
+  button.setAttribute('aria-expanded',String(abrir));
+  if(abrir)manual.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
 async function validarPin(){
 
   const v=document.getElementById('pin').value;
@@ -4266,7 +4662,7 @@ function mostrarAgregar(){
         🪄 Pega cualquier <b>enlace normal de una web</b> (ej. RetroGames.cc, Minijuegos, Archive.org, YouTube) o un embed: el sistema extrae automáticamente el juego embebido/SWF, detecta si hay bloqueo de iframe y busca la mejor portada.
       </p>
 
-      <div class="form-grid" style="width:100%">
+      <div class="form-grid game-editor-form" style="width:100%">
 
         <label style="grid-column:1/-1;width:100%">
           <span>🔗 Enlace de la página o juego (tu enlace original se respeta intacto)</span>
@@ -4356,7 +4752,7 @@ function mostrarAgregar(){
 
         <label>
           Categoría (por defecto: Todos)
-          <div style="display:flex;gap:6px">
+          <div class="category-field-row" style="display:flex;gap:6px">
             <select id="fCat" style="flex:1">
               ${opcionesCategorias()}
             </select>
@@ -4415,9 +4811,9 @@ function mostrarAgregar(){
           </select>
         </label>
 
-        <label>
+        <label class="cover-field">
           URL de imagen (se autocompleta o elige abajo)
-          <div style="display:flex;gap:6px">
+          <div class="image-field-row" style="display:flex;gap:6px">
             <input
               id="fImagen"
               style="flex:1"
@@ -6709,6 +7105,27 @@ function guardarEdicion(id){
    ORDEN / ELIMINAR (SIN WINDOW.CONFIRM BLOQUEADO)
 ========================= */
 
+function duplicarJuegoDesdeTarjeta(id,event){
+  if(event)event.stopPropagation();
+  if(!modoOrden)return;
+  const original=catalogo.juegos.find(j=>j.id===id);
+  if(!original)return;
+
+  const copia=JSON.parse(JSON.stringify(original));
+  do{
+    copia.id='game-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+  }while(catalogo.juegos.some(j=>j.id===copia.id));
+  copia.nombre=`${original.nombre} (copia)`;
+
+  catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
+  const indice=catalogo.juegos.findIndex(j=>j.id===id);
+  catalogo.juegos.splice(indice+1,0,copia);
+  reordenar();
+  renderCategorias();
+  aplicarFiltros();
+  programarAutoSyncGitHub(`📄 "${original.nombre}" duplicado`,900);
+}
+
 async function eliminarJuego(id){
 
   const j=catalogo.juegos.find(x=>x.id===id);
@@ -7405,7 +7822,7 @@ function entrarModoOrden(){
     if(btnMin)btnMin.textContent='🔽 Minimizar';
   }
   document.getElementById('orden-msg').textContent=
-    'Arrastra ⠿ para ordenar · 🏷️ categoría · ✏️ editar · 🙈 ocultar';
+    'Arrastra ⠿ para ordenar · ⋯ tamaño y acciones · 🏷️ categoría';
 
   renderCategorias();
   aplicarFiltros();
@@ -7481,46 +7898,35 @@ async function ordenSubirGitHub(){
   let drag=null, timer=null;
   let rafPending=false;
 
-  function actualizarTransform(){
+  function actualizarPosicion(){
     if(!drag)return;
-    const dx=drag.x - drag.gx - drag.baseLeft;
-    const dy=drag.y - drag.gy - drag.baseTop;
-    drag.card.style.transform=`translate3d(${dx}px,${dy}px,0) scale(1.04)`;
+    drag.card.style.left=`${drag.x-drag.offsetX}px`;
+    drag.card.style.top=`${drag.y-drag.offsetY}px`;
   }
 
-  function recalcularBase(){
+  function moverMarcador(){
     if(!drag)return;
-    const c=drag.card;
-    const prevTransform=c.style.transform;
-    c.style.transform='none';
-    const r=c.getBoundingClientRect();
-    drag.baseLeft=r.left;
-    drag.baseTop=r.top;
-    c.style.transform=prevTransform;
+    const el=document.elementFromPoint(drag.x,drag.y);
+    const target=el&&el.closest?el.closest('.card'):null;
+    if(!target || target===drag.card || target===drag.placeholder || target.parentNode!==grid)return;
+
+    const rect=target.getBoundingClientRect();
+    const despues=
+      drag.y>rect.top+rect.height/2 ||
+      (drag.y>=rect.top && drag.y<=rect.bottom && drag.x>rect.left+rect.width/2);
+    const siguiente=despues?target.nextElementSibling:target;
+    if(siguiente===drag.placeholder)return;
+
+    grid.insertBefore(drag.placeholder,siguiente);
+    drag.changed=true;
+    const msg=document.getElementById('orden-msg');
+    if(msg)msg.textContent=`Suelta para colocar ${drag.y>rect.top+rect.height/2?'después de':'antes de'} ${target.querySelector('p')?.textContent||'esta tarjeta'}`;
   }
 
   function mover(){
     if(!drag)return;
-    actualizarTransform();
-
-    const el=document.elementFromPoint(drag.x,drag.y);
-    const t=el&&el.closest?el.closest('.card'):null;
-
-    if(t&&t!==drag.card&&t.parentNode===grid){
-      const despues=
-        (drag.card.compareDocumentPosition(t)&
-         Node.DOCUMENT_POSITION_FOLLOWING)!==0;
-
-      if(despues)
-        grid.insertBefore(drag.card,t.nextSibling);
-      else
-        grid.insertBefore(drag.card,t);
-
-      try{drag.h.setPointerCapture(drag.id);}catch(e){}
-
-      recalcularBase();
-      actualizarTransform();
-    }
+    actualizarPosicion();
+    moverMarcador();
   }
 
   function scheduleMover(){
@@ -7539,28 +7945,39 @@ async function ordenSubirGitHub(){
     const h=e.target.closest('.handle');
     if(!h)return;
 
+    cerrarMenusTarjetas();
     const card=h.closest('.card');
     const r=card.getBoundingClientRect();
+    const placeholder=document.createElement('div');
+    placeholder.className='card card-drag-placeholder';
+    placeholder.dataset.tamano=card.dataset.tamano;
+    placeholder.setAttribute('aria-hidden','true');
+    placeholder.style.height=`${r.height}px`;
+    card.before(placeholder);
 
     drag={
-      card,h,
+      card,h,placeholder,
       id:e.pointerId,
-      gx:e.clientX-r.left,
-      gy:e.clientY-r.top,
-      baseLeft:r.left,
-      baseTop:r.top,
+      offsetX:e.clientX-r.left,
+      offsetY:e.clientY-r.top,
       x:e.clientX,
-      y:e.clientY
+      y:e.clientY,
+      changed:false
     };
 
     document.body.classList.add('is-dragging-card');
     card.classList.add('arrastrando');
-    card.style.pointerEvents='none';
-    actualizarTransform();
+    card.style.width=`${r.width}px`;
+    card.style.height=`${r.height}px`;
+    card.style.left=`${r.left}px`;
+    card.style.top=`${r.top}px`;
+    card.style.transform='scale(1.04)';
 
     try{h.setPointerCapture(e.pointerId);}catch(err){}
 
     e.preventDefault();
+    const msg=document.getElementById('orden-msg');
+    if(msg)msg.textContent='Moviendo tarjeta… sigue el recuadro punteado y suelta para colocarla';
 
     /* desplazamiento suave y optimizado al acercarse a los bordes */
     timer=setInterval(()=>{
@@ -7587,30 +8004,36 @@ async function ordenSubirGitHub(){
   function soltar(e){
     if(!drag||e.pointerId!==drag.id)return;
 
+    const movimiento=drag;
     clearInterval(timer);
     timer=null;
 
     document.body.classList.remove('is-dragging-card');
-    drag.card.classList.remove('arrastrando');
-    drag.card.style.transform='';
-    drag.card.style.pointerEvents='';
+    movimiento.card.classList.remove('arrastrando');
+    movimiento.card.style.position='';
+    movimiento.card.style.width='';
+    movimiento.card.style.height='';
+    movimiento.card.style.left='';
+    movimiento.card.style.top='';
+    movimiento.card.style.transform='';
+    movimiento.placeholder.replaceWith(movimiento.card);
 
     drag=null;
 
-    [...grid.querySelectorAll('.card')].forEach((c,i)=>{
-      const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
-      if(j)j.orden=i+1;
-    });
-
-    catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
-
     const msg=document.getElementById('orden-msg');
-    if(msg){
-      msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
-    }
+    if(movimiento.changed){
+      [...grid.querySelectorAll('.card')].forEach((c,i)=>{
+        const j=catalogo.juegos.find(x=>x.id===c.dataset.id);
+        if(j)j.orden=i+1;
+      });
 
-    cambiosPendientesSync=true;
-    huboCambiosSesionOrden=true;
+      catalogo.juegos.sort((a,b)=>(a.orden||0)-(b.orden||0));
+      if(msg)msg.textContent='✔ Tarjeta reubicada · El nuevo orden se guardará al tocar ✅ Listo';
+      cambiosPendientesSync=true;
+      huboCambiosSesionOrden=true;
+    }else if(msg){
+      msg.textContent='No cambió el orden de las tarjetas.';
+    }
   }
 
   document.addEventListener('pointerup',soltar);
