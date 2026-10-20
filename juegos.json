@@ -631,6 +631,17 @@
       "categoria": "",
       "youtubeStart": 0,
       "orden": 57
+    },
+    {
+      "id": "game-1792537006487",
+      "nombre": "Sonic GBC",
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3XqE7mFhBB4ZwA4wxrq0V136YVJ4ySChYoikOqdORZw&s=10",
+      "url": "https://html-classic.itch.zone/html/11119819/index.html",
+      "tipo": "iframe",
+      "accion": "abrirJuego",
+      "categoria": "",
+      "youtubeStart": 0,
+      "orden": 58
     }
   ]
 }
