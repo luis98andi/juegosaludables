@@ -270,7 +270,8 @@
       "tipo": "newtab",
       "accion": "abrirEnNuevaPestana",
       "categoria": "",
-      "orden": 25
+      "orden": 25,
+      "tamano": "grande"
     },
     {
       "id": "game-016",
