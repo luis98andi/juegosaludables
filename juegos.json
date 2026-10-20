@@ -152,7 +152,8 @@
       "accion": "abrirEmuladorSNES",
       "categoria": "",
       "orden": 14,
-      "youtubeStart": 0
+      "youtubeStart": 0,
+      "tamano": "pequeno"
     },
     {
       "id": "game-1790813474678",
