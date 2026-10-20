@@ -198,7 +198,8 @@
       "accion": "abrirEnNuevaPestana",
       "categoria": "",
       "orden": 18,
-      "youtubeStart": 0
+      "youtubeStart": 0,
+      "tamano": "pequeno"
     },
     {
       "id": "game-009",
