@@ -450,7 +450,8 @@
       "accion": "abrirJuego",
       "categoria": "Gatos",
       "youtubeStart": 0,
-      "orden": 41
+      "orden": 41,
+      "tamano": "pequeno"
     },
     {
       "id": "game-1790904851431",
