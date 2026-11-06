@@ -126,6 +126,7 @@ let servidorGeminiDisponible = false;
 let copilotoTimerInterval = null;
 let copilotoAbortController = null;
 let copilotoSegundos = 0;
+let copilotoConsultaConversacionalActual = false;
 
 function reproducirChimeCopiloto() {
   try {
@@ -329,6 +330,13 @@ function actualizarProgresoCopiloto(){
 
   if(copilotoSegundos >= 45){
     cancelarConsultaCopiloto(true);
+    return;
+  }
+
+  if(copilotoConsultaConversacionalActual){
+    if(textEl) textEl.textContent = '💬 Preparando una respuesta para conversar contigo...';
+    if(etaEl) etaEl.textContent = 'Un momento...';
+    if(barEl) barEl.style.width = '60%';
     return;
   }
 
@@ -1383,6 +1391,11 @@ function extraerTerminoBusquedaJuego(texto) {
   return t.trim() || texto.trim();
 }
 
+function esConversacionGeneralCopiloto(texto) {
+  const solicitaAyudaConJuegos = /\b(jueg\w*|cat[aá]logo|retro|html5|emulador|iframe|portada|itch\.io|youtube|scratch|turbowarp|internet archive|gamemonetize|busca(?:r)?|encuentra|agrega(?:r)?|a[ñn]ade|audita(?:r)?|url|enlace|link)\b/i;
+  return !solicitaAyudaConJuegos.test(texto);
+}
+
 async function copilotoManejarErrorImagen(tempId, imgEl){
   if(!imgEl) return;
   imgEl.onerror = null;
@@ -1460,6 +1473,9 @@ async function enviarMensajeCopiloto(){
 
   const texto = input.value.trim();
   if(!texto) return;
+  const esConversacionGeneral = esConversacionGeneralCopiloto(texto);
+  const usarBusquedaWebConsulta = copilotoUsarGoogleSearch && !esConversacionGeneral;
+  copilotoConsultaConversacionalActual = esConversacionGeneral;
 
   // Guardar en historial de comandos para navegación con flechas arriba/abajo
   copilotoInputHistory.push(texto);
@@ -1507,7 +1523,7 @@ async function enviarMensajeCopiloto(){
       <div class="copiloto-loading-header">
         <div class="copiloto-loading-status">
           <span class="copiloto-spinner-icon">⚡</span>
-          <span id="copiloto-loading-text">${copilotoUsarGoogleSearch ? '🌐 Paso 1/3: Buscando en Google Search e investigando opciones...' : '🤖 Paso 1/3: Analizando catálogo y memoria rápida...'}</span>
+          <span id="copiloto-loading-text">${esConversacionGeneral ? '💬 Conversando contigo...' : usarBusquedaWebConsulta ? '🌐 Paso 1/3: Buscando en Google Search e investigando opciones...' : '🤖 Paso 1/3: Analizando catálogo y memoria rápida...'}</span>
         </div>
         <span id="copiloto-loading-timer" class="copiloto-loading-timer">⏱️ 0s</span>
       </div>
@@ -1549,19 +1565,21 @@ async function enviarMensajeCopiloto(){
   const terminoLimpio = extraerTerminoBusquedaJuego(texto);
   let juegosIndexados = [];
   try {
-    const cfgDom = obtenerConfigDominiosCopiloto();
-    const paramsIdx = new URLSearchParams({
-      q: terminoLimpio,
-      disabled: JSON.stringify(cfgDom.disabled || []),
-      custom: JSON.stringify(cfgDom.custom || [])
-    });
-    const rIdx = await fetch(`/api/games/index-search?${paramsIdx.toString()}`, {
-      signal: copilotoAbortController ? copilotoAbortController.signal : undefined
-    }).catch(() => null);
-    if(rIdx && rIdx.ok){
-      const dIdx = await rIdx.json();
-      if(Array.isArray(dIdx.games) && dIdx.games.length > 0){
-        juegosIndexados = dIdx.games;
+    if(!esConversacionGeneral){
+      const cfgDom = obtenerConfigDominiosCopiloto();
+      const paramsIdx = new URLSearchParams({
+        q: terminoLimpio,
+        disabled: JSON.stringify(cfgDom.disabled || []),
+        custom: JSON.stringify(cfgDom.custom || [])
+      });
+      const rIdx = await fetch(`/api/games/index-search?${paramsIdx.toString()}`, {
+        signal: copilotoAbortController ? copilotoAbortController.signal : undefined
+      }).catch(() => null);
+      if(rIdx && rIdx.ok){
+        const dIdx = await rIdx.json();
+        if(Array.isArray(dIdx.games) && dIdx.games.length > 0){
+          juegosIndexados = dIdx.games;
+        }
       }
     }
   } catch(e) {}
@@ -1575,7 +1593,7 @@ async function enviarMensajeCopiloto(){
   
   const infoCatalogo = obtenerDominiosYLogicaDelCatalogo();
   
-  const seccionCatalogoPrompt = copilotoUsarGoogleSearch
+  const seccionCatalogoPrompt = usarBusquedaWebConsulta
     ? `MODO BÚSQUEDA WEB ACTIVA (Google Search):
 - Estás conectado a Google Search en vivo. Debes buscar libremente en internet los mejores enlaces jugables, portadas y datos actualizados.
 - FILTRO DE DOMINIOS DESACTIVADOS (NO USAR): ${disabled.join(', ')}
@@ -1609,6 +1627,12 @@ INSTRUCCIÓN CRÍTICA DE METADATOS:
   const promptSistema = `
 Eres el Copiloto Inteligente de Administración para la plataforma de videojuegos web 'Juegos Saludables' del administrador Luis.
 Tu tarea es ayudar a Luis a buscar, clasificar, auditar y añadir videojuegos (emuladores retro, HTML5, arcade, fan-made, etc.) o videos de YouTube al catálogo en 1 clic.
+
+ESTILO DE CONVERSACIÓN:
+- Habla con Luis de forma cálida, natural y cercana, como un asistente conversacional; responde en español y adapta la extensión a lo que pregunte.
+- Atiende saludos, agradecimientos, opiniones y preguntas generales directamente, sin convertirlas en búsquedas de juegos ni mencionar el catálogo si no viene al caso.
+- Mantén el hilo usando los mensajes anteriores. Si falta un dato, pregunta solo lo necesario; no repitas saludos ni ofrezcas agregar un juego en cada respuesta.
+- Cuando Luis sí pida juegos o tareas del catálogo, ayuda con precisión y conserva las reglas de verificación de enlaces de abajo.
 
 CATEGORÍAS EXISTENTES EN LA WEB:
 ${categoriasActuales.join(', ')}
@@ -1645,7 +1669,7 @@ REGLAS OBLIGATORIAS DE HONESTIDAD Y PRECISIÓN:
    - Si no estás seguro de la URL o no existe una versión jugable pública, pon "url": "" y explica la situación en "mensaje".
 2. SI LUIS ENVÍA O PEGA UN ENLACE DIRECTO:
    - DEBES UTILIZAR ESA URL EXACTA EN EL CAMPO "url". NO LA MODIFIQUES NI INVENTES OTRA.
-3. ${copilotoUsarGoogleSearch ? 'INVESTIGA EN GOOGLE SEARCH para encontrar URLs jugables y portadas de alta calidad reales.' : 'DA PRIORIDAD A LOS DOMINIOS Y PROVEEDORES DEL CATÁLOGO PROBADO DE LUIS.'}
+3. ${usarBusquedaWebConsulta ? 'INVESTIGA EN GOOGLE SEARCH para encontrar URLs jugables y portadas de alta calidad reales.' : 'DA PRIORIDAD A LOS DOMINIOS Y PROVEEDORES DEL CATÁLOGO PROBADO DE LUIS.'}
 4. ATENCIÓN A JUEGOS HTML5 Y FAN-MADE:
    - Si se pide HTML5 o fan-made (ej. Mario Kart HTML5), asigna tipo "normal" y entrega juegos HTML5/Web reales o Scratch/TurboWarp, NUNCA emulador SNES.
 5. Consigue una URL de portada o boxart en alta resolución.
@@ -1694,7 +1718,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
         body: JSON.stringify({
           contents: contentsPayload,
           systemInstruction: promptSistema,
-          useGoogleSearch: copilotoUsarGoogleSearch,
+          useGoogleSearch: usarBusquedaWebConsulta,
           apiKey: cfg.apiKey || ''
         })
       });
@@ -1740,7 +1764,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
         }
       };
 
-      if(copilotoUsarGoogleSearch){
+      if(usarBusquedaWebConsulta){
         requestBody.tools = [{ googleSearch: {} }];
       }
 
@@ -1812,7 +1836,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
     // En Modo Google Search: NO sobrescribir con enlaces de consolas o diccionario viejo
     // En Modo Rápido (sin Google): verificar con el diccionario de juegos probados
     listaJuegos = listaJuegos.map(j => {
-      if(!copilotoUsarGoogleSearch){
+      if(!usarBusquedaWebConsulta){
         let auditado = buscarJuegoVerificado(j.nombre || texto, j);
         if(auditado && auditado.url){
           auditado.url = sanearUrlJuego(auditado.url, auditado.tipo, auditado.nombre, pideHTML5, auditado.supervisado);
@@ -1852,7 +1876,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
 
     // Si el usuario pidió o buscó algo relacionado con GameMonetize o HTML5 y no hay enlace válido,
     // consultar el catálogo oficial real de GameMonetize para encontrar el juego verificado con su hash
-    if(!copilotoUsarGoogleSearch && (listaJuegos.some(j => !j.url || !j.url.startsWith('http')) || listaJuegos.length === 0)){
+    if(!esConversacionGeneral && !copilotoUsarGoogleSearch && (listaJuegos.some(j => !j.url || !j.url.startsWith('http')) || listaJuegos.length === 0)){
       const queryBusqueda = (listaJuegos[0]?.nombre || texto).replace(/html5|gamemonetize|juego|game/gi, '').trim();
       if(queryBusqueda.length >= 2 && typeof buscarJuegosRealesGameMonetize === 'function'){
         try {
@@ -1908,7 +1932,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
     }
 
     // Si la IA no trajo URLs válidas pero el usuario buscó un juego verificado (SOLO en modo rápido sin Google Search)
-    if(listaJuegos.length === 0 && !copilotoUsarGoogleSearch){
+    if(listaJuegos.length === 0 && !esConversacionGeneral && !copilotoUsarGoogleSearch){
       const verificadoDirecto = buscarJuegoVerificado(texto);
       if(verificadoDirecto && verificadoDirecto.url && verificadoDirecto.url.startsWith('http')){
         listaJuegos = [verificadoDirecto];
@@ -1930,9 +1954,9 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
     aiBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
     
     let htmlContent = '';
-    if(copilotoUsarGoogleSearch && searchQueries.length > 0){
+    if(usarBusquedaWebConsulta && searchQueries.length > 0){
       htmlContent += `<div style="font-size:11px;color:#a7f3d0;margin-bottom:6px;background:rgba(16,185,129,0.15);padding:3px 8px;border-radius:5px;display:inline-block">🔍 Investigado en Google Search: <b>"${escapeHtml(searchQueries[0])}"</b></div>`;
-    } else if(!copilotoUsarGoogleSearch){
+    } else if(!esConversacionGeneral && !copilotoUsarGoogleSearch){
       htmlContent += `<div style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;background:rgba(255,255,255,0.06);padding:2px 7px;border-radius:5px;display:inline-block">⚡ Modo Rápido (Catálogo y Memoria)</div>`;
     }
 

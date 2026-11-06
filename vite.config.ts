@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import {defineConfig, loadEnv} from 'vite';
 import { GoogleGenAI } from '@google/genai';
 
 const SPOOF_NORMAL_TAB_SCRIPT = (fakeOrigin: string, fakeHref: string) => `<script>
@@ -412,7 +412,10 @@ function findInnerGameIframe(html: string, baseUrl: string): string {
   return '';
 }
 
-export default defineConfig(() => {
+export default defineConfig(({mode}) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const geminiApiKey = process.env.GEMINI_API_KEY || env.GEMINI_API_KEY;
+
   return {
     plugins: [
       react(),
@@ -423,7 +426,7 @@ export default defineConfig(() => {
           server.middlewares.use('/api/gemini/status', (req, res) => {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({
-              hasServerKey: !!process.env.GEMINI_API_KEY
+              hasServerKey: !!geminiApiKey
             }));
           });
 
@@ -778,7 +781,7 @@ export default defineConfig(() => {
               });
               const data = JSON.parse(body || '{}');
               const { contents, systemInstruction, useGoogleSearch, apiKey: clientApiKey } = data;
-              const apiKey = clientApiKey || process.env.GEMINI_API_KEY;
+              const apiKey = clientApiKey || geminiApiKey;
               if (!apiKey) {
                 res.statusCode = 400;
                 res.setHeader('Content-Type', 'application/json');
