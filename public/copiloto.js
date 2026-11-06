@@ -1392,8 +1392,8 @@ function extraerTerminoBusquedaJuego(texto) {
 }
 
 function esConversacionGeneralCopiloto(texto) {
-  const solicitaAyudaConJuegos = /\b(jueg\w*|cat[aá]logo|retro|html5|emulador|iframe|portada|itch\.io|youtube|scratch|turbowarp|internet archive|gamemonetize|busca(?:r)?|encuentra|agrega(?:r)?|a[ñn]ade|audita(?:r)?|url|enlace|link)\b/i;
-  return !solicitaAyudaConJuegos.test(texto);
+  const solicitudDeCatalogo = /\b(busc\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*|audit\w*|verific\w*|analiza\s+(?:esta\s+)?(?:url|enlace|link)|dame\s+(?:\d+\s+)?(?:un\s+)?(?:juegos?|opciones|enlaces?)|muestra\s+(?:opciones|juegos?)|(?:quiero|busco|necesito)\s+(?:que\s+me\s+)?(?:jugar\s+a|un\s+juego\s+de|juegos?\s+de|busc\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*)|(?:url|enlace|link)\s*[:=])/i;
+  return !solicitudDeCatalogo.test(texto);
 }
 
 async function copilotoManejarErrorImagen(tempId, imgEl){
@@ -1701,6 +1701,12 @@ Debes responder SIEMPRE con un objeto JSON válido (sin texto antes ni después)
 }
 Si es una conversación general o no busca agregar un juego, pon "juego": null, "juegos": [] y responde en "mensaje".
 `;
+  const promptConversacional = `
+Eres el Copiloto IA de Luis. Conversa con naturalidad, calidez y brevedad en español.
+Responde directamente a lo que Luis diga, mantén el contexto de los mensajes anteriores y haz preguntas naturales cuando ayuden a continuar la conversación.
+No busques juegos, no consultes el catálogo, no propongas fichas y no respondas en JSON. Devuelve solo el texto de tu respuesta.
+`;
+  const instruccionesGemini = esConversacionGeneral ? promptConversacional : promptSistema;
 
   let rawText = '';
   let searchQueries = [];
@@ -1717,7 +1723,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
         signal: copilotoAbortController ? copilotoAbortController.signal : undefined,
         body: JSON.stringify({
           contents: contentsPayload,
-          systemInstruction: promptSistema,
+          systemInstruction: instruccionesGemini,
           useGoogleSearch: usarBusquedaWebConsulta,
           apiKey: cfg.apiKey || ''
         })
@@ -1756,7 +1762,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
 
       const requestBody = {
         systemInstruction: {
-          parts: [{ text: promptSistema }]
+          parts: [{ text: instruccionesGemini }]
         },
         contents: contentsPayload,
         generationConfig: {
@@ -1781,6 +1787,37 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
 
     const typingEl = document.getElementById('copiloto-typing-indicator');
     if(typingEl) typingEl.remove();
+
+    if(esConversacionGeneral){
+      if(!rawText.trim()){
+        throw new Error('Gemini devolvió una respuesta vacía. Inténtalo de nuevo.');
+      }
+
+      let respuesta = rawText.trim();
+      try {
+        const posibleJson = JSON.parse(respuesta.replace(/^```json\s*/i, '').replace(/```$/i, '').trim());
+        if(typeof posibleJson.mensaje === 'string' && posibleJson.mensaje.trim()){
+          respuesta = posibleJson.mensaje.trim();
+        }
+      } catch(e){}
+
+      copilotoHistorial.push(
+        { role: 'user', parts: [{ text: texto }] },
+        { role: 'model', parts: [{ text: respuesta }] }
+      );
+      if(copilotoHistorial.length > 6){
+        copilotoHistorial = copilotoHistorial.slice(-6);
+      }
+      guardarHistorialCopiloto();
+
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'copiloto-msg-bubble copiloto-msg-ai';
+      aiBubble.innerHTML = formatearMensajeCopiloto(respuesta);
+      chat.appendChild(aiBubble);
+      reproducirChimeCopiloto();
+      scrollCopilotoAlFinal();
+      return;
+    }
 
     let parsed = repararYParsearJSON(rawText);
 
@@ -2072,6 +2109,7 @@ Si es una conversación general o no busca agregar un juego, pon "juego": null, 
     if(typingEl) typingEl.remove();
     copilotoCargando = false;
     copilotoAbortController = null;
+    copilotoConsultaConversacionalActual = false;
     if(btnSend){
       btnSend.disabled = false;
       btnSend.textContent = '⚡ Enviar';
