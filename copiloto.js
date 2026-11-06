@@ -1392,7 +1392,7 @@ function extraerTerminoBusquedaJuego(texto) {
 }
 
 function esConversacionGeneralCopiloto(texto) {
-  const solicitudDeCatalogo = /\b(busc\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*|audit\w*|verific\w*|analiza\s+(?:esta\s+)?(?:url|enlace|link)|dame\s+(?:\d+\s+)?(?:un\s+)?(?:juegos?|opciones|enlaces?)|muestra\s+(?:opciones|juegos?)|(?:quiero|busco|necesito)\s+(?:que\s+me\s+)?(?:jugar\s+a|un\s+juego\s+de|juegos?\s+de|busc\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*)|(?:url|enlace|link)\s*[:=])/i;
+  const solicitudDeCatalogo = /\b(busc\w*|busq\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*|audit\w*|verific\w*|analiza\s+(?:esta\s+)?(?:url|enlace|link)|dame\s+(?:\d+\s+)?(?:un\s+)?(?:juegos?|opciones|enlaces?)|muestra\s+(?:opciones|juegos?)|(?:quiero|busco|necesito)\s+(?:que\s+me\s+)?(?:jugar\s+a|un\s+juego\s+de|juegos?\s+de|busc\w*|busq\w*|encuentr\w*|agreg\w*|a[ñn]ad\w*)|(?:url|enlace|link)\s*[:=])/i;
   return !solicitudDeCatalogo.test(texto);
 }
 
